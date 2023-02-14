@@ -22,7 +22,7 @@ internal static class OpenApiExtensions
         License = new OpenApiLicense
         {
           Name = "Use under MIT",
-          Url = new Uri("https://github.com/Utar94/Portal/blob/main/LICENSE") // TODO(fpion): implement
+          Url = new Uri("https://github.com/Utar94/Logitar.NET/blob/develop/LICENSE")
         },
         Title = "Portal API",
         Version = $"v{Constants.Version}"

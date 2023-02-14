@@ -82,7 +82,7 @@ public class EventStoreTests
     _context.Events.AddRange(events);
     await _context.SaveChangesAsync();
 
-    TestAggregate result = (await _store.LoadAsync<TestAggregate>(id, version: 1, includeDeleted: false, _cancellationToken))!;
+    TestAggregate result = (await _store.LoadAsync<TestAggregate>(id, version: 1, _cancellationToken))!;
     Assert.NotNull(result);
     Assert.Equal("Test", result.Name);
   }
@@ -99,8 +99,33 @@ public class EventStoreTests
     _context.Events.AddRange(events);
     await _context.SaveChangesAsync();
 
-    TestAggregate result = (await _store.LoadAsync<TestAggregate>(id, version: null, includeDeleted: false, _cancellationToken))!;
+    TestAggregate result = (await _store.LoadAsync<TestAggregate>(id, _cancellationToken))!;
     Assert.Equal(aggregate, result);
+  }
+
+  [Theory]
+  [InlineData("83D6EDF9-3185-4354-AF7A-4A10AF408DCE", "0C20B642-66C4-40A3-A2B1-BB59F9729D61")]
+  public async Task Given_aggregates_of_type_When_loaded_by_type_Then_aggregates(params string[] aggregateIds)
+  {
+    IEnumerable<AggregateId> ids = aggregateIds.Select(id => new AggregateId(Guid.Parse(id)));
+    Dictionary<AggregateId, TestAggregate> aggregates = ids.Select(id =>
+    {
+      TestAggregate aggregate = new(id);
+      aggregate.Rename("Test");
+      return aggregate;
+    }).ToDictionary(x => x.Id, x => x);
+
+    IEnumerable<EventEntity> events = aggregates.Values.SelectMany(EventEntity.FromChanges);
+    _context.Events.AddRange(events);
+    await _context.SaveChangesAsync();
+
+    IEnumerable<TestAggregate> results = await _store.LoadAsync<TestAggregate>(_cancellationToken);
+    Assert.Equal(aggregates.Count, results.Count());
+    foreach (TestAggregate result in results)
+    {
+      TestAggregate aggregate = aggregates[result.Id];
+      Assert.Equal(aggregate, result);
+    }
   }
 
   [Theory]
@@ -119,7 +144,7 @@ public class EventStoreTests
     _context.Events.AddRange(events);
     await _context.SaveChangesAsync();
 
-    IEnumerable<TestAggregate> results = await _store.LoadAsync<TestAggregate>(ids, includeDeleted: false, _cancellationToken);
+    IEnumerable<TestAggregate> results = await _store.LoadAsync<TestAggregate>(ids, _cancellationToken);
     Assert.Equal(aggregates.Count, results.Count());
     foreach (TestAggregate result in results)
     {
@@ -191,7 +216,7 @@ public class EventStoreTests
     _context.Events.AddRange(events);
     await _context.SaveChangesAsync();
 
-    TestAggregate result = (await _store.LoadAsync<TestAggregate>(id, version: null, includeDeleted: true, _cancellationToken))!;
+    TestAggregate result = (await _store.LoadAsync<TestAggregate>(id, includeDeleted: true, _cancellationToken))!;
     Assert.NotNull(result);
     Assert.Equal(aggregate, result);
   }
@@ -208,7 +233,47 @@ public class EventStoreTests
     _context.Events.AddRange(events);
     await _context.SaveChangesAsync();
 
-    Assert.Null(await _store.LoadAsync<TestAggregate>(id, version: null, includeDeleted: false, _cancellationToken));
+    Assert.Null(await _store.LoadAsync<TestAggregate>(id, _cancellationToken));
+  }
+
+  [Fact]
+  public async Task Given_deleted_aggregate_When_loaded_by_type_including_deleted_Then_it_is_loaded()
+  {
+    TestAggregate aggregate = new();
+    aggregate.Rename("Test");
+
+    TestAggregate deleted = new();
+    deleted.Rename("Deleted");
+    deleted.Delete();
+
+    IEnumerable<EventEntity> events = new[] { aggregate, deleted }.SelectMany(EventEntity.FromChanges);
+    _context.Events.AddRange(events);
+    await _context.SaveChangesAsync();
+
+    Dictionary<AggregateId, TestAggregate> aggregates = (await _store.LoadAsync<TestAggregate>(includeDeleted: true, _cancellationToken))
+      .ToDictionary(x => x.Id, x => x);
+    Assert.Equal(2, aggregates.Count);
+    Assert.Equal(aggregate, aggregates[aggregate.Id]);
+    Assert.Equal(deleted, aggregates[deleted.Id]);
+  }
+
+  [Fact]
+  public async Task Given_deleted_aggregate_When_loaded_by_type_Then_it_is_not_loaded()
+  {
+    TestAggregate aggregate = new();
+    aggregate.Rename("Test");
+
+    TestAggregate deleted = new();
+    deleted.Rename("Deleted");
+    deleted.Delete();
+
+    IEnumerable<EventEntity> events = new[] { aggregate, deleted }.SelectMany(EventEntity.FromChanges);
+    _context.Events.AddRange(events);
+    await _context.SaveChangesAsync();
+
+    IEnumerable<TestAggregate> aggregates = await _store.LoadAsync<TestAggregate>(_cancellationToken);
+    Assert.NotEmpty(aggregates);
+    Assert.Equal(aggregate, aggregates.Single());
   }
 
   [Theory]
@@ -252,7 +317,20 @@ public class EventStoreTests
     _context.Events.AddRange(events);
     await _context.SaveChangesAsync();
 
-    Assert.Empty(await _store.LoadAsync<TestAggregate>(ids, includeDeleted: false, _cancellationToken));
+    Assert.Empty(await _store.LoadAsync<TestAggregate>(ids, _cancellationToken));
+  }
+
+  [Fact]
+  public async Task Given_no_aggregate_of_type_When_loaded_by_type_Then_Empty()
+  {
+    TestAggregate aggregate = new();
+    aggregate.Rename("Test");
+
+    IEnumerable<EventEntity> events = EventEntity.FromChanges(aggregate);
+    _context.Events.AddRange(events);
+    await _context.SaveChangesAsync();
+
+    Assert.Empty(await _store.LoadAsync<OtherAggregate>(_cancellationToken));
   }
 
   [Theory]
@@ -267,7 +345,7 @@ public class EventStoreTests
     await _context.SaveChangesAsync();
 
     AggregateId id = new(Guid.Parse(aggregateId));
-    Assert.Null(await _store.LoadAsync<TestAggregate>(id, version: null, includeDeleted: true, _cancellationToken));
+    Assert.Null(await _store.LoadAsync<TestAggregate>(id, includeDeleted: true, _cancellationToken));
   }
 
   [Theory]

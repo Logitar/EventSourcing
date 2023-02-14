@@ -1,5 +1,5 @@
 ﻿namespace Logitar.EventSourcing;
 
-internal class OtherAggregate : AggregateRoot
+public class OtherAggregate : AggregateRoot
 {
 }
