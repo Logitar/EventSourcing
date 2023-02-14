@@ -5,6 +5,37 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>Nullable</WarningsAsErrors>
+
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>1.0.0</Version>
+    <Authors>Francis Pion</Authors>
+    <Company>Logitar</Company>
+    <Description>Provides an implementation of Event Sourcing for domain aggregates and events.</Description>
+    <Copyright>© 2023 Francis Pion All Rights Reserved.</Copyright>
+    <PackageProjectUrl>https://github.com/Utar94/Logitar.NET/tree/develop/src/Logitar.EventSourcing</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Utar94/Logitar.NET/tree/main</RepositoryUrl>
+    <PackageTags>event sourcing</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>Initial publishing.</PackageReleaseNotes>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>logitar.png</PackageIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="logitar.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
