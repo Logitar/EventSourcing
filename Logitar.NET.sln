@@ -1,0 +1,72 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logitar.EventSourcing", "src\Logitar.EventSourcing\Logitar.EventSourcing.csproj", "{7912F816-F730-48B8-AD88-31CBB0E180D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL", "src\Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL\Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.csproj", "{E8E8D43F-4886-4662-8ADD-0DCD2704B9E7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{03B5E0F2-43EC-4D1C-98E2-02B22709C54F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logitar.EventSourcing.UnitTests", "tests\Logitar.EventSourcing.UnitTests\Logitar.EventSourcing.UnitTests.csproj", "{11A9E8AD-5C45-4AE0-8A05-19C8C148C5F0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.UnitTests", "tests\Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.UnitTests\Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.UnitTests.csproj", "{7BF1F089-E008-4EFF-AA9D-8E9C735C2FB7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.IntegrationTests", "tests\Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.IntegrationTests\Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.IntegrationTests.csproj", "{4178DA03-0AF5-4F92-A9BD-07A0A7C89C1B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logitar.EventSourcing.Demo", "src\Logitar.EventSourcing.Demo\Logitar.EventSourcing.Demo.csproj", "{95710638-1C7B-4E58-912C-D0007CD778F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{70B51181-4959-4053-B331-02B4A3CF7D7C}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7912F816-F730-48B8-AD88-31CBB0E180D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7912F816-F730-48B8-AD88-31CBB0E180D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7912F816-F730-48B8-AD88-31CBB0E180D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7912F816-F730-48B8-AD88-31CBB0E180D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8E8D43F-4886-4662-8ADD-0DCD2704B9E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8E8D43F-4886-4662-8ADD-0DCD2704B9E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8E8D43F-4886-4662-8ADD-0DCD2704B9E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8E8D43F-4886-4662-8ADD-0DCD2704B9E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11A9E8AD-5C45-4AE0-8A05-19C8C148C5F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11A9E8AD-5C45-4AE0-8A05-19C8C148C5F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11A9E8AD-5C45-4AE0-8A05-19C8C148C5F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11A9E8AD-5C45-4AE0-8A05-19C8C148C5F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BF1F089-E008-4EFF-AA9D-8E9C735C2FB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BF1F089-E008-4EFF-AA9D-8E9C735C2FB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BF1F089-E008-4EFF-AA9D-8E9C735C2FB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BF1F089-E008-4EFF-AA9D-8E9C735C2FB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4178DA03-0AF5-4F92-A9BD-07A0A7C89C1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4178DA03-0AF5-4F92-A9BD-07A0A7C89C1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4178DA03-0AF5-4F92-A9BD-07A0A7C89C1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4178DA03-0AF5-4F92-A9BD-07A0A7C89C1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95710638-1C7B-4E58-912C-D0007CD778F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95710638-1C7B-4E58-912C-D0007CD778F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95710638-1C7B-4E58-912C-D0007CD778F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95710638-1C7B-4E58-912C-D0007CD778F2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{11A9E8AD-5C45-4AE0-8A05-19C8C148C5F0} = {03B5E0F2-43EC-4D1C-98E2-02B22709C54F}
+		{7BF1F089-E008-4EFF-AA9D-8E9C735C2FB7} = {03B5E0F2-43EC-4D1C-98E2-02B22709C54F}
+		{4178DA03-0AF5-4F92-A9BD-07A0A7C89C1B} = {03B5E0F2-43EC-4D1C-98E2-02B22709C54F}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E89937A3-F786-4855-8453-2720E75A290A}
+	EndGlobalSection
+EndGlobal
