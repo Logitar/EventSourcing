@@ -4,8 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.Configurations;
 
+/// <summary>
+/// The entity configuration used to configure the <see cref="EventEntity"/> database model.
+/// </summary>
 public class EventConfiguration : IEntityTypeConfiguration<EventEntity>
 {
+  /// <summary>
+  /// Configures the database model using the specified type builder.
+  /// </summary>
+  /// <param name="builder">The type builder</param>
   public void Configure(EntityTypeBuilder<EventEntity> builder)
   {
     builder.HasKey(x => x.EventId);
