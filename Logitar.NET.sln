@@ -27,6 +27,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.Identity", "src\Logitar.Identity\Logitar.Identity.csproj", "{8405144C-3B66-422A-9630-66AEC69DFA38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.Identity.EntityFrameworkCore.PostgreSQL", "src\Logitar.Identity.EntityFrameworkCore.PostgreSQL\Logitar.Identity.EntityFrameworkCore.PostgreSQL.csproj", "{4D7E75E0-AA5F-4CCA-A2E1-D67069FE8ED6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +61,14 @@ Global
 		{95710638-1C7B-4E58-912C-D0007CD778F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95710638-1C7B-4E58-912C-D0007CD778F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95710638-1C7B-4E58-912C-D0007CD778F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8405144C-3B66-422A-9630-66AEC69DFA38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8405144C-3B66-422A-9630-66AEC69DFA38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8405144C-3B66-422A-9630-66AEC69DFA38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8405144C-3B66-422A-9630-66AEC69DFA38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D7E75E0-AA5F-4CCA-A2E1-D67069FE8ED6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D7E75E0-AA5F-4CCA-A2E1-D67069FE8ED6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D7E75E0-AA5F-4CCA-A2E1-D67069FE8ED6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D7E75E0-AA5F-4CCA-A2E1-D67069FE8ED6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
