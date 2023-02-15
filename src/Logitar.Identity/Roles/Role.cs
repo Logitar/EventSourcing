@@ -8,6 +8,11 @@ namespace Logitar.Identity.Roles;
 public record Role : Aggregate
 {
   /// <summary>
+  /// Gets or sets the identifier of the role.
+  /// </summary>
+  public Guid Id { get; set; }
+
+  /// <summary>
   /// Gets or sets the realm in which this role belongs.
   /// </summary>
   public Realm? Realm { get; set; }

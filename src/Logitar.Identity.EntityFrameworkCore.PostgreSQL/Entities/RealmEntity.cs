@@ -3,9 +3,6 @@ using System.Text.Json;
 
 namespace Logitar.Identity.EntityFrameworkCore.PostgreSQL.Entities;
 
-// TODO(fpion): ExternalProviders
-// TODO(fpion): CustomAttributes
-
 /// <summary>
 /// The database model representing a realm.
 /// </summary>
@@ -31,6 +28,10 @@ internal class RealmEntity : AggregateEntity
     PasswordSettings = JsonSerializer.Serialize(e.PasswordSettings);
 
     JwtSecret = e.JwtSecret;
+
+    ExternalProviders = e.ExternalProviders.Any() ? JsonSerializer.Serialize(e.ExternalProviders) : null;
+
+    CustomAttributes = e.CustomAttributes.Any() ? JsonSerializer.Serialize(e.CustomAttributes) : null;
   }
   /// <summary>
   /// Initializes a new instance of the <see cref="RealmEntity"/> class.
@@ -38,6 +39,11 @@ internal class RealmEntity : AggregateEntity
   private RealmEntity() : base()
   {
   }
+
+  /// <summary>
+  /// Gets the primary identifier of the realm.
+  /// </summary>
+  public int RealmId { get; private set; }
 
   /// <summary>
   /// Gets the unique name of the realm (not case-sensitive).
@@ -94,6 +100,21 @@ internal class RealmEntity : AggregateEntity
   public string JwtSecret { get; private set; } = string.Empty;
 
   /// <summary>
+  /// Gets the external authentication provider configurations of the realm.
+  /// </summary>
+  public string? ExternalProviders { get; private set; } = string.Empty;
+
+  /// <summary>
+  /// Gets the custom attributes of the realm.
+  /// </summary>
+  public string? CustomAttributes { get; private set; }
+
+  /// <summary>
+  /// Gets the list of roles in this realm.
+  /// </summary>
+  public List<RoleEntity> Roles { get; private set; } = new();
+
+  /// <summary>
   /// Updates the realm to the state of the specified event.
   /// </summary>
   /// <param name="e">The update event.</param>
@@ -114,5 +135,9 @@ internal class RealmEntity : AggregateEntity
     PasswordSettings = JsonSerializer.Serialize(e.PasswordSettings);
 
     JwtSecret = e.JwtSecret;
+
+    ExternalProviders = e.ExternalProviders.Any() ? JsonSerializer.Serialize(e.ExternalProviders) : null;
+
+    CustomAttributes = e.CustomAttributes.Any() ? JsonSerializer.Serialize(e.CustomAttributes) : null;
   }
 }

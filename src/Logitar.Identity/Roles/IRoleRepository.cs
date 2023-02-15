@@ -8,7 +8,7 @@ namespace Logitar.Identity.Roles;
 public interface IRoleRepository
 {
   /// <summary>
-  /// Retrieves a role by its unique name.
+  /// Retrieves a role by its realm and unique name.
   /// </summary>
   /// <param name="realm">The realm of the role.</param>
   /// <param name="uniqueName">The unique name of the role.</param>

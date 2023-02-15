@@ -15,7 +15,7 @@ internal class RoleCreatedValidator : AbstractValidator<RoleCreatedEvent>
   {
     RuleFor(x => x.UniqueName).NotEmpty()
       .MaximumLength(byte.MaxValue)
-      .Alias(); // TODO(fpion): should it be an alias, and identifier, or any name?
+      .Identifier();
 
     RuleFor(x => x.DisplayName).NullOrNotEmpty()
       .MaximumLength(byte.MaxValue);

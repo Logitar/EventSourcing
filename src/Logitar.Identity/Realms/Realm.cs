@@ -6,6 +6,11 @@
 public record Realm : Aggregate
 {
   /// <summary>
+  /// Gets or sets the identifier of the realm.
+  /// </summary>
+  public Guid Id { get; set; }
+
+  /// <summary>
   /// Gets or sets the unique name of the realm (not case-sensitive).
   /// </summary>
   public string UniqueName { get; set; } = string.Empty;

@@ -23,6 +23,21 @@ public static class FluentValidationExtensions
   }
 
   /// <summary>
+  /// Defines an 'identifier' validator on the current rule builder. Validation will fail if the
+  /// property is not a string composed only of letters, digits and underscores (_) or if it starts
+  /// with a digit.
+  /// </summary>
+  /// <typeparam name="T">The type of the object being validated.</typeparam>
+  /// <param name="ruleBuilder">The rule builder.</param>
+  /// <returns>The rule builder.</returns>
+  public static IRuleBuilder<T, string?> Identifier<T>(this IRuleBuilder<T, string?> ruleBuilder)
+  {
+    return ruleBuilder.Must(i => i == null || (!string.IsNullOrEmpty(i) && !char.IsDigit(i.First()) && i.All(c => char.IsLetterOrDigit(c) || c == '_')))
+      .WithErrorCode("IdentifierValidator")
+      .WithMessage("'{PropertyName}' can only include letters, digits and underscores (_) and must not start with a digit.");
+  }
+
+  /// <summary>
   /// Defines a 'locale' validator on the current rule builder. Validation will fail if the property
   /// is not an instance of the <see cref="CultureInfo"/> class with a non-empty name and a LCID
   /// different from 4096.
