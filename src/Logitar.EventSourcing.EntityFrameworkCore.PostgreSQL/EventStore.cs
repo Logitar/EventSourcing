@@ -152,6 +152,22 @@ public class EventStore : IEventStore
   }
 
   /// <summary>
+  /// Loads an aggregate of the specified type by its list of events.
+  /// </summary>
+  /// <typeparam name="T">The aggregate type.</typeparam>
+  /// <param name="events">The list of events.</param>
+  /// <param name="includeDeleted">A value indicating whether or not the aggregate should be loaded if it is deleted.</param>
+  /// <returns>The loaded aggregate or null if none.</returns>
+  protected virtual T? Load<T>(IEnumerable<EventEntity> events, bool includeDeleted = false) where T : AggregateRoot
+  {
+    if (!events.Any())
+    {
+      return null;
+    }
+
+    return Load<T>(new AggregateId(events.First().AggregateId), events, includeDeleted);
+  }
+  /// <summary>
   /// Loads an aggregate of the specified type by its aggregate identifier and list of events.
   /// </summary>
   /// <typeparam name="T">The aggregate type</typeparam>
