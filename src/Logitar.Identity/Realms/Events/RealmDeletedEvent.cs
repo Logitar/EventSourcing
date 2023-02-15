@@ -8,6 +8,9 @@ namespace Logitar.Identity.Realms.Events;
 /// </summary>
 public record RealmDeletedEvent : DomainEvent, INotification
 {
+  /// <summary>
+  /// Initializes a new instance of the <see cref="RealmDeletedEvent"/> class.
+  /// </summary>
   public RealmDeletedEvent()
   {
     DeleteAction = DeleteAction.Delete;

@@ -1,5 +1,4 @@
 ﻿using Logitar.EventSourcing;
-using Logitar.Identity.Accounts;
 using MediatR;
 using System.Globalization;
 
@@ -53,12 +52,12 @@ public record RealmUpdatedEvent : DomainEvent, INotification
   public string JwtSecret { get; init; } = string.Empty;
 
   /// <summary>
-  /// Gets or sets the external authentication provider configurations of the realm.
-  /// </summary>
-  public Dictionary<ExternalProvider, ExternalProviderConfiguration> ExternalProviders { get; init; } = new();
-
-  /// <summary>
   /// Gets or sets the custom attributes of the realm.
   /// </summary>
   public Dictionary<string, string> CustomAttributes { get; init; } = new();
+
+  /// <summary>
+  /// Gets or sets the Google OAuth 2.0 provider authentication configuration.
+  /// </summary>
+  public ReadOnlyGoogleOAuth2Configuration? GoogleOAuth2Configuration { get; init; }
 }

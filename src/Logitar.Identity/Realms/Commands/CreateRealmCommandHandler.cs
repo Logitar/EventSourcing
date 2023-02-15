@@ -49,7 +49,7 @@ internal class CreateRealmCommandHandler : IRequestHandler<CreateRealmCommand, R
   {
     CreateRealmInput input = command.Input;
 
-    if (await _realmRepository.LoadByUniqueNameAsync(input.UniqueName, cancellationToken) != null)
+    if (await _realmRepository.LoadAsync(input.UniqueName, cancellationToken) != null)
     {
       throw new UniqueNameAlreadyUsedException(input.UniqueName, nameof(input.UniqueName));
     }
@@ -62,7 +62,7 @@ internal class CreateRealmCommandHandler : IRequestHandler<CreateRealmCommand, R
 
     RealmAggregate realm = new(_identityContext.ActorId, input.UniqueName, input.DisplayName, input.Description,
       defaultLocale, input.Url, input.RequireConfirmedAccount, input.RequireUniqueEmail,
-      usernameSettings, passwordSettings, input.JwtSecret, externalProviders, customAttributes);
+      usernameSettings, passwordSettings, input.JwtSecret, customAttributes, externalProviders);
 
     await _realmRepository.SaveAsync(realm, cancellationToken);
 

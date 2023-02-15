@@ -21,12 +21,22 @@ internal class RealmRepository : EventStore, IRealmRepository
   }
 
   /// <summary>
+  /// Retrieves a realm by its identifier.
+  /// </summary>
+  /// <param name="id">The identifier of the realm.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The realm or null if not found.</returns>
+  public async Task<RealmAggregate?> LoadAsync(AggregateId id, CancellationToken cancellationToken)
+  {
+    return await LoadAsync<RealmAggregate>(id, cancellationToken);
+  }
+  /// <summary>
   /// Retrieves a realm by its unique name.
   /// </summary>
   /// <param name="uniqueName">The unique name of the realm.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The realm or null if not found.</returns>
-  public async Task<RealmAggregate?> LoadByUniqueNameAsync(string uniqueName, CancellationToken cancellationToken)
+  public async Task<RealmAggregate?> LoadAsync(string uniqueName, CancellationToken cancellationToken)
   {
     string aggregateType = typeof(RealmAggregate).GetName();
 

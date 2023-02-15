@@ -30,11 +30,11 @@ internal class RealmUpdatedValidator : AbstractValidator<RealmUpdatedEvent>
     RuleFor(x => x.JwtSecret).NotEmpty()
       .MinimumLength(256 / 8);
 
-    RuleForEach(x => x.ExternalProviders.Keys).IsInEnum();
-    RuleForEach(x => x.ExternalProviders).SetValidator(new ExternalProviderConfigurationValidator());
-
     RuleForEach(x => x.CustomAttributes.Keys).NotEmpty()
       .MaximumLength(byte.MaxValue);
     RuleForEach(x => x.CustomAttributes.Values).NotEmpty();
+
+    When(x => x.GoogleOAuth2Configuration != null,
+      () => RuleFor(x => x.GoogleOAuth2Configuration!).SetValidator(new ReadOnlyGoogleOAuth2ConfigurationValidator()));
   }
 }

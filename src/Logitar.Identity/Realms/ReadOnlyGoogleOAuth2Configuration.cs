@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents the configuration of the Google OAuth 2.0 external authentication provider.
 /// </summary>
-internal record ReadOnlyGoogleOAuth2Configuration : ExternalProviderConfiguration
+public record ReadOnlyGoogleOAuth2Configuration : ExternalProviderConfiguration
 {
   /// <summary>
   /// Initializes a new instance of the <see cref="ReadOnlyGoogleOAuth2Configuration"/> class.

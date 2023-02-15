@@ -1,4 +1,5 @@
 ﻿using Logitar.Identity.Realms;
+using Logitar.Identity.Roles;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -20,8 +21,8 @@ public static class DependencyInjectionExtensions
     Assembly assembly = typeof(DependencyInjectionExtensions).Assembly;
 
     return services
-      .AddMediatR(assembly)
-      .RegisterFacades();
+      .AddFacades()
+      .AddMediatR(assembly);
   }
 
   /// <summary>
@@ -29,8 +30,10 @@ public static class DependencyInjectionExtensions
   /// </summary>
   /// <param name="services">The service collection.</param>
   /// <returns>The service collection.</returns>
-  private static IServiceCollection RegisterFacades(this IServiceCollection services)
+  private static IServiceCollection AddFacades(this IServiceCollection services)
   {
-    return services.AddTransient<IRealmService, RealmService>();
+    return services
+      .AddTransient<IRealmService, RealmService>()
+      .AddTransient<IRoleService, RoleService>();
   }
 }

@@ -6,10 +6,6 @@
 public record UpdateRealmInput
 {
   /// <summary>
-  /// Gets or sets the unique name of the realm (not case-sensitive).
-  /// </summary>
-  public string UniqueName { get; set; } = string.Empty;
-  /// <summary>
   /// Gets or sets the display name of the realm.
   /// </summary>
   public string? DisplayName { get; set; }

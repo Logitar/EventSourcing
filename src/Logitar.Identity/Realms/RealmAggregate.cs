@@ -18,13 +18,13 @@ namespace Logitar.Identity.Realms;
 public class RealmAggregate : AggregateRoot
 {
   /// <summary>
-  /// The external authentication provider configurations of the realm.
-  /// </summary>
-  private Dictionary<ExternalProvider, ExternalProviderConfiguration> _externalProviders = new();
-  /// <summary>
   /// The custom attributes of the realm.
   /// </summary>
   private Dictionary<string, string> _customAttributes = new();
+  /// <summary>
+  /// The external authentication provider configurations of the realm.
+  /// </summary>
+  private readonly Dictionary<ExternalProvider, ExternalProviderConfiguration> _externalProviders = new();
 
   /// <summary>
   /// Initializes a new instance of the <see cref="RealmAggregate"/> using the specified aggregate identifier.
@@ -53,9 +53,15 @@ public class RealmAggregate : AggregateRoot
   public RealmAggregate(AggregateId actorId, string uniqueName, string? displayName = null, string? description = null,
     CultureInfo? defaultLocale = null, string? url = null, bool requireConfirmedAccount = false, bool requireUniqueEmail = false,
     ReadOnlyUsernameSettings? usernameSettings = null, ReadOnlyPasswordSettings? passwordSettings = null, string? jwtSecret = null,
-    Dictionary<ExternalProvider, ExternalProviderConfiguration>? externalProviders = null,
-    Dictionary<string, string>? customAttributes = null) : base()
+    Dictionary<string, string>? customAttributes = null, Dictionary<ExternalProvider, ExternalProviderConfiguration>? externalProviders = null) : base()
   {
+    externalProviders ??= new();
+    ReadOnlyGoogleOAuth2Configuration? googleOAuth2Configuration = null;
+    if (externalProviders.TryGetValue(ExternalProvider.GoogleOAuth2, out ExternalProviderConfiguration? configuration))
+    {
+      googleOAuth2Configuration = (ReadOnlyGoogleOAuth2Configuration)configuration;
+    }
+
     RealmCreatedEvent e = new()
     {
       ActorId = actorId,
@@ -69,8 +75,8 @@ public class RealmAggregate : AggregateRoot
       UsernameSettings = usernameSettings ?? new(),
       PasswordSettings = passwordSettings ?? new(),
       JwtSecret = jwtSecret ?? GenerateJwtSecret(),
-      ExternalProviders = externalProviders ?? new(),
-      CustomAttributes = customAttributes ?? new()
+      CustomAttributes = customAttributes ?? new(),
+      GoogleOAuth2Configuration = googleOAuth2Configuration
     };
     new RealmCreatedValidator().ValidateAndThrow(e);
 
@@ -154,7 +160,11 @@ public class RealmAggregate : AggregateRoot
 
     JwtSecret = e.JwtSecret;
 
-    _externalProviders = e.ExternalProviders;
+    _externalProviders.Clear();
+    if (e.GoogleOAuth2Configuration != null)
+    {
+      _externalProviders[ExternalProvider.GoogleOAuth2] = e.GoogleOAuth2Configuration;
+    }
 
     _customAttributes = e.CustomAttributes;
   }
@@ -195,9 +205,16 @@ public class RealmAggregate : AggregateRoot
   /// <param name="customAttributes">The custom attributes of the realm.</param>
   public void Update(AggregateId actorId, string? displayName, string? description, CultureInfo? defaultLocale,
     string? url, bool requireConfirmedAccount, bool requireUniqueEmail, ReadOnlyUsernameSettings? usernameSettings,
-    ReadOnlyPasswordSettings? passwordSettings, string? jwtSecret, Dictionary<ExternalProvider, ExternalProviderConfiguration>? externalProviders,
-    Dictionary<string, string>? customAttributes)
+    ReadOnlyPasswordSettings? passwordSettings, string? jwtSecret, Dictionary<string, string>? customAttributes,
+    Dictionary<ExternalProvider, ExternalProviderConfiguration>? externalProviders)
   {
+    externalProviders ??= new();
+    ReadOnlyGoogleOAuth2Configuration? googleOAuth2Configuration = null;
+    if (externalProviders.TryGetValue(ExternalProvider.GoogleOAuth2, out ExternalProviderConfiguration? configuration))
+    {
+      googleOAuth2Configuration = (ReadOnlyGoogleOAuth2Configuration)configuration;
+    }
+
     RealmUpdatedEvent e = new()
     {
       ActorId = actorId,
@@ -210,8 +227,8 @@ public class RealmAggregate : AggregateRoot
       UsernameSettings = usernameSettings ?? new(),
       PasswordSettings = passwordSettings ?? new(),
       JwtSecret = jwtSecret ?? GenerateJwtSecret(),
-      ExternalProviders = externalProviders ?? new(),
-      CustomAttributes = customAttributes ?? new()
+      CustomAttributes = customAttributes ?? new(),
+      GoogleOAuth2Configuration = googleOAuth2Configuration
     };
     new RealmUpdatedValidator().ValidateAndThrow(e);
 
@@ -237,7 +254,11 @@ public class RealmAggregate : AggregateRoot
 
     JwtSecret = e.JwtSecret;
 
-    _externalProviders = e.ExternalProviders;
+    _externalProviders.Clear();
+    if (e.GoogleOAuth2Configuration != null)
+    {
+      _externalProviders[ExternalProvider.GoogleOAuth2] = e.GoogleOAuth2Configuration;
+    }
 
     _customAttributes = e.CustomAttributes;
   }
