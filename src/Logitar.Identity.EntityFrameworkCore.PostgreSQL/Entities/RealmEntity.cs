@@ -29,9 +29,9 @@ internal class RealmEntity : AggregateEntity
 
     JwtSecret = e.JwtSecret;
 
-    ExternalProviders = e.ExternalProviders.Any() ? JsonSerializer.Serialize(e.ExternalProviders) : null;
-
     CustomAttributes = e.CustomAttributes.Any() ? JsonSerializer.Serialize(e.CustomAttributes) : null;
+
+    GoogleOAuth2Configuration = e.GoogleOAuth2Configuration == null ? null : JsonSerializer.Serialize(e.GoogleOAuth2Configuration);
   }
   /// <summary>
   /// Initializes a new instance of the <see cref="RealmEntity"/> class.
@@ -100,14 +100,14 @@ internal class RealmEntity : AggregateEntity
   public string JwtSecret { get; private set; } = string.Empty;
 
   /// <summary>
-  /// Gets the external authentication provider configurations of the realm.
-  /// </summary>
-  public string? ExternalProviders { get; private set; } = string.Empty;
-
-  /// <summary>
   /// Gets the custom attributes of the realm.
   /// </summary>
   public string? CustomAttributes { get; private set; }
+
+  /// <summary>
+  /// Gets the Google OAuth 2.0 provider authentication configuration.
+  /// </summary>
+  public string? GoogleOAuth2Configuration { get; private set; }
 
   /// <summary>
   /// Gets the list of roles in this realm.
@@ -136,8 +136,8 @@ internal class RealmEntity : AggregateEntity
 
     JwtSecret = e.JwtSecret;
 
-    ExternalProviders = e.ExternalProviders.Any() ? JsonSerializer.Serialize(e.ExternalProviders) : null;
-
     CustomAttributes = e.CustomAttributes.Any() ? JsonSerializer.Serialize(e.CustomAttributes) : null;
+
+    GoogleOAuth2Configuration = e.GoogleOAuth2Configuration == null ? null : JsonSerializer.Serialize(e.GoogleOAuth2Configuration);
   }
 }

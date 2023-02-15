@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Logitar.EventSourcing;
-using Logitar.Identity.Accounts;
 using Logitar.Identity.EntityFrameworkCore.PostgreSQL.Entities;
 using Logitar.Identity.Realms;
 using System.Text.Json;
@@ -13,11 +12,6 @@ namespace Logitar.Identity.EntityFrameworkCore.PostgreSQL.Profiles;
 internal class RealmProfile : Profile
 {
   /// <summary>
-  /// The key used to cache external provider configurations in the mapping context items.
-  /// </summary>
-  private const string ExternalProvidersKey = "ExternalProviders";
-
-  /// <summary>
   /// Initializes a new instance of the <see cref="RealmProfile"/> class.
   /// </summary>
   public RealmProfile()
@@ -29,6 +23,7 @@ internal class RealmProfile : Profile
       .ForMember(x => x.PasswordSettings, x => x.MapFrom(GetPasswordSettings))
       .ForMember(x => x.GoogleOAuth2Configuration, x => x.MapFrom(GetGoogleOAuth2Configuration))
       .ForMember(x => x.CustomAttributes, x => x.MapFrom(GetCustomAttributes));
+    CreateMap<ReadOnlyGoogleOAuth2Configuration, GoogleOAuth2Configuration>();
   }
 
   /// <summary>
@@ -86,47 +81,20 @@ internal class RealmProfile : Profile
   /// </summary>
   /// <param name="entity">The realm entity.</param>
   /// <param name="realm">The realm output model.</param>
-  /// <param name="member">The source member.</param>
+  /// <param name="member">The source memberl.</param>
   /// <param name="context">The mapping context.</param>
   /// <returns>The Google OAuth 2.0 configuration.</returns>
-  /// <exception cref="InvalidOperationException">The external provider configuration type was incorrect.</exception>
+  /// <exception cref="InvalidOperationException">The external provider configuration could not be deserialized.</exception>
   private static GoogleOAuth2Configuration? GetGoogleOAuth2Configuration(RealmEntity entity, Realm realm, GoogleOAuth2Configuration? member, ResolutionContext context)
   {
-    Dictionary<ExternalProvider, ExternalProviderConfiguration> externalProviders = GetExternalPoviders(entity, context);
-
-    if (externalProviders.TryGetValue(ExternalProvider.GoogleOAuth2, out ExternalProviderConfiguration? configuration))
+    if (entity.GoogleOAuth2Configuration == null)
     {
-      return configuration is ReadOnlyGoogleOAuth2Configuration googleConfiguration
-        ? new GoogleOAuth2Configuration
-        {
-          ClientId = googleConfiguration.ClientId
-        }
-        : throw new InvalidOperationException("The GoogleOAuth2 configuration was not of type ReadOnlyGoogleOAuth2Configuration.");
+      return null;
     }
 
-    return null;
-  }
+    ReadOnlyGoogleOAuth2Configuration googleOAuth2Configuration = JsonSerializer.Deserialize<ReadOnlyGoogleOAuth2Configuration>(entity.GoogleOAuth2Configuration)
+      ?? throw new InvalidOperationException($"The Google OAuth 2.0 provider authentication configuration could not be deserialized on realm 'Id={entity.RealmId}'.");
 
-  /// <summary>
-  /// Retrieves the cached, deserialized external provider configurations from the specified realm entity and mapping context.
-  /// </summary>
-  /// <param name="entity">The realm entity.</param>
-  /// <param name="context">The mapping context.</param>
-  /// <returns>The external provider configurations.</returns>
-  /// <exception cref="InvalidOperationException">The external provider configurations could not be deserialized.</exception>
-  private static Dictionary<ExternalProvider, ExternalProviderConfiguration> GetExternalPoviders(RealmEntity entity, ResolutionContext context)
-  {
-    if (!context.Items.TryGetValue(ExternalProvidersKey, out object? value) || value == null
-      || value is not Dictionary<ExternalProvider, ExternalProviderConfiguration> externalProviders)
-    {
-      externalProviders = entity.ExternalProviders == null
-        ? new Dictionary<ExternalProvider, ExternalProviderConfiguration>()
-        : (JsonSerializer.Deserialize<Dictionary<ExternalProvider, ExternalProviderConfiguration>>(entity.ExternalProviders)
-          ?? throw new InvalidOperationException($"The external providers could not be deserialized on realm 'Id={entity.RealmId}'."));
-
-      context.Items[ExternalProvidersKey] = externalProviders;
-    }
-
-    return externalProviders;
+    return context.Mapper.Map<GoogleOAuth2Configuration>(googleOAuth2Configuration);
   }
 }

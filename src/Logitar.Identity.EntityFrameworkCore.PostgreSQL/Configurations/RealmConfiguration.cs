@@ -32,7 +32,7 @@ internal class RealmConfiguration : AggregateConfiguration<RealmEntity>, IEntity
     builder.Property(x => x.RequireUniqueEmail).HasDefaultValue(false);
     builder.Property(x => x.UsernameSettings).HasColumnType("jsonb");
     builder.Property(x => x.PasswordSettings).HasColumnType("jsonb");
-    builder.Property(x => x.ExternalProviders).HasColumnType("jsonb");
     builder.Property(x => x.CustomAttributes).HasColumnType("jsonb");
+    builder.Property(x => x.GoogleOAuth2Configuration).HasColumnType("jsonb");
   }
 }

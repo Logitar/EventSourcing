@@ -62,7 +62,7 @@ internal class UpdateRealmCommandHandler : IRequestHandler<UpdateRealmCommand, R
 
     realm.Update(_identityContext.ActorId, input.DisplayName, input.Description, defaultLocale, input.Url,
       input.RequireConfirmedAccount, input.RequireUniqueEmail, usernameSettings, passwordSettings,
-      input.JwtSecret, externalProviders, customAttributes);
+      input.JwtSecret, customAttributes, externalProviders);
 
     await _eventStore.SaveAsync(realm, cancellationToken);
 
