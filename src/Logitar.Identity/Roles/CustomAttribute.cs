@@ -1,7 +1,7 @@
-﻿namespace Logitar.Identity.Realms;
+﻿namespace Logitar.Identity.Roles;
 
 /// <summary>
-/// Represents a custom attribute defined on a realm to extend its basic properties.
+/// Represents a custom attribute defined on a role to extend its basic properties.
 /// </summary>
 public record CustomAttribute
 {

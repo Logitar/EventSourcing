@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Logitar.Identity.Realms;
+namespace Logitar.Identity;
 
 /// <summary>
 /// The exception thrown when an unique name is already used.

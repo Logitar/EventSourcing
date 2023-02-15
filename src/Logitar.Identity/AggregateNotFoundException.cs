@@ -13,10 +13,17 @@ public class AggregateNotFoundException : Exception
   /// </summary>
   /// <param name="type">The type of the aggregate.</param>
   /// <param name="id">The identifier of the aggregate.</param>
-  public AggregateNotFoundException(Type type, AggregateId id) : base(GetMessage(type, id))
+  /// <param name="paramName">The name of the identifier parameter.</param>
+  public AggregateNotFoundException(Type type, AggregateId id, string? paramName = null)
+    : base(GetMessage(type, id, paramName))
   {
     Data["Type"] = type.GetName();
     Data["Id"] = id;
+
+    if (paramName != null)
+    {
+      Data["ParamName"] = paramName;
+    }
   }
 
   /// <summary>
@@ -24,14 +31,20 @@ public class AggregateNotFoundException : Exception
   /// </summary>
   /// <param name="type">The type of the aggregate.</param>
   /// <param name="id">The identifier of the aggregate.</param>
+  /// <param name="paramName">The name of the identifier parameter.</param>
   /// <returns>The exception message.</returns>
-  private static string GetMessage(Type type, AggregateId id)
+  private static string GetMessage(Type type, AggregateId id, string? paramName)
   {
     StringBuilder message = new();
 
     message.AppendLine("The specified aggregate could not be found.");
     message.AppendLine($"Type: {type.GetName()}");
     message.AppendLine($"Id: {id}");
+
+    if (paramName != null)
+    {
+      message.AppendLine($"ParamName: {paramName}");
+    }
 
     return message.ToString();
   }
@@ -47,7 +60,8 @@ public class AggregateNotFoundException<T> : AggregateNotFoundException where T 
   /// Initializes a new instance of the <see cref="AggregateNotFoundException{T}"/> class.
   /// </summary>
   /// <param name="id">The identifier of the aggregate.</param>
-  public AggregateNotFoundException(AggregateId id) : base(typeof(T), id)
+  /// <param name="paramName">The name of the identifier parameter.</param>
+  public AggregateNotFoundException(AggregateId id, string? paramName = null) : base(typeof(T), id, paramName)
   {
   }
 }
