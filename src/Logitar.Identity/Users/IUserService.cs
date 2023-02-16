@@ -56,4 +56,12 @@ public interface IUserService
   /// <returns>The list of users, or empty if none found.</returns>
   Task<PagedList<User>> GetAsync(bool? isDisabled = null, string? realm = null, string? search = null,
     UserSort? sort = null, bool isDescending = false, int? skip = null, int? take = null, CancellationToken cancellationToken = default);
+  /// <summary>
+  /// Updates an user.
+  /// </summary>
+  /// <param name="id">The identifier of the user.</param>
+  /// <param name="input">The input update arguments.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The updated user.</returns>
+  Task<User> UpdateAsync(Guid id, UpdateUserInput input, CancellationToken cancellationToken = default);
 }

@@ -7,9 +7,9 @@ using System.Globalization;
 namespace Logitar.Identity.Users.Commands;
 
 /// <summary>
-/// The handler for <see cref="CreateUserCommand"/> commands.
+/// The handler for <see cref="UpdateUserCommand"/> commands.
 /// </summary>
-internal class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, User>
+internal class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, User>
 {
   /// <summary>
   /// The event store.
@@ -31,33 +31,26 @@ internal class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Use
   /// The user querier.
   /// </summary>
   private readonly IUserQuerier _userQuerier;
-  /// <summary>
-  /// The user repository.
-  /// </summary>
-  private readonly IUserRepository _userRepository;
 
   /// <summary>
-  /// Initializes a new instance of the <see cref="CreateUserCommandHandler"/> class using the specified arguments.
+  /// Initializes a new instance of the <see cref="UpdateUserCommandHandler"/> class using the specified arguments.
   /// </summary>
   /// <param name="eventStore">The event store.</param>
   /// <param name="identityContext">The identity context.</param>
   /// <param name="passwordService">The password service.</param>
   /// <param name="userHelper">The user helper.</param>
   /// <param name="userQuerier">The user querier.</param>
-  /// <param name="userRepository">The user repository.</param>
-  public CreateUserCommandHandler(IEventStore eventStore,
+  public UpdateUserCommandHandler(IEventStore eventStore,
     IIdentityContext identityContext,
     IPasswordService passwordService,
     IUserHelper userHelper,
-    IUserQuerier userQuerier,
-    IUserRepository userRepository)
+    IUserQuerier userQuerier)
   {
     _eventStore = eventStore;
     _identityContext = identityContext;
     _passwordService = passwordService;
     _userHelper = userHelper;
     _userQuerier = userQuerier;
-    _userRepository = userRepository;
   }
 
   /// <summary>
@@ -65,32 +58,28 @@ internal class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Use
   /// </summary>
   /// <param name="command">The command to handle.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
-  /// <returns>The created user.</returns>
-  /// /// <exception cref="AggregateNotFoundException">The specified realm could not be found.</exception>
-  /// <exception cref="UniqueNameAlreadyUsedException">The specified unique name is already used.</exception>
-  /// <exception cref="InvalidOperationException">The user output could not be found.</exception>
-  public async Task<User> Handle(CreateUserCommand command, CancellationToken cancellationToken)
+  /// <returns>The updated user.</returns>
+  /// <exception cref="AggregateNotFoundException{UserAggregate}">The specified user could not be found.</exception>
+  /// <exception cref="InvalidOperationException">The user's realm or user output could not be found.</exception>
+  public async Task<User> Handle(UpdateUserCommand command, CancellationToken cancellationToken)
   {
-    CreateUserInput input = command.Input;
+    AggregateId id = new(command.Id);
+    UserAggregate user = await _eventStore.LoadAsync<UserAggregate>(id, cancellationToken)
+      ?? throw new AggregateNotFoundException<UserAggregate>(id);
+    RealmAggregate realm = await _eventStore.LoadAsync<RealmAggregate>(user.RealmId, cancellationToken)
+      ?? throw new InvalidOperationException($"The realm 'Id={user.RealmId}' could not be found.");
 
-    AggregateId realmId = new(input.RealmId);
-    RealmAggregate realm = await _eventStore.LoadAsync<RealmAggregate>(realmId, cancellationToken)
-      ?? throw new AggregateNotFoundException<RealmAggregate>(realmId, nameof(input.RealmId));
+    UpdateUserInput input = command.Input;
 
-    if (await _userRepository.LoadAsync(realm, input.Username, cancellationToken) != null)
-    {
-      throw new UniqueNameAlreadyUsedException(input.Username, nameof(input.Username));
-    }
-
-    string? passwordHash = input.Password == null ? null : _passwordService.ValidateAndHash(realm, input.Password);
     Gender? gender = input.Gender == null ? null : new Gender(input.Gender);
     CultureInfo? locale = input.Locale?.GetCultureInfo();
+    string? passwordHash = input.Password == null ? null : _passwordService.ValidateAndHash(realm, input.Password);
     Dictionary<string, string>? customAttributes = input.CustomAttributes?.ToDictionary();
     IEnumerable<RoleAggregate>? roles = await _userHelper.GetRolesAsync(realm, input, cancellationToken);
 
-    UserAggregate user = new(_identityContext.ActorId, realm, input.Username, passwordHash,
-      input.FirstName, input.MiddleName, input.LastName, input.Nickname, input.Birthdate, gender,
-      locale, input.TimeZone, input.Picture, input.Profile, input.Website, customAttributes, roles);
+    user.Update(_identityContext.ActorId, passwordHash, input.FirstName, input.MiddleName, input.LastName,
+      input.Nickname, input.Birthdate, gender, locale, input.TimeZone, input.Picture, input.Profile,
+      input.Website, customAttributes, roles);
 
     await _eventStore.SaveAsync(user, cancellationToken);
 

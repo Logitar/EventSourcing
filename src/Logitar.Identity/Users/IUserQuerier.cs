@@ -24,15 +24,15 @@ public interface IUserQuerier
   /// <summary>
   /// Retrieves a user by its realm and unique name.
   /// </summary>
-  /// <param name="realmId">The identifier of the realm in which to search the unique name.</param>
+  /// <param name="realm">The identifier or unique name of the realm in which to search the unique name.</param>
   /// <param name="username">The unique name.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The user or null if not found.</returns>
-  Task<User?> GetAsync(Guid realmId, string username, CancellationToken cancellationToken = default);
+  Task<User?> GetAsync(string realm, string username, CancellationToken cancellationToken = default);
   /// <summary>
   /// Retrieves a list of users using the specified filters, sorting and paging arguments.
   /// </summary>
-  /// <param name="realmId">The identifier of the realm to filter by.</param>
+  /// <param name="realm">The identifier or unique name of the realm to filter by.</param>
   /// <param name="search">The text to search.</param>
   /// <param name="sort">The sort value.</param>
   /// <param name="isDescending">If true, the sort will be inverted.</param>
@@ -40,6 +40,6 @@ public interface IUserQuerier
   /// <param name="take">The number of users to return.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The list of users, or empty if none found.</returns>
-  Task<PagedList<User>> GetAsync(Guid? realmId = null, string? search = null, UserSort? sort = null, bool isDescending = false,
+  Task<PagedList<User>> GetAsync(string? realm = null, string? search = null, UserSort? sort = null, bool isDescending = false,
     int? skip = null, int? take = null, CancellationToken cancellationToken = default);
 }

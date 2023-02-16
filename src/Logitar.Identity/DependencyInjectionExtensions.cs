@@ -22,7 +22,8 @@ public static class DependencyInjectionExtensions
 
     return services
       .AddFacades()
-      .AddMediatR(config => config.RegisterServicesFromAssembly(assembly));
+      .AddMediatR(config => config.RegisterServicesFromAssembly(assembly))
+      .AddTransient<IUserHelper, UserHelper>();
   }
 
   /// <summary>

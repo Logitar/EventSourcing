@@ -1,4 +1,5 @@
 ﻿using Logitar.Identity.Users.Commands;
+using Logitar.Identity.Users.Queries;
 
 namespace Logitar.Identity.Users;
 
@@ -75,9 +76,7 @@ internal class UserService : IUserService
   /// <returns>The user, or null if not found.</returns>
   public async Task<User?> GetAsync(Guid? id, string? realm, string? username, CancellationToken cancellationToken)
   {
-    //return await _requestPipeline.ExecuteAsync(new GetUserQuery(id, realm, username), cancellationToken);
-
-    throw new NotImplementedException(); // TODO(fpion): implement
+    return await _requestPipeline.ExecuteAsync(new GetUserQuery(id, realm, username), cancellationToken);
   }
 
   /// <summary>
@@ -95,9 +94,19 @@ internal class UserService : IUserService
   public async Task<PagedList<User>> GetAsync(bool? isDisabled, string? realm, string? search,
     UserSort? sort, bool isDescending, int? skip, int? take, CancellationToken cancellationToken)
   {
-    //return await _requestPipeline.ExecuteAsync(new GetUsersQuery(isDisabled, realm, search,
-    //  sort, isDescending, skip, take), cancellationToken);
+    return await _requestPipeline.ExecuteAsync(new GetUsersQuery(isDisabled, realm, search,
+      sort, isDescending, skip, take), cancellationToken);
+  }
 
-    throw new NotImplementedException(); // TODO(fpion): implement
+  /// <summary>
+  /// Updates an user.
+  /// </summary>
+  /// <param name="id">The identifier of the user.</param>
+  /// <param name="input">The input update arguments.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The updated user.</returns>
+  public async Task<User> UpdateAsync(Guid id, UpdateUserInput input, CancellationToken cancellationToken)
+  {
+    return await _requestPipeline.ExecuteAsync(new UpdateUserCommand(id, input), cancellationToken);
   }
 }

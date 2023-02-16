@@ -42,7 +42,7 @@ public class UserAggregate : AggregateRoot
   /// <param name="actorId">The identifier of the actor creating the user.</param>
   /// <param name="realm">The realm in which the user belongs.</param>
   /// <param name="username">The unique name of the user.</param>
-  /// <param name="password">The salted and hashed password of the user.</param>
+  /// <param name="passwordHash">The salted and hashed password of the user.</param>
   /// <param name="firstName">The first name(s) or given name(s) of the user.</param>
   /// <param name="middleName">The middle name(s) of the user.</param>
   /// <param name="lastName">The last name(s) or surname(s) of the user.</param>
@@ -56,7 +56,7 @@ public class UserAggregate : AggregateRoot
   /// <param name="website">The link (URL) to the website of the user.</param>
   /// <param name="customAttributes">The custom attributes of the user.</param>
   /// <param name="roles">The roles of the user.</param>
-  public UserAggregate(AggregateId actorId, RealmAggregate realm, string username, string? password = null,
+  public UserAggregate(AggregateId actorId, RealmAggregate realm, string username, string? passwordHash = null,
     string? firstName = null, string? middleName = null, string? lastName = null, string? nickname = null,
     DateTime? birthdate = null, Gender? gender = null, CultureInfo? locale = null, string? timeZone = null,
     string? picture = null, string? profile = null, string? website = null, Dictionary<string, string>? customAttributes = null,
@@ -67,7 +67,7 @@ public class UserAggregate : AggregateRoot
       ActorId = actorId,
       RealmId = realm.Id,
       Username = username.Trim(),
-      PasswordHash = password,
+      PasswordHash = passwordHash,
       FirstName = firstName?.CleanTrim(),
       MiddleName = middleName?.CleanTrim(),
       LastName = lastName?.CleanTrim(),
@@ -305,6 +305,84 @@ public class UserAggregate : AggregateRoot
   protected virtual void Apply(UserEnabledEvent e)
   {
     IsDisabled = false;
+  }
+
+  /// <summary>
+  /// Updates the user.
+  /// </summary>
+  /// <param name="actorId">The identifier of the actor creating the user.</param>
+  /// <param name="passwordHash">The salted and hashed password of the user. If null, the password won't be changed.</param>
+  /// <param name="firstName">The first name(s) or given name(s) of the user.</param>
+  /// <param name="middleName">The middle name(s) of the user.</param>
+  /// <param name="lastName">The last name(s) or surname(s) of the user.</param>
+  /// <param name="nickname">The nickname(s) or casual name(s) of the user.</param>
+  /// <param name="birthdate">The birthdate of the user.</param>
+  /// <param name="gender">The gender of the user.</param>
+  /// <param name="locale">The locale of the user.</param>
+  /// <param name="timeZone">The time zone of the user. It should match the name of a time zone in the tz database.</param>
+  /// <param name="picture">The link (URL) to the picture of the user.</param>
+  /// <param name="profile">The link (URL) to the profile of the user.</param>
+  /// <param name="website">The link (URL) to the website of the user.</param>
+  /// <param name="customAttributes">The custom attributes of the user.</param>
+  /// <param name="roles">The roles of the user.</param>
+  public void Update(AggregateId actorId, string? passwordHash = null, string? firstName = null,
+    string? middleName = null, string? lastName = null, string? nickname = null, DateTime? birthdate = null,
+    Gender? gender = null, CultureInfo? locale = null, string? timeZone = null, string? picture = null,
+    string? profile = null, string? website = null, Dictionary<string, string>? customAttributes = null,
+    IEnumerable<RoleAggregate>? roles = null)
+  {
+    UserUpdatedEvent e = new()
+    {
+      ActorId = actorId,
+      PasswordHash = passwordHash,
+      FirstName = firstName?.CleanTrim(),
+      MiddleName = middleName?.CleanTrim(),
+      LastName = lastName?.CleanTrim(),
+      FullName = GetFullName(firstName, middleName, lastName),
+      Nickname = nickname?.CleanTrim(),
+      Birthdate = birthdate,
+      Gender = gender,
+      Locale = locale,
+      TimeZone = timeZone?.CleanTrim(),
+      Picture = picture?.CleanTrim(),
+      Profile = profile?.CleanTrim(),
+      Website = website?.CleanTrim(),
+      CustomAttributes = customAttributes ?? new(),
+      Roles = roles?.Select(role => role.Id) ?? Enumerable.Empty<AggregateId>()
+    };
+    new UserUpdatedValidator().ValidateAndThrow(e);
+
+    ApplyChange(e);
+  }
+  /// <summary>
+  /// Applies the specified event to the user.
+  /// </summary>
+  /// <param name="e">The domain event.</param>
+  protected virtual void Apply(UserUpdatedEvent e)
+  {
+    PasswordHash = e.PasswordHash;
+
+    FirstName = e.FirstName;
+    MiddleName = e.MiddleName;
+    LastName = e.LastName;
+    FullName = e.FullName;
+    Nickname = e.Nickname;
+
+    Birthdate = e.Birthdate;
+    Gender = e.Gender;
+
+    Locale = e.Locale;
+    TimeZone = e.TimeZone;
+
+    Picture = e.Picture;
+    Profile = e.Profile;
+    Website = e.Website;
+
+    _customAttributes.Clear();
+    _customAttributes.AddRange(e.CustomAttributes);
+
+    _roles.Clear();
+    _roles.AddRange(e.Roles);
   }
 
   /// <summary>
