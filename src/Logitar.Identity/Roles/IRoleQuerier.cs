@@ -24,15 +24,15 @@ public interface IRoleQuerier
   /// <summary>
   /// Retrieves a role by its realm and unique name.
   /// </summary>
-  /// <param name="realmId">The identifier of the realm in which to search the unique name.</param>
+  /// <param name="realm">The identifier or unique name of the realm in which to search the unique name.</param>
   /// <param name="uniqueName">The unique name.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The role or null if not found.</returns>
-  Task<Role?> GetAsync(Guid realmId, string uniqueName, CancellationToken cancellationToken = default);
+  Task<Role?> GetAsync(string realm, string uniqueName, CancellationToken cancellationToken = default);
   /// <summary>
   /// Retrieves a list of roles using the specified filters, sorting and paging arguments.
   /// </summary>
-  /// <param name="realmId">The identifier of the realm to filter by.</param>
+  /// <param name="realm">The identifier or unique name of the realm to filter by.</param>
   /// <param name="search">The text to search.</param>
   /// <param name="sort">The sort value.</param>
   /// <param name="isDescending">If true, the sort will be inverted.</param>
@@ -40,6 +40,6 @@ public interface IRoleQuerier
   /// <param name="take">The number of roles to return.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The list of roles, or empty if none found.</returns>
-  Task<PagedList<Role>> GetAsync(Guid? realmId = null, string? search = null, RoleSort? sort = null, bool isDescending = false,
+  Task<PagedList<Role>> GetAsync(string? realm = null, string? search = null, RoleSort? sort = null, bool isDescending = false,
     int? skip = null, int? take = null, CancellationToken cancellationToken = default);
 }

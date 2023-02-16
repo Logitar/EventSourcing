@@ -1,7 +1,7 @@
 ﻿namespace Logitar.EventSourcing;
 
 /// <summary>
-/// Provides extension methods for the <see cref="List{T}"/> class.
+/// Provides extension methods for <see cref="List{T}"/> classes.
 /// </summary>
 public static class ListExtensions
 {
@@ -11,7 +11,7 @@ public static class ListExtensions
   /// <typeparam name="T">The type of the list items</typeparam>
   /// <param name="list">The list</param>
   /// <param name="item">The item</param>
-  public static void AddIfNotNull<T>(this List<T> list, T? item)
+  public static void AddIfNotNull<T>(this ICollection<T> list, T? item)
   {
     if (item != null)
     {

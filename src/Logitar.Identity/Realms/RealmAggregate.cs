@@ -20,14 +20,14 @@ public class RealmAggregate : AggregateRoot
   /// <summary>
   /// The custom attributes of the realm.
   /// </summary>
-  private Dictionary<string, string> _customAttributes = new();
+  private readonly Dictionary<string, string> _customAttributes = new();
   /// <summary>
   /// The external authentication provider configurations of the realm.
   /// </summary>
   private readonly Dictionary<ExternalProvider, ExternalProviderConfiguration> _externalProviders = new();
 
   /// <summary>
-  /// Initializes a new instance of the <see cref="RealmAggregate"/> using the specified aggregate identifier.
+  /// Initializes a new instance of the <see cref="RealmAggregate"/> class using the specified aggregate identifier.
   /// </summary>
   /// <param name="id">The aggregate identifier.</param>
   public RealmAggregate(AggregateId id) : base(id)
@@ -139,6 +139,8 @@ public class RealmAggregate : AggregateRoot
   /// </summary>
   public IReadOnlyDictionary<string, string> CustomAttributes => _customAttributes.AsReadOnly();
 
+  // TODO(fpion): User.CustomAttributes claim mapping (ClaimType, ClaimValueType)
+
   /// <summary>
   /// Applies the specified event to the realm.
   /// </summary>
@@ -166,7 +168,8 @@ public class RealmAggregate : AggregateRoot
       _externalProviders[ExternalProvider.GoogleOAuth2] = e.GoogleOAuth2Configuration;
     }
 
-    _customAttributes = e.CustomAttributes;
+    _customAttributes.Clear();
+    _customAttributes.AddRange(e.CustomAttributes);
   }
 
   /// <summary>
@@ -260,7 +263,8 @@ public class RealmAggregate : AggregateRoot
       _externalProviders[ExternalProvider.GoogleOAuth2] = e.GoogleOAuth2Configuration;
     }
 
-    _customAttributes = e.CustomAttributes;
+    _customAttributes.Clear();
+    _customAttributes.AddRange(e.CustomAttributes);
   }
 
   /// <summary>

@@ -19,7 +19,8 @@ internal class RoleUpdatedValidator : AbstractValidator<RoleUpdatedEvent>
     RuleFor(x => x.Description).NullOrNotEmpty();
 
     RuleForEach(x => x.CustomAttributes.Keys).NotEmpty()
-      .MaximumLength(byte.MaxValue);
+      .MaximumLength(byte.MaxValue)
+      .Identifier();
     RuleForEach(x => x.CustomAttributes.Values).NotEmpty();
   }
 }

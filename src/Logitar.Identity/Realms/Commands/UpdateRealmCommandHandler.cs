@@ -58,7 +58,7 @@ internal class UpdateRealmCommandHandler : IRequestHandler<UpdateRealmCommand, R
     ReadOnlyUsernameSettings? usernameSettings = input.UsernameSettings == null ? null : new(input.UsernameSettings);
     ReadOnlyPasswordSettings? passwordSettings = input.PasswordSettings == null ? null : new(input.PasswordSettings);
     Dictionary<ExternalProvider, ExternalProviderConfiguration> externalProviders = RealmHelper.GetExternalProviders(input.GoogleOAuth2Configuration);
-    Dictionary<string, string>? customAttributes = RealmHelper.GetCustomAttributes(input.CustomAttributes);
+    Dictionary<string, string>? customAttributes = input.CustomAttributes?.ToDictionary();
 
     realm.Update(_identityContext.ActorId, input.DisplayName, input.Description, defaultLocale, input.Url,
       input.RequireConfirmedAccount, input.RequireUniqueEmail, usernameSettings, passwordSettings,

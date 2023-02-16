@@ -29,7 +29,7 @@ internal class GetRolesQueryHandler : IRequestHandler<GetRolesQuery, PagedList<R
   /// <returns>The list of roles, or a empty collection.</returns>
   public async Task<PagedList<Role>> Handle(GetRolesQuery request, CancellationToken cancellationToken)
   {
-    return await _roleQuerier.GetAsync(request.RealmId, request.Search, request.Sort, request.IsDescending,
+    return await _roleQuerier.GetAsync(request.Realm, request.Search, request.Sort, request.IsDescending,
       request.Skip, request.Take, cancellationToken);
   }
 }

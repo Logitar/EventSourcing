@@ -8,27 +8,6 @@ namespace Logitar.Identity.Realms;
 internal static class RealmHelper
 {
   /// <summary>
-  /// Converts the specified list of custom attributes to a dictionary of custom attributes.
-  /// </summary>
-  /// <param name="customAttributes">The list of custom attributes.</param>
-  /// <returns>The dictionary of custom attributes.</returns>
-  public static Dictionary<string, string>? GetCustomAttributes(IEnumerable<CustomAttribute>? customAttributes)
-  {
-    if (customAttributes == null)
-    {
-      return null;
-    }
-
-    Dictionary<string, string> dictionary = new(capacity: customAttributes.Count());
-    foreach (CustomAttribute customAttribute in customAttributes)
-    {
-      dictionary[customAttribute.Key] = customAttribute.Value;
-    }
-
-    return dictionary;
-  }
-
-  /// <summary>
   /// Converts the specified external provider configurations to read-only configurations.
   /// </summary>
   /// <param name="googleOAuth2Configuration">The Google OAuth 2.0 configuration.</param>

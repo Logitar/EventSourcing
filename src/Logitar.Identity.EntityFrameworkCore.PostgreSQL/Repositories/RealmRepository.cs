@@ -21,16 +21,6 @@ internal class RealmRepository : EventStore, IRealmRepository
   }
 
   /// <summary>
-  /// Retrieves a realm by its identifier.
-  /// </summary>
-  /// <param name="id">The identifier of the realm.</param>
-  /// <param name="cancellationToken">The cancellation token.</param>
-  /// <returns>The realm or null if not found.</returns>
-  public async Task<RealmAggregate?> LoadAsync(AggregateId id, CancellationToken cancellationToken)
-  {
-    return await LoadAsync<RealmAggregate>(id, cancellationToken);
-  }
-  /// <summary>
   /// Retrieves a realm by its unique name.
   /// </summary>
   /// <param name="uniqueName">The unique name of the realm.</param>
@@ -46,16 +36,5 @@ internal class RealmRepository : EventStore, IRealmRepository
       .ToArrayAsync(cancellationToken);
 
     return Load<RealmAggregate>(events);
-  }
-
-  /// <summary>
-  /// Saves the specified realm in the event store.
-  /// </summary>
-  /// <param name="realm">The realm to save.</param>
-  /// <param name="cancellationToken">The cancellation token.</param>
-  /// <returns>The asynchronous operation.</returns>
-  public async Task SaveAsync(RealmAggregate realm, CancellationToken cancellationToken)
-  {
-    await base.SaveAsync(realm, cancellationToken);
   }
 }

@@ -1,6 +1,6 @@
 ﻿using Logitar.Identity.Realms;
 using Logitar.Identity.Roles;
-using MediatR;
+using Logitar.Identity.Users;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -22,7 +22,7 @@ public static class DependencyInjectionExtensions
 
     return services
       .AddFacades()
-      .AddMediatR(assembly);
+      .AddMediatR(config => config.RegisterServicesFromAssembly(assembly));
   }
 
   /// <summary>
@@ -34,6 +34,7 @@ public static class DependencyInjectionExtensions
   {
     return services
       .AddTransient<IRealmService, RealmService>()
-      .AddTransient<IRoleService, RoleService>();
+      .AddTransient<IRoleService, RoleService>()
+      .AddTransient<IUserService, UserService>();
   }
 }

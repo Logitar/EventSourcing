@@ -35,7 +35,8 @@ internal class RealmCreatedValidator : AbstractValidator<RealmCreatedEvent>
       .MinimumLength(256 / 8);
 
     RuleForEach(x => x.CustomAttributes.Keys).NotEmpty()
-      .MaximumLength(byte.MaxValue);
+      .MaximumLength(byte.MaxValue)
+      .Identifier();
     RuleForEach(x => x.CustomAttributes.Values).NotEmpty();
 
     When(x => x.GoogleOAuth2Configuration != null,

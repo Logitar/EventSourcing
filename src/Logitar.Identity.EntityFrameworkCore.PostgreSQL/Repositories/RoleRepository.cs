@@ -39,15 +39,4 @@ internal class RoleRepository : EventStore, IRoleRepository
 
     return Load<RoleAggregate>(events);
   }
-
-  /// <summary>
-  /// Saves the specified role in the event store.
-  /// </summary>
-  /// <param name="role">The role to save.</param>
-  /// <param name="cancellationToken">The cancellation token.</param>
-  /// <returns>The asynchronous operation.</returns>
-  public async Task SaveAsync(RoleAggregate role, CancellationToken cancellationToken)
-  {
-    await base.SaveAsync(role, cancellationToken);
-  }
 }

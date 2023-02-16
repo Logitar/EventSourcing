@@ -2,7 +2,6 @@
 using Logitar.Identity.EntityFrameworkCore.PostgreSQL.Repositories;
 using Logitar.Identity.Realms;
 using Logitar.Identity.Roles;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -27,7 +26,7 @@ public static class DependencyInjectionExtensions
     return services
       .AddAutoMapper(assembly)
       .AddDbContext<IdentityContext>(options => options.UseNpgsql(connectionString))
-      .AddMediatR(assembly)
+      .AddMediatR(config => config.RegisterServicesFromAssembly(assembly))
       .AddQueriers()
       .AddRepositories();
   }

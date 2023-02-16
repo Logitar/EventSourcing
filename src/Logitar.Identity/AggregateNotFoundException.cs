@@ -9,7 +9,7 @@ namespace Logitar.Identity;
 public class AggregateNotFoundException : Exception
 {
   /// <summary>
-  /// Initializes a new instance of the <see cref="AggregateNotFoundException"/> class using the specified aggregate type and identifier.
+  /// Initializes a new instance of the <see cref="AggregateNotFoundException"/> class using the specified arguments.
   /// </summary>
   /// <param name="type">The type of the aggregate.</param>
   /// <param name="id">The identifier of the aggregate.</param>
@@ -27,7 +27,7 @@ public class AggregateNotFoundException : Exception
   }
 
   /// <summary>
-  /// Builds the exception message using the specified aggregate type and identifier.
+  /// Builds the exception message using the specified arguments.
   /// </summary>
   /// <param name="type">The type of the aggregate.</param>
   /// <param name="id">The identifier of the aggregate.</param>
@@ -57,7 +57,7 @@ public class AggregateNotFoundException : Exception
 public class AggregateNotFoundException<T> : AggregateNotFoundException where T : AggregateRoot
 {
   /// <summary>
-  /// Initializes a new instance of the <see cref="AggregateNotFoundException{T}"/> class.
+  /// Initializes a new instance of the <see cref="AggregateNotFoundException{T}"/> class using the specified arguments.
   /// </summary>
   /// <param name="id">The identifier of the aggregate.</param>
   /// <param name="paramName">The name of the identifier parameter.</param>
