@@ -8,27 +8,36 @@ namespace Logitar.Identity.Users;
 public interface IUserQuerier
 {
   /// <summary>
-  /// Retrieves a user by its aggregate identifier.
+  /// Retrieves an user by its aggregate identifier.
   /// </summary>
   /// <param name="id">The aggregate identifier.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The user or null if not found.</returns>
   Task<User?> GetAsync(AggregateId id, CancellationToken cancellationToken = default);
   /// <summary>
-  /// Retrieves a user by its <see cref="Guid"/>.
+  /// Retrieves an user by its <see cref="Guid"/>.
   /// </summary>
   /// <param name="id">The Guid.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The user or null if not found.</returns>
   Task<User?> GetAsync(Guid id, CancellationToken cancellationToken = default);
   /// <summary>
-  /// Retrieves a user by its realm and unique name.
+  /// Retrieves an user by its realm and unique name.
   /// </summary>
   /// <param name="realm">The identifier or unique name of the realm in which to search the unique name.</param>
   /// <param name="username">The unique name.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The user or null if not found.</returns>
   Task<User?> GetAsync(string realm, string username, CancellationToken cancellationToken = default);
+  /// <summary>
+  /// Retrieves an user by its realm and external identifier.
+  /// </summary>
+  /// <param name="realm">The identifier or unique name of the realm in which to search the external identifier.</param>
+  /// <param name="externalKey">The key of the external identifier.</param>
+  /// <param name="externalValue">The value of the external identifieré</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The user or null if not found.</returns>
+  Task<User?> GetAsync(string realm, string externalKey, string externalValue, CancellationToken cancellationToken = default);
   /// <summary>
   /// Retrieves a list of users using the specified filters, sorting and paging arguments.
   /// </summary>

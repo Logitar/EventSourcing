@@ -209,30 +209,6 @@ public class UserAggregate : AggregateRoot
   }
 
   /// <summary>
-  /// Adds the specified external identifier to the user.
-  /// </summary>
-  /// <param name="actorId">The identifier of the actor adding the external identifier.</param>
-  /// <param name="key">The key of the external identifier.</param>
-  /// <param name="value">The value of the external identifier.</param>
-  public void AddExternalIdentifier(AggregateId actorId, string key, string value)
-  {
-    if (_externalIdentifiers.ContainsKey(key))
-    {
-      throw new ExternalIdentifierAlreadyExisting(key, value);
-    }
-
-    ExternalIdentifierAddedEvent e = new()
-    {
-      ActorId = actorId,
-      Key = key,
-      Value = value
-    };
-    new ExternalIdentifierAddedValidator().ValidateAndThrow(e);
-
-    ApplyChange(e);
-  }
-
-  /// <summary>
   /// Deletes the user.
   /// </summary>
   /// <param name="actorId">The identifier of the actor deleting the user.</param>
@@ -305,6 +281,45 @@ public class UserAggregate : AggregateRoot
   protected virtual void Apply(UserEnabledEvent e)
   {
     IsDisabled = false;
+  }
+
+  /// <summary>
+  /// Saves the specified external identifier to the user.
+  /// </summary>
+  /// <param name="actorId">The identifier of the actor adding the external identifier.</param>
+  /// <param name="key">The key of the external identifier.</param>
+  /// <param name="value">The value of the external identifier. If null, the external identifier will be removed.</param>
+  public void SaveExternalIdentifier(AggregateId actorId, string key, string? value)
+  {
+    if (value == null && !_externalIdentifiers.ContainsKey(key))
+    {
+      throw new ExternalIdentifierNotFoundException(this, key);
+    }
+
+    ExternalIdentifierSavedEvent e = new()
+    {
+      ActorId = actorId,
+      Key = key.Trim(),
+      Value = value?.CleanTrim()
+    };
+    new ExternalIdentifierSavedValidator().ValidateAndThrow(e);
+
+    ApplyChange(e);
+  }
+  /// <summary>
+  /// Applies the specified event to the user.
+  /// </summary>
+  /// <param name="e">The domain event.</param>
+  protected virtual void Apply(ExternalIdentifierSavedEvent e)
+  {
+    if (e.Value == null)
+    {
+      _externalIdentifiers.Remove(e.Key);
+    }
+    else
+    {
+      _externalIdentifiers[e.Key] = e.Value;
+    }
   }
 
   /// <summary>

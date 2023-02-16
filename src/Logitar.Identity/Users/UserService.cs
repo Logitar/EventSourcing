@@ -72,11 +72,15 @@ internal class UserService : IUserService
   /// <param name="id">The identifier of the user.</param>
   /// <param name="realm">The identifier or unique name of the realm in which to search the unique name.</param>
   /// <param name="username">The unique name of the user.</param>
+  /// /// <param name="externalKey">The key of an external identifier.</param>
+  /// <param name="externalValue">The value of an external identifier.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The user, or null if not found.</returns>
-  public async Task<User?> GetAsync(Guid? id, string? realm, string? username, CancellationToken cancellationToken)
+  public async Task<User?> GetAsync(Guid? id, string? realm, string? username,
+    string? externalKey, string? externalValue, CancellationToken cancellationToken)
   {
-    return await _requestPipeline.ExecuteAsync(new GetUserQuery(id, realm, username), cancellationToken);
+    return await _requestPipeline.ExecuteAsync(new GetUserQuery(id, realm, username,
+      externalKey, externalValue), cancellationToken);
   }
 
   /// <summary>
@@ -96,6 +100,19 @@ internal class UserService : IUserService
   {
     return await _requestPipeline.ExecuteAsync(new GetUsersQuery(isDisabled, realm, search,
       sort, isDescending, skip, take), cancellationToken);
+  }
+
+  /// <summary>
+  /// Adds, removes or updates the external identifier of an user.
+  /// </summary>
+  /// <param name="id">The identifier of the user.</param>
+  /// <param name="key">The key of the external identifier.</param>
+  /// <param name="value">The value of the external identifier. If null, the external identifier will be removed.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The updated user.</returns>
+  public async Task<User> SaveExternalIdentifierAsync(Guid id, string key, string? value, CancellationToken cancellationToken)
+  {
+    return await _requestPipeline.ExecuteAsync(new SaveExternalIdentifierCommand(id, key, value), cancellationToken);
   }
 
   /// <summary>

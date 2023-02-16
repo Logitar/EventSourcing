@@ -37,9 +37,16 @@ internal class GetUserQueryHandler : IRequestHandler<GetUserQuery, User?>
     {
       users.AddIfNotNull(await _userQuerier.GetAsync(request.Id.Value, cancellationToken));
     }
-    if (request.Realm != null && request.Username != null)
+    if (request.Realm != null)
     {
-      users.AddIfNotNull(await _userQuerier.GetAsync(request.Realm, request.Username, cancellationToken));
+      if (request.Username != null)
+      {
+        users.AddIfNotNull(await _userQuerier.GetAsync(request.Realm, request.Username, cancellationToken));
+      }
+      if (request.ExternalKey != null && request.ExternalValue != null)
+      {
+        users.AddIfNotNull(await _userQuerier.GetAsync(request.Realm, request.ExternalKey, request.ExternalValue, cancellationToken));
+      }
     }
 
     if (users.Count > 1)
