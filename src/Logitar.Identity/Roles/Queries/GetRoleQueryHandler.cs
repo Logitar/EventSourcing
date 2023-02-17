@@ -37,9 +37,9 @@ internal class GetRoleQueryHandler : IRequestHandler<GetRoleQuery, Role?>
     {
       roles.AddIfNotNull(await _roleQuerier.GetAsync(request.Id.Value, cancellationToken));
     }
-    if (request.RealmId.HasValue && request.UniqueName != null)
+    if (request.Realm != null && request.UniqueName != null)
     {
-      roles.AddIfNotNull(await _roleQuerier.GetAsync(request.RealmId.Value, request.UniqueName, cancellationToken));
+      roles.AddIfNotNull(await _roleQuerier.GetAsync(request.Realm, request.UniqueName, cancellationToken));
     }
 
     if (roles.Count > 1)

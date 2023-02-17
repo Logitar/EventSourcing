@@ -113,6 +113,10 @@ internal class RealmEntity : AggregateEntity
   /// Gets the list of roles in this realm.
   /// </summary>
   public List<RoleEntity> Roles { get; private set; } = new();
+  /// <summary>
+  /// Gets the list of users in this realm.
+  /// </summary>
+  public List<UserEntity> Users { get; private set; } = new();
 
   /// <summary>
   /// Updates the realm to the state of the specified event.

@@ -2,7 +2,7 @@
 using Logitar.Identity.EntityFrameworkCore.PostgreSQL.Repositories;
 using Logitar.Identity.Realms;
 using Logitar.Identity.Roles;
-using MediatR;
+using Logitar.Identity.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -27,9 +27,13 @@ public static class DependencyInjectionExtensions
     return services
       .AddAutoMapper(assembly)
       .AddDbContext<IdentityContext>(options => options.UseNpgsql(connectionString))
-      .AddMediatR(assembly)
+      .AddMediatR(config => config.RegisterServicesFromAssembly(assembly))
       .AddQueriers()
       .AddRepositories();
+
+    // TODO(fpion): EventContext
+    // TODO(fpion): IEventBus
+    // TODO(fpion): IEventStore
   }
 
   /// <summary>
@@ -41,7 +45,8 @@ public static class DependencyInjectionExtensions
   {
     return services
       .AddScoped<IRealmQuerier, RealmQuerier>()
-      .AddScoped<IRoleQuerier, RoleQuerier>();
+      .AddScoped<IRoleQuerier, RoleQuerier>()
+      .AddScoped<IUserQuerier, UserQuerier>();
   }
 
   /// <summary>
@@ -53,6 +58,7 @@ public static class DependencyInjectionExtensions
   {
     return services
       .AddScoped<IRealmRepository, RealmRepository>()
-      .AddScoped<IRoleRepository, RoleRepository>();
+      .AddScoped<IRoleRepository, RoleRepository>()
+      .AddScoped<IUserRepository, UserRepository>();
   }
 }

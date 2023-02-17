@@ -60,17 +60,17 @@ internal class RoleQuerier : IRoleQuerier
   /// <summary>
   /// Retrieves a role by its realm and unique name.
   /// </summary>
-  /// <param name="realmId">The identifier of the realm in which to search the unique name.</param>
+  /// <param name="realm">The identifier or unique name of the realm in which to search the unique name.</param>
   /// <param name="uniqueName">The unique name.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The role or null if not found.</returns>
-  public async Task<Role?> GetAsync(Guid realmId, string uniqueName, CancellationToken cancellationToken)
+  public async Task<Role?> GetAsync(string realm, string uniqueName, CancellationToken cancellationToken)
   {
-    string aggregateId = new AggregateId(realmId).Value;
+    string aggregateId = new AggregateId(realm).Value;
 
     RoleEntity? role = await _roles.AsNoTracking()
       .Include(x => x.Realm)
-      .SingleOrDefaultAsync(x => x.Realm!.AggregateId == aggregateId
+      .SingleOrDefaultAsync(x => (x.Realm!.AggregateId == aggregateId || x.Realm.UniqueNameNormalized == realm.ToUpper())
         && x.UniqueNameNormalized == uniqueName.ToUpper(), cancellationToken);
 
     return _mapper.Map<Role>(role);
@@ -79,7 +79,7 @@ internal class RoleQuerier : IRoleQuerier
   /// <summary>
   /// Retrieves a list of roles using the specified filters, sorting and paging arguments.
   /// </summary>
-  /// <param name="realmId">The identifier of the realm to filter by.</param>
+  /// <param name="realm">The identifier or unique name of the realm to filter by.</param>
   /// <param name="search">The text to search.</param>
   /// <param name="sort">The sort value.</param>
   /// <param name="isDescending">If true, the sort will be inverted.</param>
@@ -87,16 +87,16 @@ internal class RoleQuerier : IRoleQuerier
   /// <param name="take">The number of roles to return.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The list of roles, or empty if none found.</returns>
-  public async Task<PagedList<Role>> GetAsync(Guid? realmId, string? search, RoleSort? sort,
+  public async Task<PagedList<Role>> GetAsync(string? realm, string? search, RoleSort? sort,
     bool isDescending, int? skip, int? take, CancellationToken cancellationToken)
   {
     IQueryable<RoleEntity> query = _roles.AsNoTracking()
       .Include(x => x.Realm);
 
-    if (realmId.HasValue)
+    if (realm != null)
     {
-      string aggregateId = new AggregateId(realmId.Value).Value;
-      query = query.Where(x => x.Realm!.AggregateId == aggregateId);
+      string aggregateId = new AggregateId(realm).Value;
+      query = query.Where(x => x.Realm!.AggregateId == aggregateId || x.Realm.UniqueNameNormalized == realm.ToUpper());
     }
     if (search != null)
     {

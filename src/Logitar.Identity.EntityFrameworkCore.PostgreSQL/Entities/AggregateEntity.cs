@@ -54,12 +54,20 @@ public abstract class AggregateEntity
   public DateTime? UpdatedOn { get; private set; }
 
   /// <summary>
+  /// Sets the version of the aggregate to the version of the specified event.
+  /// </summary>
+  /// <param name="e">The domain event.</param>
+  protected void SetVersion(DomainEvent e)
+  {
+    Version = e.Version;
+  }
+  /// <summary>
   /// Updates the aggregate to the state of the specified event.
   /// </summary>
   /// <param name="e">The update event.</param>
   protected void Update(DomainEvent e)
   {
-    Version = e.Version;
+    SetVersion(e);
 
     UpdatedById = e.ActorId.Value;
     UpdatedOn = e.OccurredOn;

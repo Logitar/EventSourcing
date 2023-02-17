@@ -48,19 +48,19 @@ internal class RoleService : IRoleService
   /// Retrieves a role by the specified unique values.
   /// </summary>
   /// <param name="id">The identifier of the role.</param>
-  /// <param name="realmId">The identifier of the realm in which to search the unique name.</param>
+  /// <param name="realm">The identifier or unique name of the realm in which to search the unique name.</param>
   /// <param name="uniqueName">The unique name of the role.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The role, or null if not found.</returns>
-  public async Task<Role?> GetAsync(Guid? id, Guid? realmId, string? uniqueName, CancellationToken cancellationToken)
+  public async Task<Role?> GetAsync(Guid? id, string? realm, string? uniqueName, CancellationToken cancellationToken)
   {
-    return await _requestPipeline.ExecuteAsync(new GetRoleQuery(id, realmId, uniqueName), cancellationToken);
+    return await _requestPipeline.ExecuteAsync(new GetRoleQuery(id, realm, uniqueName), cancellationToken);
   }
 
   /// <summary>
   /// Retrieves a list of roles using the specified filters, sorting and paging arguments.
   /// </summary>
-  /// <param name="realmId">The identifier of the realm to filter by.</param>
+  /// <param name="realm">The identifier or unique name of the realm to filter by.</param>
   /// <param name="search">The text to search.</param>
   /// <param name="sort">The sort value.</param>
   /// <param name="isDescending">If true, the sort will be inverted.</param>
@@ -68,10 +68,10 @@ internal class RoleService : IRoleService
   /// <param name="take">The number of roles to return.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The role list, or empty if none found.</returns>
-  public async Task<PagedList<Role>> GetAsync(Guid? realmId, string? search, RoleSort? sort, bool isDescending,
+  public async Task<PagedList<Role>> GetAsync(string? realm, string? search, RoleSort? sort, bool isDescending,
     int? skip, int? take, CancellationToken cancellationToken)
   {
-    return await _requestPipeline.ExecuteAsync(new GetRolesQuery(realmId, search,
+    return await _requestPipeline.ExecuteAsync(new GetRolesQuery(realm, search,
       sort, isDescending, skip, take), cancellationToken);
   }
 

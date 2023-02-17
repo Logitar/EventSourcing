@@ -1,4 +1,6 @@
 ﻿using FluentValidation;
+using Logitar.Identity.Realms;
+using NodaTime;
 using System.Globalization;
 
 namespace Logitar.Identity;
@@ -67,16 +69,45 @@ public static class FluentValidationExtensions
   }
 
   /// <summary>
+  /// Defines a 'time zone' validator on the current rule builder. Validation will failif the property
+  /// is not a time zone in the tz database.
+  /// </summary>
+  /// <typeparam name="T">The type of the object being validated.</typeparam>
+  /// <param name="ruleBuilder">The rule builder.</param>
+  /// <returns>The rule builder.</returns>
+  public static IRuleBuilder<T, string?> TimeZone<T>(this IRuleBuilder<T, string?> ruleBuilder)
+  {
+    return ruleBuilder.Must(t => t == null || DateTimeZoneProviders.Tzdb.GetZoneOrNull(t) != null)
+      .WithErrorCode("TimeZoneValidator")
+      .WithMessage("'{PropertyName}' must be the name of time zone in the tz database.");
+  }
+
+  /// <summary>
   /// Defines an 'url' validator on the current rule builder. Validation will fail if the property is
   /// not a well formed URL.
   /// </summary>
-  /// <typeparam name="T"></typeparam>
-  /// <param name="ruleBuilder"></param>
-  /// <returns></returns>
+  /// <typeparam name="T">The type of the object being validated.</typeparam>
+  /// <param name="ruleBuilder">The rule builder.</param>
+  /// <returns>The rule builder.</returns>
   public static IRuleBuilder<T, string?> Url<T>(this IRuleBuilder<T, string?> ruleBuilder)
   {
     return ruleBuilder.Must(u => Uri.IsWellFormedUriString(u, UriKind.RelativeOrAbsolute))
       .WithErrorCode("UrlValidator")
       .WithMessage("'{PropertyName}' must be a well formed URL.");
+  }
+
+  /// <summary>
+  /// Defines an 'username' validator on the current rule builder. Validation will fail if the property
+  /// contains characters that are not allowed in the username settings.
+  /// </summary>
+  /// <typeparam name="T">The type of the object being validated.</typeparam>
+  /// <param name="ruleBuilder">The rule builder.</param>
+  /// <param name="settings">The username settings.</param>
+  /// <returns>The rule builder.</returns>
+  public static IRuleBuilder<T, string?> Username<T>(this IRuleBuilder<T, string?> ruleBuilder, ReadOnlyUsernameSettings settings)
+  {
+    return ruleBuilder.Must(u => u == null || settings.AllowedCharacters == null || u.All(settings.AllowedCharacters.Contains))
+      .WithErrorCode("UsernameValidator")
+      .WithMessage($"'{{PropertyName}}' can only contain the following characters: {settings.AllowedCharacters}");
   }
 }

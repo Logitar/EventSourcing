@@ -52,7 +52,7 @@ internal class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Rol
 
     UpdateRoleInput input = command.Input;
 
-    Dictionary<string, string>? customAttributes = RoleHelper.GetCustomAttributes(input.CustomAttributes);
+    Dictionary<string, string>? customAttributes = input.CustomAttributes?.ToDictionary();
 
     role.Update(_identityContext.ActorId, input.DisplayName, input.Description, customAttributes);
 

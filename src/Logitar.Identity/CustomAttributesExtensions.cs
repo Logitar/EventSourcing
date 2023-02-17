@@ -1,22 +1,17 @@
-﻿namespace Logitar.Identity.Roles;
+﻿namespace Logitar.Identity;
 
 /// <summary>
-/// Provides methods to help managing roles.
+/// Provides extension methods for custom attributes.
 /// </summary>
-internal static class RoleHelper
+public static class CustomAttributesExtensions
 {
   /// <summary>
-  /// Converts the specified list of custom attributes to a dictionary of custom attributes.
+  /// Converts the specified list of custom attributes to a dictionary.
   /// </summary>
   /// <param name="customAttributes">The list of custom attributes.</param>
   /// <returns>The dictionary of custom attributes.</returns>
-  public static Dictionary<string, string>? GetCustomAttributes(IEnumerable<CustomAttribute>? customAttributes)
+  public static Dictionary<string, string> ToDictionary(this IEnumerable<CustomAttribute> customAttributes)
   {
-    if (customAttributes == null)
-    {
-      return null;
-    }
-
     Dictionary<string, string> dictionary = new(capacity: customAttributes.Count());
     foreach (CustomAttribute customAttribute in customAttributes)
     {

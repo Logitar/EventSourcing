@@ -9,17 +9,17 @@ namespace Logitar.Identity.Roles;
 /// <summary>
 /// The domain aggregate representing a role. Roles can be used to control user permissions. You can
 /// authorize actions by limiting the roles that can perform each action. Roles can also be used as
-/// user groups.
+/// user groups. Roles must belong to a realm.
 /// </summary>
 public class RoleAggregate : AggregateRoot
 {
   /// <summary>
   /// The custom attributes of the role.
   /// </summary>
-  private Dictionary<string, string> _customAttributes = new();
+  private readonly Dictionary<string, string> _customAttributes = new();
 
   /// <summary>
-  /// Initializes a new instance of the <see cref="RoleAggregate"/> using the specified aggregate identifier.
+  /// Initializes a new instance of the <see cref="RoleAggregate"/> class using the specified aggregate identifier.
   /// </summary>
   /// <param name="id">The aggregate identifier.</param>
   public RoleAggregate(AggregateId id) : base(id)
@@ -87,7 +87,8 @@ public class RoleAggregate : AggregateRoot
     DisplayName = e.DisplayName;
     Description = e.Description;
 
-    _customAttributes = e.CustomAttributes;
+    _customAttributes.Clear();
+    _customAttributes.AddRange(e.CustomAttributes);
   }
 
   /// <summary>
@@ -139,7 +140,8 @@ public class RoleAggregate : AggregateRoot
     DisplayName = e.DisplayName;
     Description = e.Description;
 
-    _customAttributes = e.CustomAttributes;
+    _customAttributes.Clear();
+    _customAttributes.AddRange(e.CustomAttributes);
   }
 
   /// <summary>

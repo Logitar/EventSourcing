@@ -23,7 +23,7 @@ public class CannotApplyPastEventException : Exception
   }
 
   /// <summary>
-  /// Builds the exception message using the specfied aggregate and past event.
+  /// Builds the exception message using the specified aggregate and past event.
   /// </summary>
   /// <param name="aggregate">The aggregate in a future state</param>
   /// <param name="change">The event of a past state</param>

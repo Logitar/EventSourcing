@@ -1,4 +1,5 @@
-﻿using Logitar.Identity.Accounts;
+﻿using Logitar.EventSourcing;
+using Logitar.Identity.Accounts;
 using MediatR;
 using System.Globalization;
 
@@ -9,6 +10,10 @@ namespace Logitar.Identity.Realms.Commands;
 /// </summary>
 internal class CreateRealmCommandHandler : IRequestHandler<CreateRealmCommand, Realm>
 {
+  /// <summary>
+  /// The event store.
+  /// </summary>
+  private readonly IEventStore _eventStore;
   /// <summary>
   /// The identity context.
   /// </summary>
@@ -25,13 +30,16 @@ internal class CreateRealmCommandHandler : IRequestHandler<CreateRealmCommand, R
   /// <summary>
   /// Initializes a new instance of the <see cref="CreateRealmCommandHandler"/> class using the specified arguments.
   /// </summary>
+  /// <param name="eventStore">The event store.</param>
   /// <param name="identityContext">The identity context.</param>
   /// <param name="realmQuerier">The realm querier.</param>
   /// <param name="realmRepository">The realm repository.</param>
-  public CreateRealmCommandHandler(IIdentityContext identityContext,
+  public CreateRealmCommandHandler(IEventStore eventStore,
+    IIdentityContext identityContext,
     IRealmQuerier realmQuerier,
     IRealmRepository realmRepository)
   {
+    _eventStore = eventStore;
     _identityContext = identityContext;
     _realmQuerier = realmQuerier;
     _realmRepository = realmRepository;
@@ -58,13 +66,13 @@ internal class CreateRealmCommandHandler : IRequestHandler<CreateRealmCommand, R
     ReadOnlyUsernameSettings? usernameSettings = input.UsernameSettings == null ? null : new(input.UsernameSettings);
     ReadOnlyPasswordSettings? passwordSettings = input.PasswordSettings == null ? null : new(input.PasswordSettings);
     Dictionary<ExternalProvider, ExternalProviderConfiguration> externalProviders = RealmHelper.GetExternalProviders(input.GoogleOAuth2Configuration);
-    Dictionary<string, string>? customAttributes = RealmHelper.GetCustomAttributes(input.CustomAttributes);
+    Dictionary<string, string>? customAttributes = input.CustomAttributes?.ToDictionary();
 
     RealmAggregate realm = new(_identityContext.ActorId, input.UniqueName, input.DisplayName, input.Description,
       defaultLocale, input.Url, input.RequireConfirmedAccount, input.RequireUniqueEmail,
       usernameSettings, passwordSettings, input.JwtSecret, customAttributes, externalProviders);
 
-    await _realmRepository.SaveAsync(realm, cancellationToken);
+    await _eventStore.SaveAsync(realm, cancellationToken);
 
     return await _realmQuerier.GetAsync(realm.Id, cancellationToken)
       ?? throw new InvalidOperationException($"The realm output (Id={realm.Id}) could not be found.");
