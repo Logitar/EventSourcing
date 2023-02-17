@@ -23,7 +23,11 @@ public static class DependencyInjectionExtensions
     return services
       .AddFacades()
       .AddMediatR(config => config.RegisterServicesFromAssembly(assembly))
+      .AddTransient<IPasswordHelper, PasswordHelper>()
       .AddTransient<IUserHelper, UserHelper>();
+
+    // TODO(fpion): IIdentityContext
+    // TODO(fpion): IRequestPipeline
   }
 
   /// <summary>

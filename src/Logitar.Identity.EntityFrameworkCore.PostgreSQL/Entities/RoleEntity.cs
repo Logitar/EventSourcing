@@ -9,9 +9,10 @@ namespace Logitar.Identity.EntityFrameworkCore.PostgreSQL.Entities;
 internal class RoleEntity : AggregateEntity
 {
   /// <summary>
-  /// Initializes a new instance of the <see cref="RoleEntity"/> to the state of the specified event.
+  /// Initializes a new instance of the <see cref="RoleEntity"/> using the specified arguments.
   /// </summary>
   /// <param name="e">The creation event.</param>
+  /// <param name="realm">The realm the role belongs to.</param>
   public RoleEntity(RoleCreatedEvent e, RealmEntity realm) : base(e)
   {
     Realm = realm;
@@ -69,6 +70,11 @@ internal class RoleEntity : AggregateEntity
   /// Gets the custom attributes of the role.
   /// </summary>
   public string? CustomAttributes { get; private set; }
+
+  /// <summary>
+  /// Gets the list of users in this role.
+  /// </summary>
+  public List<UserEntity> Users { get; private set; } = new();
 
   /// <summary>
   /// Updates the role to the state of the specified event.

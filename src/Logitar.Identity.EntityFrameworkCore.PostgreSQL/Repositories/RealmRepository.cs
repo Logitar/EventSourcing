@@ -30,7 +30,7 @@ internal class RealmRepository : EventStore, IRealmRepository
   {
     string aggregateType = typeof(RealmAggregate).GetName();
 
-    EventEntity[] events = await Context.Events.FromSql($@"SELECT e.* FROM ""Events"" JOIN ""Realms"" r on r.""AggregateId"" = e.""AggregateId"" WHERE e.""AggregateType"" = {aggregateType} AND r.""UniqueNameNormalized"" = {uniqueName.ToUpper()}")
+    EventEntity[] events = await Context.Events.FromSql($@"SELECT e.* FROM ""Events"" e JOIN ""Realms"" r on r.""AggregateId"" = e.""AggregateId"" WHERE e.""AggregateType"" = {aggregateType} AND r.""UniqueNameNormalized"" = {uniqueName.ToUpper()}")
       .AsNoTracking()
       .OrderBy(x => x.Version)
       .ToArrayAsync(cancellationToken);

@@ -29,7 +29,7 @@ internal class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, PagedList<U
   /// <returns>The list of users, or a empty collection.</returns>
   public async Task<PagedList<User>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
   {
-    return await _userQuerier.GetAsync(request.Realm, request.Search, request.Sort, request.IsDescending,
-      request.Skip, request.Take, cancellationToken);
+    return await _userQuerier.GetAsync(request.IsDisabled, request.Realm, request.Search,
+      request.Sort, request.IsDescending, request.Skip, request.Take, cancellationToken);
   }
 }

@@ -32,7 +32,7 @@ internal class RoleRepository : EventStore, IRoleRepository
   {
     string aggregateType = typeof(RoleAggregate).GetName();
 
-    EventEntity[] events = await Context.Events.FromSql($@"SELECT e.* FROM ""Events"" JOIN ""Roles"" r on r.""AggregateId"" = e.""AggregateId"" JOIN ""Realms"" a ON a.""RealmId"" = r.""RealmId"" WHERE e.""AggregateType"" = {aggregateType} AND a.""AggregateId"" = {realm.Id.Value} AND r.""UniqueNameNormalized"" = {uniqueName.ToUpper()}")
+    EventEntity[] events = await Context.Events.FromSql($@"SELECT e.* FROM ""Events"" e JOIN ""Roles"" r on r.""AggregateId"" = e.""AggregateId"" JOIN ""Realms"" a ON a.""RealmId"" = r.""RealmId"" WHERE e.""AggregateType"" = {aggregateType} AND a.""AggregateId"" = {realm.Id.Value} AND r.""UniqueNameNormalized"" = {uniqueName.ToUpper()}")
       .AsNoTracking()
       .OrderBy(x => x.Version)
       .ToArrayAsync(cancellationToken);

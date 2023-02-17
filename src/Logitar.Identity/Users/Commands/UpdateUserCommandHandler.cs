@@ -20,9 +20,9 @@ internal class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Use
   /// </summary>
   private readonly IIdentityContext _identityContext;
   /// <summary>
-  /// The password service.
+  /// The password helper.
   /// </summary>
-  private readonly IPasswordService _passwordService;
+  private readonly IPasswordHelper _passwordHelper;
   /// <summary>
   /// The user helper.
   /// </summary>
@@ -37,18 +37,18 @@ internal class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Use
   /// </summary>
   /// <param name="eventStore">The event store.</param>
   /// <param name="identityContext">The identity context.</param>
-  /// <param name="passwordService">The password service.</param>
+  /// <param name="passwordHelper">The password helper.</param>
   /// <param name="userHelper">The user helper.</param>
   /// <param name="userQuerier">The user querier.</param>
   public UpdateUserCommandHandler(IEventStore eventStore,
     IIdentityContext identityContext,
-    IPasswordService passwordService,
+    IPasswordHelper passwordHelper,
     IUserHelper userHelper,
     IUserQuerier userQuerier)
   {
     _eventStore = eventStore;
     _identityContext = identityContext;
-    _passwordService = passwordService;
+    _passwordHelper = passwordHelper;
     _userHelper = userHelper;
     _userQuerier = userQuerier;
   }
@@ -73,7 +73,7 @@ internal class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Use
 
     Gender? gender = input.Gender == null ? null : new Gender(input.Gender);
     CultureInfo? locale = input.Locale?.GetCultureInfo();
-    string? passwordHash = input.Password == null ? null : _passwordService.ValidateAndHash(realm, input.Password);
+    string? passwordHash = input.Password == null ? null : _passwordHelper.ValidateAndHash(realm, input.Password);
     Dictionary<string, string>? customAttributes = input.CustomAttributes?.ToDictionary();
     IEnumerable<RoleAggregate>? roles = await _userHelper.GetRolesAsync(realm, input, cancellationToken);
 

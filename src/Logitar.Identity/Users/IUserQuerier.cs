@@ -41,6 +41,7 @@ public interface IUserQuerier
   /// <summary>
   /// Retrieves a list of users using the specified filters, sorting and paging arguments.
   /// </summary>
+  /// <param name="isDisabled">The value filtering users on their disabled status.</param>
   /// <param name="realm">The identifier or unique name of the realm to filter by.</param>
   /// <param name="search">The text to search.</param>
   /// <param name="sort">The sort value.</param>
@@ -49,6 +50,6 @@ public interface IUserQuerier
   /// <param name="take">The number of users to return.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The list of users, or empty if none found.</returns>
-  Task<PagedList<User>> GetAsync(string? realm = null, string? search = null, UserSort? sort = null, bool isDescending = false,
-    int? skip = null, int? take = null, CancellationToken cancellationToken = default);
+  Task<PagedList<User>> GetAsync(bool? isDisabled = null, string? realm = null, string? search = null,
+    UserSort? sort = null, bool isDescending = false, int? skip = null, int? take = null, CancellationToken cancellationToken = default);
 }

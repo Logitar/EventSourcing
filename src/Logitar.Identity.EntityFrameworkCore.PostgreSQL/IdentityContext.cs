@@ -17,6 +17,10 @@ public class IdentityContext : DbContext
   }
 
   /// <summary>
+  /// Gets or sets the data set of external identifiers.
+  /// </summary>
+  internal DbSet<ExternalIdentifierEntity> ExternalIdentifiers { get; private set; } = null!;
+  /// <summary>
   /// Gets or sets the data set of realms.
   /// </summary>
   internal DbSet<RealmEntity> Realms { get; private set; } = null!;
@@ -24,6 +28,10 @@ public class IdentityContext : DbContext
   /// Gets or sets the data set of roles.
   /// </summary>
   internal DbSet<RoleEntity> Roles { get; private set; } = null!;
+  /// <summary>
+  /// Gets of sets the data set of users.
+  /// </summary>
+  internal DbSet<UserEntity> Users { get; private set; } = null!;
 
   /// <summary>
   /// Configures the database context model creation process using the specified model builder.
