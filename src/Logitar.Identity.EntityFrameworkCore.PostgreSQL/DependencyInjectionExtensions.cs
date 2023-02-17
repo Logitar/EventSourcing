@@ -30,10 +30,6 @@ public static class DependencyInjectionExtensions
       .AddMediatR(config => config.RegisterServicesFromAssembly(assembly))
       .AddQueriers()
       .AddRepositories();
-
-    // TODO(fpion): EventContext
-    // TODO(fpion): IEventBus
-    // TODO(fpion): IEventStore
   }
 
   /// <summary>

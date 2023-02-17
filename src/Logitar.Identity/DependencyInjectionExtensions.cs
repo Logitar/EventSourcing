@@ -25,9 +25,6 @@ public static class DependencyInjectionExtensions
       .AddMediatR(config => config.RegisterServicesFromAssembly(assembly))
       .AddTransient<IPasswordHelper, PasswordHelper>()
       .AddTransient<IUserHelper, UserHelper>();
-
-    // TODO(fpion): IIdentityContext
-    // TODO(fpion): IRequestPipeline
   }
 
   /// <summary>

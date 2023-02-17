@@ -4,7 +4,8 @@ using System.Security.Cryptography;
 namespace Logitar.Identity.Users;
 
 /// <summary>
-/// TODO(fpion): implement
+/// Represents an instance of a PBKDF2 methods. This class contains methods to salt and hash
+/// passwords using the PBKDF2 as well as methods to compare passwords.
 /// </summary>
 internal class Pbkdf2
 {

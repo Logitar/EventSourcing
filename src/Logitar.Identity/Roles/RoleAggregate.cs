@@ -147,6 +147,6 @@ public class RoleAggregate : AggregateRoot
   /// <summary>
   /// Returns a string representation of the current role.
   /// </summary>
-  /// <returns>The string representation</returns>
+  /// <returns>The string representation.</returns>
   public override string ToString() => $"{DisplayName ?? UniqueName} | {base.ToString()}";
 }
