@@ -77,15 +77,20 @@ public static class FluentValidationExtensions
   /// </summary>
   /// <typeparam name="T">The type of the object being validated.</typeparam>
   /// <param name="ruleBuilder">The rule builder.</param>
+  /// <param name="defaultRegion">The default region used to validate phone numbers.</param>
   /// <returns>The rule builder.</returns>
-  public static IRuleBuilder<T, IPhoneNumber?> PhoneNumber<T>(this IRuleBuilder<T, IPhoneNumber> ruleBuilder)
+  public static IRuleBuilder<T, IPhoneNumber?> PhoneNumber<T>(this IRuleBuilder<T, IPhoneNumber> ruleBuilder, string? defaultRegion = null)
   {
     return ruleBuilder.Must(p =>
     {
       StringBuilder phone = new();
 
-      phone.Append(p.CountryCode);
-      phone.Append(' ');
+      if (!string.IsNullOrEmpty(p.CountryCode))
+      {
+        phone.Append(p.CountryCode);
+        phone.Append(' ');
+      }
+
       phone.Append(p.Number);
 
       if (!string.IsNullOrEmpty(p.Extension))
@@ -96,7 +101,7 @@ public static class FluentValidationExtensions
 
       try
       {
-        _ = PhoneNumberUtil.GetInstance().Parse(phone.ToString(), defaultRegion: string.Empty);
+        _ = PhoneNumberUtil.GetInstance().Parse(phone.ToString(), defaultRegion);
       }
       catch (NumberParseException)
       {

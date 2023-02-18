@@ -8,7 +8,7 @@ public interface IPhoneNumber
   /// <summary>
   /// Gets or sets the country code of the phone.
   /// </summary>
-  string CountryCode { get; }
+  string? CountryCode { get; }
 
   /// <summary>
   /// Gets or sets the number of the phone.

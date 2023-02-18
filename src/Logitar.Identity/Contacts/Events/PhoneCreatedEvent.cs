@@ -10,7 +10,7 @@ public record PhoneCreatedEvent : ContactCreatedEvent, INotification, IPhoneNumb
   /// <summary>
   /// Gets or sets the country code of the phone.
   /// </summary>
-  public string CountryCode { get; init; } = string.Empty;
+  public string? CountryCode { get; init; }
 
   /// <summary>
   /// Gets or sets the number of the phone.

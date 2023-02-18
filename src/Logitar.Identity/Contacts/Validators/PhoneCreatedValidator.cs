@@ -11,9 +11,10 @@ internal class PhoneCreatedValidator : ContactCreatedValidator<PhoneCreatedEvent
   /// <summary>
   /// Initializes a new instance of the <see cref="PhoneCreatedValidator"/> class.
   /// </summary>
-  public PhoneCreatedValidator()
+  /// <param name="defaultRegion">The default region used to validate phone numbers.</param>
+  public PhoneCreatedValidator(string defaultRegion)
   {
-    RuleFor(x => x.CountryCode).NotEmpty()
+    RuleFor(x => x.CountryCode).NullOrNotEmpty()
       .MaximumLength(10);
 
     RuleFor(x => x.Number).NotEmpty()
@@ -22,6 +23,6 @@ internal class PhoneCreatedValidator : ContactCreatedValidator<PhoneCreatedEvent
     RuleFor(x => x.Extension).NullOrNotEmpty()
       .MaximumLength(10);
 
-    RuleFor(p => p).PhoneNumber();
+    RuleFor(p => p).PhoneNumber(defaultRegion);
   }
 }

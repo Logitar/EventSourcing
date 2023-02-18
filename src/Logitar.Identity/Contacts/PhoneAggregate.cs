@@ -15,6 +15,11 @@ namespace Logitar.Identity.Contacts;
 public class PhoneAggregate : ContactAggregate
 {
   /// <summary>
+  /// The default region used to validate phone numbers.
+  /// </summary>
+  private const string DefaultRegion = "US";
+
+  /// <summary>
   /// Initializes a new instance of the <see cref="PhoneAggregate"/> class using the specified aggregate identifier.
   /// </summary>
   /// <param name="id">The aggregate identifier.</param>
@@ -27,15 +32,15 @@ public class PhoneAggregate : ContactAggregate
   /// </summary>
   /// <param name="actorId">The identifier of the actor creating the phone number.</param>
   /// <param name="user">The user owning the phone number.</param>
-  /// <param name="countryCode">The country code of the phone.</param>
   /// <param name="number">The number of the phone.</param>
+  /// <param name="countryCode">The country code of the phone.</param>
   /// <param name="extension">The extension of the phone.</param>
   /// <param name="isArchived">The archivation status of the phone number.</param>
   /// <param name="isDefault">The default status of the phone number.</param>
   /// <param name="isVerified">The verification status of the phone number.</param>
   /// <param name="label">The label describing the phone number.</param>
   /// <param name="customAttributes">The custom attributes of the phone number.</param>
-  public PhoneAggregate(AggregateId actorId, UserAggregate user, string countryCode, string number,
+  public PhoneAggregate(AggregateId actorId, UserAggregate user, string number, string? countryCode = null,
     string? extension = null, bool isArchived = false, bool isDefault = false, bool isVerified = false,
     string? label = null, Dictionary<string, string>? customAttributes = null) : base()
   {
@@ -47,12 +52,12 @@ public class PhoneAggregate : ContactAggregate
       IsDefault = isDefault,
       IsVerified = isVerified,
       Label = label?.CleanTrim(),
-      CountryCode = countryCode.Trim(),
       Number = number.Trim(),
+      CountryCode = countryCode?.CleanTrim(),
       Extension = extension?.CleanTrim(),
       CustomAttributes = customAttributes ?? new()
     };
-    new PhoneCreatedValidator().ValidateAndThrow(e);
+    new PhoneCreatedValidator(DefaultRegion).ValidateAndThrow(e);
 
     ApplyChange(e);
   }
@@ -60,7 +65,7 @@ public class PhoneAggregate : ContactAggregate
   /// <summary>
   /// Gets the country code of the phone.
   /// </summary>
-  public string CountryCode { get; private set; } = string.Empty;
+  public string? CountryCode { get; private set; }
 
   /// <summary>
   /// Gets the number of the phone.
@@ -130,15 +135,15 @@ public class PhoneAggregate : ContactAggregate
   /// Updates the phone number.
   /// </summary>
   /// <param name="actorId">The identifier of the actor updating the phone number.</param>
-  /// <param name="countryCode">The country code of the phone.</param>
   /// <param name="number">The number of the phone.</param>
+  /// <param name="countryCode">The country code of the phone.</param>
   /// <param name="extension">The extension of the phone.</param>
   /// <param name="isArchived">The archivation status of the phone number.</param>
   /// <param name="isDefault">The default status of the phone number.</param>
   /// <param name="isVerified">The verification status of the phone number.</param>
   /// <param name="label">The label describing the phone number.</param>
   /// <param name="customAttributes">The custom attributes of the phone number.</param>
-  public void Update(AggregateId actorId, string countryCode, string number,
+  public void Update(AggregateId actorId, string number, string? countryCode = null,
     string? extension = null, bool isArchived = false, bool isDefault = false, bool isVerified = false,
     string? label = null, Dictionary<string, string>? customAttributes = null)
   {
@@ -149,12 +154,12 @@ public class PhoneAggregate : ContactAggregate
       IsDefault = isDefault,
       IsVerified = isVerified,
       Label = label?.CleanTrim(),
-      CountryCode = countryCode.Trim(),
       Number = number.Trim(),
+      CountryCode = countryCode?.CleanTrim(),
       Extension = extension?.CleanTrim(),
       CustomAttributes = customAttributes ?? new()
     };
-    new PhoneUpdatedValidator().ValidateAndThrow(e);
+    new PhoneUpdatedValidator(DefaultRegion).ValidateAndThrow(e);
 
     ApplyChange(e);
   }
@@ -201,8 +206,12 @@ public class PhoneAggregate : ContactAggregate
   {
     StringBuilder s = new();
 
-    s.Append(CountryCode);
-    s.Append(' ');
+    if (CountryCode != null)
+    {
+      s.Append(CountryCode);
+      s.Append(' ');
+    }
+
     s.Append(Number);
 
     if (Extension != null)
@@ -212,7 +221,7 @@ public class PhoneAggregate : ContactAggregate
     }
 
     PhoneNumberUtil phoneUtil = PhoneNumberUtil.GetInstance();
-    PhoneNumber phone = phoneUtil.Parse(s.ToString(), defaultRegion: string.Empty);
+    PhoneNumber phone = phoneUtil.Parse(s.ToString(), DefaultRegion);
     string formatted = phoneUtil.Format(phone, PhoneNumberFormat.INTERNATIONAL);
 
     return $"{formatted} | {base.ToString()}";
