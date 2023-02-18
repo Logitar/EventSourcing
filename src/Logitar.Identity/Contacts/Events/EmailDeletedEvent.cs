@@ -4,7 +4,7 @@ using MediatR;
 namespace Logitar.Identity.Contacts.Events;
 
 /// <summary>
-/// Represents the event raised when a <see cref="EmailAggregate"/> is deleted.
+/// Represents the event raised when an <see cref="EmailAggregate"/> is deleted.
 /// </summary>
 public record EmailDeletedEvent : DomainEvent, INotification
 {

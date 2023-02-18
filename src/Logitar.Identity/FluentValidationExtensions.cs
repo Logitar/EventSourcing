@@ -1,7 +1,10 @@
 ﻿using FluentValidation;
+using Logitar.Identity.Contacts.Events;
 using Logitar.Identity.Realms;
 using NodaTime;
+using PhoneNumbers;
 using System.Globalization;
+using System.Text;
 
 namespace Logitar.Identity;
 
@@ -66,6 +69,43 @@ public static class FluentValidationExtensions
     return ruleBuilder.Must(s => s == null || !string.IsNullOrWhiteSpace(s))
       .WithErrorCode("NullOrNotEmptyValidator")
       .WithMessage("'{PropertyName}' must be null or not empty or white spaces only.");
+  }
+
+  /// <summary>
+  /// Defines a 'phone number' validator on the current rule builder. Validation will fail if the
+  /// validated object is not a valid phone number.
+  /// </summary>
+  /// <typeparam name="T">The type of the object being validated.</typeparam>
+  /// <param name="ruleBuilder">The rule builder.</param>
+  /// <returns>The rule builder.</returns>
+  public static IRuleBuilder<T, IPhoneNumber?> PhoneNumber<T>(this IRuleBuilder<T, IPhoneNumber> ruleBuilder)
+  {
+    return ruleBuilder.Must(p =>
+    {
+      StringBuilder phone = new();
+
+      phone.Append(p.CountryCode);
+      phone.Append(' ');
+      phone.Append(p.Number);
+
+      if (!string.IsNullOrEmpty(p.Extension))
+      {
+        phone.Append(" x");
+        phone.Append(p.Extension);
+      }
+
+      try
+      {
+        _ = PhoneNumberUtil.GetInstance().Parse(phone.ToString(), defaultRegion: string.Empty);
+      }
+      catch (NumberParseException)
+      {
+        return false;
+      }
+
+      return true;
+    }).WithErrorCode("PhoneNumberValidator")
+      .WithMessage("The phone number is not valid.");
   }
 
   /// <summary>
