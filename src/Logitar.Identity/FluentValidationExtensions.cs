@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Logitar.Identity.Contacts;
 using Logitar.Identity.Contacts.Events;
 using Logitar.Identity.Realms;
 using NodaTime;
@@ -25,6 +26,20 @@ public static class FluentValidationExtensions
     return ruleBuilder.Must(a => a == null || a.Split('-').All(w => !string.IsNullOrEmpty(w) && w.All(char.IsLetterOrDigit)))
       .WithErrorCode("AliasValidator")
       .WithMessage("'{PropertyName}' must be composed of non-empty alphanumeric words separated by hyphens (-).");
+  }
+
+  /// <summary>
+  /// Defines a 'country' validator on the current rule builder. Validation will fail if the property
+  /// does not have a value in the supported list of countries.
+  /// </summary>
+  /// <typeparam name="T">The type of the object being validated.</typeparam>
+  /// <param name="ruleBuilder">The rule builder.</param>
+  /// <returns>The rule builder.</returns>
+  public static IRuleBuilder<T, string?> Country<T>(this IRuleBuilder<T, string?> ruleBuilder)
+  {
+    return ruleBuilder.Must(x => x == null || PostalAddressHelper.GetCountry(x) != null)
+      .WithErrorCode("CountryValidator")
+      .WithMessage(x => $"'{{PropertyName}}' must be one of the following: {string.Join(", ", PostalAddressHelper.SupportedCountries)}");
   }
 
   /// <summary>
@@ -114,7 +129,7 @@ public static class FluentValidationExtensions
   }
 
   /// <summary>
-  /// Defines a 'time zone' validator on the current rule builder. Validation will failif the property
+  /// Defines a 'time zone' validator on the current rule builder. Validation will fail if the property
   /// is not a time zone in the tz database.
   /// </summary>
   /// <typeparam name="T">The type of the object being validated.</typeparam>
