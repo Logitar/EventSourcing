@@ -9,13 +9,13 @@ namespace Logitar.Identity.Realms.Commands;
 internal class DeleteRealmCommandHandler : IRequestHandler<DeleteRealmCommand, Realm>
 {
   /// <summary>
+  /// The actor context.
+  /// </summary>
+  private readonly IActorContext _actorContext;
+  /// <summary>
   /// The event store.
   /// </summary>
   private readonly IEventStore _eventStore;
-  /// <summary>
-  /// The identity context.
-  /// </summary>
-  private readonly IIdentityContext _identityContext;
   /// <summary>
   /// The realm querier.
   /// </summary>
@@ -25,14 +25,14 @@ internal class DeleteRealmCommandHandler : IRequestHandler<DeleteRealmCommand, R
   /// Initializes a new instance of the <see cref="DeleteRealmCommandHandler"/> class using the specified arguments.
   /// </summary>
   /// <param name="eventStore">The event store.</param>
-  /// <param name="identityContext">The identity context.</param>
+  /// <param name="actorContext">The actor context.</param>
   /// <param name="realmQuerier">The realm querier.</param>
-  public DeleteRealmCommandHandler(IEventStore eventStore,
-    IIdentityContext identityContext,
+  public DeleteRealmCommandHandler(IActorContext actorContext,
+    IEventStore eventStore,
     IRealmQuerier realmQuerier)
   {
+    _actorContext = actorContext;
     _eventStore = eventStore;
-    _identityContext = identityContext;
     _realmQuerier = realmQuerier;
   }
 
@@ -52,7 +52,7 @@ internal class DeleteRealmCommandHandler : IRequestHandler<DeleteRealmCommand, R
     Realm output = await _realmQuerier.GetAsync(realm.Id, cancellationToken)
       ?? throw new InvalidOperationException($"The realm output (Id={realm.Id}) could not be found.");
 
-    realm.Delete(_identityContext.ActorId);
+    realm.Delete(_actorContext.ActorId);
 
     await _eventStore.SaveAsync(realm, cancellationToken);
 

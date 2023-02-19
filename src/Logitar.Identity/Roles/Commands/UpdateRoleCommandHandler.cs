@@ -9,13 +9,13 @@ namespace Logitar.Identity.Roles.Commands;
 internal class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Role>
 {
   /// <summary>
+  /// The actor context.
+  /// </summary>
+  private readonly IActorContext _actorContext;
+  /// <summary>
   /// The event store.
   /// </summary>
   private readonly IEventStore _eventStore;
-  /// <summary>
-  /// The identity context.
-  /// </summary>
-  private readonly IIdentityContext _identityContext;
   /// <summary>
   /// The role querier.
   /// </summary>
@@ -24,15 +24,15 @@ internal class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Rol
   /// <summary>
   /// Initializes a new instance of the <see cref="UpdateRoleCommandHandler"/> class using the specified arguments.
   /// </summary>
+  /// /// <param name="actorContext">The actor context.</param>
   /// <param name="eventStore">The event store.</param>
-  /// <param name="identityContext">The identity context.</param>
   /// <param name="roleQuerier">The role querier.</param>
-  public UpdateRoleCommandHandler(IEventStore eventStore,
-    IIdentityContext identityContext,
+  public UpdateRoleCommandHandler(IActorContext actorContext,
+    IEventStore eventStore,
     IRoleQuerier roleQuerier)
   {
+    _actorContext = actorContext;
     _eventStore = eventStore;
-    _identityContext = identityContext;
     _roleQuerier = roleQuerier;
   }
 
@@ -54,7 +54,7 @@ internal class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Rol
 
     Dictionary<string, string>? customAttributes = input.CustomAttributes?.ToDictionary();
 
-    role.Update(_identityContext.ActorId, input.DisplayName, input.Description, customAttributes);
+    role.Update(_actorContext.ActorId, input.DisplayName, input.Description, customAttributes);
 
     await _eventStore.SaveAsync(role, cancellationToken);
 

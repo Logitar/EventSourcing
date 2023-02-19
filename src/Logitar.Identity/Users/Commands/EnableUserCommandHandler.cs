@@ -9,13 +9,13 @@ namespace Logitar.Identity.Users.Commands;
 internal class EnableUserCommandHandler : IRequestHandler<EnableUserCommand, User>
 {
   /// <summary>
+  /// The actor context.
+  /// </summary>
+  private readonly IActorContext _actorContext;
+  /// <summary>
   /// The event store.
   /// </summary>
   private readonly IEventStore _eventStore;
-  /// <summary>
-  /// The identity context.
-  /// </summary>
-  private readonly IIdentityContext _identityContext;
   /// <summary>
   /// The user querier.
   /// </summary>
@@ -24,15 +24,15 @@ internal class EnableUserCommandHandler : IRequestHandler<EnableUserCommand, Use
   /// <summary>
   /// Initializes a new instance of the <see cref="EnableUserCommandHandler"/> class using the specified arguments.
   /// </summary>
+  /// <param name="actorContext">The actor context.</param>
   /// <param name="eventStore">The event store.</param>
-  /// <param name="identityContext">The identity context.</param>
   /// <param name="userQuerier">The user querier.</param>
-  public EnableUserCommandHandler(IEventStore eventStore,
-    IIdentityContext identityContext,
+  public EnableUserCommandHandler(IActorContext actorContext,
+    IEventStore eventStore,
     IUserQuerier userQuerier)
   {
+    _actorContext = actorContext;
     _eventStore = eventStore;
-    _identityContext = identityContext;
     _userQuerier = userQuerier;
   }
 
@@ -50,7 +50,7 @@ internal class EnableUserCommandHandler : IRequestHandler<EnableUserCommand, Use
     UserAggregate user = await _eventStore.LoadAsync<UserAggregate>(id, cancellationToken)
       ?? throw new AggregateNotFoundException<UserAggregate>(id);
 
-    user.Enable(_identityContext.ActorId);
+    user.Enable(_actorContext.ActorId);
 
     await _eventStore.SaveAsync(user, cancellationToken);
 

@@ -10,13 +10,13 @@ namespace Logitar.Identity.Roles.Commands;
 internal class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, Role>
 {
   /// <summary>
+  /// The actor context.
+  /// </summary>
+  private readonly IActorContext _actorContext;
+  /// <summary>
   /// The event store.
   /// </summary>
   private readonly IEventStore _eventStore;
-  /// <summary>
-  /// The identity context.
-  /// </summary>
-  private readonly IIdentityContext _identityContext;
   /// <summary>
   /// The role querier.
   /// </summary>
@@ -29,17 +29,17 @@ internal class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, Rol
   /// <summary>
   /// Initializes a new instance of the <see cref="CreateRoleCommandHandler"/> class using the specified arguments.
   /// </summary>
+  /// <param name="actorContext">The actor context.</param>
   /// <param name="eventStore">The event store.</param>
-  /// <param name="identityContext">The identity context.</param>
   /// <param name="roleQuerier">The role querier.</param>
   /// <param name="roleRepository">The role repository.</param>
-  public CreateRoleCommandHandler(IEventStore eventStore,
-    IIdentityContext identityContext,
+  public CreateRoleCommandHandler(IActorContext actorContext,
+    IEventStore eventStore,
     IRoleQuerier roleQuerier,
     IRoleRepository roleRepository)
   {
+    _actorContext = actorContext;
     _eventStore = eventStore;
-    _identityContext = identityContext;
     _roleQuerier = roleQuerier;
     _roleRepository = roleRepository;
   }
@@ -68,7 +68,7 @@ internal class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, Rol
 
     Dictionary<string, string>? customAttributes = input.CustomAttributes?.ToDictionary();
 
-    RoleAggregate role = new(_identityContext.ActorId, realm, input.UniqueName, input.DisplayName,
+    RoleAggregate role = new(_actorContext.ActorId, realm, input.UniqueName, input.DisplayName,
       input.Description, customAttributes);
 
     await _eventStore.SaveAsync(role, cancellationToken);
