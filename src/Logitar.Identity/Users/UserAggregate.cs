@@ -375,7 +375,10 @@ public class UserAggregate : AggregateRoot
   /// <param name="e">The domain event.</param>
   protected virtual void Apply(UserUpdatedEvent e)
   {
-    PasswordHash = e.PasswordHash;
+    if (e.PasswordHash != null)
+    {
+      PasswordHash = e.PasswordHash;
+    }
 
     FirstName = e.FirstName;
     MiddleName = e.MiddleName;

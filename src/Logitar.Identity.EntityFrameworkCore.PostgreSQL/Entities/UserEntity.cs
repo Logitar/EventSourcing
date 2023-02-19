@@ -262,16 +262,9 @@ internal class UserEntity : AggregateEntity
   /// <param name="passwordHash">The new password the user.</param>
   private void SetPassword(DomainEvent e, string? passwordHash)
   {
-    PasswordHash = passwordHash;
-
-    if (passwordHash == null)
+    if (passwordHash != null)
     {
-      PasswordChangedById = null;
-      PasswordChangedOn = null;
-      HasPassword = false;
-    }
-    else
-    {
+      PasswordHash = passwordHash;
       PasswordChangedById = e.ActorId.Value;
       PasswordChangedOn = e.OccurredOn;
       HasPassword = true;
