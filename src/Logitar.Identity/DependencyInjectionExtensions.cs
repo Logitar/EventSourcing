@@ -1,4 +1,5 @@
-﻿using Logitar.Identity.Realms;
+﻿using Logitar.Identity.Contacts;
+using Logitar.Identity.Realms;
 using Logitar.Identity.Roles;
 using Logitar.Identity.Users;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,7 @@ public static class DependencyInjectionExtensions
   private static IServiceCollection AddFacades(this IServiceCollection services)
   {
     return services
+      .AddTransient<IAddressService, AddressService>()
       .AddTransient<IRealmService, RealmService>()
       .AddTransient<IRoleService, RoleService>()
       .AddTransient<IUserService, UserService>();

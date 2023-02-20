@@ -10,9 +10,9 @@ public abstract record UpdateContactInput
   /// </summary>
   public bool IsArchived { get; set; }
   /// <summary>
-  /// Gets or sets the default status of the contact.
+  /// Gets or sets the default status action of the contact. If true, the contact will be set default.
   /// </summary>
-  public bool IsDefault { get; set; }
+  public bool SetDefault { get; set; }
   /// <summary>
   /// Gets or sets the verification status of the contact.
   /// </summary>

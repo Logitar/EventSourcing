@@ -28,7 +28,7 @@ internal class GetRealmQueryHandler : IRequestHandler<GetRealmQuery, Realm?>
   /// <param name="request">The query to handle.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The retrieved realm or null.</returns>
-  /// <exception cref="TooManyResultsException">More than one realms have been founded.</exception>
+  /// <exception cref="TooManyResultsException">More than one realms have been found.</exception>
   public async Task<Realm?> Handle(GetRealmQuery request, CancellationToken cancellationToken)
   {
     List<Realm> realms = new(capacity: 2);

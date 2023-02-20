@@ -28,7 +28,7 @@ internal class GetUserQueryHandler : IRequestHandler<GetUserQuery, User?>
   /// <param name="request">The query to handle.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The retrieved user or null.</returns>
-  /// <exception cref="TooManyResultsException">More than one users have been founded.</exception>
+  /// <exception cref="TooManyResultsException">More than one users have been found.</exception>
   public async Task<User?> Handle(GetUserQuery request, CancellationToken cancellationToken)
   {
     List<User> users = new(capacity: 2);

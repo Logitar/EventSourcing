@@ -1,24 +1,49 @@
-﻿namespace Logitar.Identity.Contacts;
+﻿using Logitar.Identity.Contacts.Commands;
+using Logitar.Identity.Contacts.Queries;
+
+namespace Logitar.Identity.Contacts;
 
 /// <summary>
-/// Exposes methods to manage postal addresses in the identity system.
+/// Implements methods to manage postal addresses in the identity system.
 /// </summary>
-public interface IAddressService
+internal class AddressService : IAddressService
 {
+  /// <summary>
+  /// The request pipeline.
+  /// </summary>
+  private readonly IRequestPipeline _requestPipeline;
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="AddressService"/> class using the specified arguments.
+  /// </summary>
+  /// <param name="requestPipeline">The request pipeline.</param>
+  public AddressService(IRequestPipeline requestPipeline)
+  {
+    _requestPipeline = requestPipeline;
+  }
+
   /// <summary>
   /// Creates a new postal address.
   /// </summary>
   /// <param name="input">The input creation arguments.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The newly created postal address.</returns>
-  Task<Address> CreateAsync(CreateAddressInput input, CancellationToken cancellationToken = default);
+  public async Task<Address> CreateAsync(CreateAddressInput input, CancellationToken cancellationToken)
+  {
+    return await _requestPipeline.ExecuteAsync(new CreateAddressCommand(input), cancellationToken);
+  }
+
   /// <summary>
   /// Deletes a postal address.
   /// </summary>
   /// <param name="id">The identifier of the postal address.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The deleted postal address.</returns>
-  Task<Address> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+  public async Task<Address> DeleteAsync(Guid id, CancellationToken cancellationToken)
+  {
+    return await _requestPipeline.ExecuteAsync(new DeleteAddressCommand(id), cancellationToken);
+  }
+
   /// <summary>
   /// Retrieves a postal address by the specified unique values.
   /// </summary>
@@ -26,7 +51,11 @@ public interface IAddressService
   /// <param name="userId">The identifier of the user to get the default postal address.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The postal address, or null if not found.</returns>
-  Task<Address?> GetAsync(Guid? id = null, Guid? userId = null, CancellationToken cancellationToken = default);
+  public async Task<Address?> GetAsync(Guid? id, Guid? userId, CancellationToken cancellationToken)
+  {
+    return await _requestPipeline.ExecuteAsync(new GetAddressQuery(id, userId), cancellationToken);
+  }
+
   /// <summary>
   /// Retrieves a list of postal addresses using the specified filters, sorting and paging arguments.
   /// </summary>
@@ -40,15 +69,24 @@ public interface IAddressService
   /// <param name="take">The number of postal addresses to return.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The list of postal addresses, or empty if none found.</returns>
-  Task<PagedList<Address>> GetAsync(bool? isArchived = null, bool? isVerified = null, string? search = null, Guid? userId = null,
-    AddressSort? sort = null, bool isDescending = false, int? skip = null, int? take = null, CancellationToken cancellationToken = default);
+  public async Task<PagedList<Address>> GetAsync(bool? isArchived, bool? isVerified, string? search, Guid? userId,
+    AddressSort? sort, bool isDescending, int? skip, int? take, CancellationToken cancellationToken)
+  {
+    return await _requestPipeline.ExecuteAsync(new GetAddressesQuery(isArchived, isVerified, search, userId,
+      sort, isDescending, skip, take), cancellationToken);
+  }
+
   /// <summary>
   /// Sets a postal address the default for its user.
   /// </summary>
   /// <param name="id">The identifier of the postal address.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The new default postal address.</returns>
-  Task<Address> SetDefaultAsync(Guid id, CancellationToken cancellationToken = default);
+  public async Task<Address> SetDefaultAsync(Guid id, CancellationToken cancellationToken)
+  {
+    return await _requestPipeline.ExecuteAsync(new SetDefaultAddressCommand(id), cancellationToken);
+  }
+
   /// <summary>
   /// Updates a postal address.
   /// </summary>
@@ -56,12 +94,19 @@ public interface IAddressService
   /// <param name="input">The input update arguments.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The updated postal address.</returns>
-  Task<Address> UpdateAsync(Guid id, UpdateAddressInput input, CancellationToken cancellationToken = default);
+  public async Task<Address> UpdateAsync(Guid id, UpdateAddressInput input, CancellationToken cancellationToken)
+  {
+    return await _requestPipeline.ExecuteAsync(new UpdateAddressCommand(id, input), cancellationToken);
+  }
+
   /// <summary>
   /// Verifies a postal address.
   /// </summary>
   /// <param name="id">The identifier of the postal address.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The verified postal address.</returns>
-  Task<Address> VerifyAsync(Guid id, CancellationToken cancellationToken = default);
+  public async Task<Address> VerifyAsync(Guid id, CancellationToken cancellationToken)
+  {
+    return await _requestPipeline.ExecuteAsync(new VerifyAddressCommand(id), cancellationToken);
+  }
 }
