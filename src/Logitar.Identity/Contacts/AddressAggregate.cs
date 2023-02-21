@@ -166,9 +166,8 @@ public class AddressAggregate : ContactAggregate
   /// <param name="label">The label describing the postal address.</param>
   /// <param name="customAttributes">The custom attributes of the postal address.</param>
   public void Update(AggregateId actorId, string line1, string locality, string country,
-    string? line2 = null, string? postalCode = null, string? region = null, bool isArchived = false,
-    bool isDefault = false, bool isVerified = false, string? label = null,
-    Dictionary<string, string>? customAttributes = null)
+    string? line2, string? postalCode, string? region, bool isArchived, bool isDefault,
+    bool isVerified, string? label, Dictionary<string, string>? customAttributes)
   {
     line1 = line1.Trim();
     locality = locality.Trim();

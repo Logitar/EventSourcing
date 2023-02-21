@@ -143,9 +143,9 @@ public class PhoneAggregate : ContactAggregate
   /// <param name="isVerified">The verification status of the phone number.</param>
   /// <param name="label">The label describing the phone number.</param>
   /// <param name="customAttributes">The custom attributes of the phone number.</param>
-  public void Update(AggregateId actorId, string number, string? countryCode = null,
-    string? extension = null, bool isArchived = false, bool isDefault = false, bool isVerified = false,
-    string? label = null, Dictionary<string, string>? customAttributes = null)
+  public void Update(AggregateId actorId, string number, string? countryCode, string? extension,
+    bool isArchived, bool isDefault, bool isVerified, string? label,
+    Dictionary<string, string>? customAttributes)
   {
     number = number.Trim();
     countryCode = countryCode?.CleanTrim();

@@ -340,11 +340,10 @@ public class UserAggregate : AggregateRoot
   /// <param name="website">The link (URL) to the website of the user.</param>
   /// <param name="customAttributes">The custom attributes of the user.</param>
   /// <param name="roles">The roles of the user.</param>
-  public void Update(AggregateId actorId, string? passwordHash = null, string? firstName = null,
-    string? middleName = null, string? lastName = null, string? nickname = null, DateTime? birthdate = null,
-    Gender? gender = null, CultureInfo? locale = null, string? timeZone = null, string? picture = null,
-    string? profile = null, string? website = null, Dictionary<string, string>? customAttributes = null,
-    IEnumerable<RoleAggregate>? roles = null)
+  public void Update(AggregateId actorId, string? passwordHash, string? firstName, string? middleName,
+    string? lastName, string? nickname, DateTime? birthdate, Gender? gender, CultureInfo? locale,
+    string? timeZone, string? picture, string? profile, string? website,
+    Dictionary<string, string>? customAttributes, IEnumerable<RoleAggregate>? roles)
   {
     UserUpdatedEvent e = new()
     {

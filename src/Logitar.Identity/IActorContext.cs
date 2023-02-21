@@ -3,7 +3,7 @@
 namespace Logitar.Identity;
 
 /// <summary>
-/// TODO(fpion): implement
+/// Represents the acting context of the identity system.
 /// </summary>
 public interface IActorContext
 {

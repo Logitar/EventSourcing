@@ -124,7 +124,10 @@ internal class UserQuerier : IUserQuerier
     }
     if (realm != null)
     {
-      string aggregateId = new AggregateId(realm).Value;
+      string aggregateId = (Guid.TryParse(realm, out Guid realmId)
+        ? new AggregateId(realmId)
+        : new AggregateId(realm)).Value;
+
       query = query.Where(x => x.Realm!.AggregateId == aggregateId || x.Realm.UniqueNameNormalized == realm.ToUpper());
     }
     if (search != null)

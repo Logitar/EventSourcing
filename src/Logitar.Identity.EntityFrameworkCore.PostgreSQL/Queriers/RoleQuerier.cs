@@ -66,7 +66,9 @@ internal class RoleQuerier : IRoleQuerier
   /// <returns>The role or null if not found.</returns>
   public async Task<Role?> GetAsync(string realm, string uniqueName, CancellationToken cancellationToken)
   {
-    string aggregateId = new AggregateId(realm).Value;
+    string aggregateId = (Guid.TryParse(realm, out Guid realmId)
+      ? new AggregateId(realmId)
+      : new AggregateId(realm)).Value;
 
     RoleEntity? role = await _roles.AsNoTracking()
       .Include(x => x.Realm)
@@ -95,7 +97,9 @@ internal class RoleQuerier : IRoleQuerier
 
     if (realm != null)
     {
-      string aggregateId = new AggregateId(realm).Value;
+      string aggregateId = (Guid.TryParse(realm, out Guid realmId)
+        ? new AggregateId(realmId)
+        : new AggregateId(realm)).Value;
       query = query.Where(x => x.Realm!.AggregateId == aggregateId || x.Realm.UniqueNameNormalized == realm.ToUpper());
     }
     if (search != null)

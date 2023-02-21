@@ -61,7 +61,7 @@ internal class DeleteEmailCommandHandler : IRequestHandler<DeleteEmailCommand, E
       IEnumerable<EmailAggregate> emails = await _emailRepository.LoadByUserAsync(email.UserId, cancellationToken);
       if (emails.Any(a => !a.Equals(email)))
       {
-        throw new NotImplementedException(); // TODO(fpion): implement
+        throw new CannotDeleteDefaultContactException(email);
       }
     }
 

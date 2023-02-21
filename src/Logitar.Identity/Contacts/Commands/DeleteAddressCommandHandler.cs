@@ -61,7 +61,7 @@ internal class DeleteAddressCommandHandler : IRequestHandler<DeleteAddressComman
       IEnumerable<AddressAggregate> addresses = await _addressRepository.LoadByUserAsync(address.UserId, cancellationToken);
       if (addresses.Any(a => !a.Equals(address)))
       {
-        throw new NotImplementedException(); // TODO(fpion): implement
+        throw new CannotDeleteDefaultContactException(address);
       }
     }
 

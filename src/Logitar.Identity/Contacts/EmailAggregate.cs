@@ -129,9 +129,8 @@ public class EmailAggregate : ContactAggregate
   /// <param name="isVerified">The verification status of the email address.</param>
   /// <param name="label">The label describing the email address.</param>
   /// <param name="customAttributes">The custom attributes of the email address.</param>
-  public void Update(AggregateId actorId, string address, bool isLogin = false, bool isArchived = false,
-    bool isDefault = false, bool isVerified = false, string? label = null,
-    Dictionary<string, string>? customAttributes = null)
+  public void Update(AggregateId actorId, string address, bool isLogin, bool isArchived,
+    bool isDefault, bool isVerified, string? label, Dictionary<string, string>? customAttributes)
   {
     address = address.Trim();
 

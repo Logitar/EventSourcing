@@ -61,7 +61,7 @@ internal class DeletePhoneCommandHandler : IRequestHandler<DeletePhoneCommand, P
       IEnumerable<PhoneAggregate> phones = await _phoneRepository.LoadByUserAsync(phone.UserId, cancellationToken);
       if (phones.Any(a => !a.Equals(phone)))
       {
-        throw new NotImplementedException(); // TODO(fpion): implement
+        throw new CannotDeleteDefaultContactException(phone);
       }
     }
 

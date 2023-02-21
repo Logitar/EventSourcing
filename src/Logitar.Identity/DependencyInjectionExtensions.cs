@@ -1,4 +1,5 @@
-﻿using Logitar.Identity.Contacts;
+﻿using Logitar.Identity.ApiKeys;
+using Logitar.Identity.Contacts;
 using Logitar.Identity.Realms;
 using Logitar.Identity.Roles;
 using Logitar.Identity.Users;
@@ -24,6 +25,7 @@ public static class DependencyInjectionExtensions
     return services
       .AddFacades()
       .AddMediatR(config => config.RegisterServicesFromAssembly(assembly))
+      .AddTransient<IApiKeyHelper, ApiKeyHelper>()
       .AddTransient<IPasswordHelper, PasswordHelper>()
       .AddTransient<IUserHelper, UserHelper>();
   }
@@ -36,6 +38,7 @@ public static class DependencyInjectionExtensions
   private static IServiceCollection AddFacades(this IServiceCollection services)
   {
     return services
+      .AddTransient<IApiKeyService, ApiKeyService>()
       .AddTransient<IAddressService, AddressService>()
       .AddTransient<IEmailService, EmailService>()
       .AddTransient<IPhoneService, PhoneService>()

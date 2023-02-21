@@ -44,12 +44,77 @@ internal class Pbkdf2
   private readonly byte[] _hash;
 
   /// <summary>
-  /// Initializes a new instance of the <see cref="Pbkdf2"/> using the specified password.
+  /// Initializes a new instance of the <see cref="Pbkdf2"/> class using the specified password.
   /// </summary>
   /// <param name="password">The password to salt and hash.</param>
   public Pbkdf2(string password)
   {
     _hash = ComputeHash(password);
+  }
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="Pbkdf2"/> class using the specified arguments.
+  /// </summary>
+  /// <param name="algorithm">The algorithm used to hash the password.</param>
+  /// <param name="iterationCount">The algorithm iteration count.</param>
+  /// <param name="salt">The password salt.</param>
+  /// <param name="hash">The password hash.</param>
+  private Pbkdf2(KeyDerivationPrf algorithm, int iterationCount, byte[] salt, byte[] hash)
+  {
+    _algorithm = algorithm;
+    _iterationCount = iterationCount;
+    _salt = salt;
+    _hash = hash;
+  }
+
+  /// <summary>
+  /// Parses the specified PBKDF2 string representation.
+  /// </summary>
+  /// <param name="s">The string representation.</param>
+  /// <returns>The parsed PBKDF2 instance.</returns>
+  /// <exception cref="ArgumentException">The string is not a valid PBKDF2 string.</exception>
+  public static Pbkdf2 Parse(string s)
+  {
+    string[] values = s.Split(Separator);
+    if (values.Length != 4)
+    {
+      throw new ArgumentException($"The value '{s}' is not a valid PBKDF2 string.", nameof(s));
+    }
+
+    return new Pbkdf2(Enum.Parse<KeyDerivationPrf>(values[0]),
+      int.Parse(values[1]),
+      Convert.FromBase64String(values[2]),
+      Convert.FromBase64String(values[3]));
+  }
+  /// <summary>
+  /// Tries parsing the specified PBKDF2 string representation.
+  /// </summary>
+  /// <param name="s">The string representation.</param>
+  /// <param name="pbkdf2">The parsed PBKDF2 instance.</param>
+  /// <returns>A value indicating whether or not the PBKDF2 string could be parsed.</returns>
+  public static bool TryParse(string s, out Pbkdf2? pbkdf2)
+  {
+    try
+    {
+      pbkdf2 = Parse(s);
+
+      return true;
+    }
+    catch (Exception)
+    {
+      pbkdf2 = null;
+
+      return false;
+    }
+  }
+  /// <summary>
+  /// Returns a value indicating whether or not the specified password did match this PBKDF2 instance.
+  /// </summary>
+  /// <param name="password">The password to match.</param>
+  /// <returns>True if the password did match.</returns>
+  public bool IsMatch(string password)
+  {
+    return _hash.SequenceEqual(ComputeHash(password, _hash.Length));
   }
 
   /// <summary>
