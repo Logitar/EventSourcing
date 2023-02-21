@@ -37,6 +37,8 @@ public static class DependencyInjectionExtensions
   {
     return services
       .AddTransient<IAddressService, AddressService>()
+      .AddTransient<IEmailService, EmailService>()
+      .AddTransient<IPhoneService, PhoneService>()
       .AddTransient<IRealmService, RealmService>()
       .AddTransient<IRoleService, RoleService>()
       .AddTransient<IUserService, UserService>();

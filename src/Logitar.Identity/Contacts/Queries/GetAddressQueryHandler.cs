@@ -31,22 +31,22 @@ internal class GetAddressQueryHandler : IRequestHandler<GetAddressQuery, Address
   /// <exception cref="TooManyResultsException">More than one postal addresses have been found.</exception>
   public async Task<Address?> Handle(GetAddressQuery request, CancellationToken cancellationToken)
   {
-    List<Address> roles = new(capacity: 2);
+    List<Address> addresses = new(capacity: 2);
 
     if (request.Id.HasValue)
     {
-      roles.AddIfNotNull(await _addressQuerier.GetAsync(request.Id.Value, cancellationToken));
+      addresses.AddIfNotNull(await _addressQuerier.GetAsync(request.Id.Value, cancellationToken));
     }
     if (request.UserId.HasValue)
     {
-      roles.AddIfNotNull(await _addressQuerier.GetDefaultAsync(request.UserId.Value, cancellationToken));
+      addresses.AddIfNotNull(await _addressQuerier.GetDefaultAsync(request.UserId.Value, cancellationToken));
     }
 
-    if (roles.Count > 1)
+    if (addresses.Count > 1)
     {
       throw new TooManyResultsException();
     }
 
-    return roles.SingleOrDefault();
+    return addresses.SingleOrDefault();
   }
 }
