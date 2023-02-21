@@ -1,22 +1,21 @@
 ﻿using AutoMapper;
+using Logitar.Identity.Contacts;
 using Logitar.Identity.EntityFrameworkCore.PostgreSQL.Entities;
-using Logitar.Identity.Roles;
 
 namespace Logitar.Identity.EntityFrameworkCore.PostgreSQL.Profiles;
 
 /// <summary>
-/// The profile used to configure mapping of roles.
+/// The profile used to configure mapping of contact informations.
 /// </summary>
-internal class RoleProfile : Profile
+internal class ContactProfile : Profile
 {
   /// <summary>
-  /// Initializes a new instance of the <see cref="RoleProfile"/> class.
+  /// Initializes a new instance of the <see cref="ContactProfile"/> class.
   /// </summary>
-  public RoleProfile()
+  public ContactProfile()
   {
-    CreateMap<RoleEntity, Role>()
+    CreateMap<ContactEntity, Contact>()
       .IncludeBase<AggregateEntity, Aggregate>()
-      .ForMember(x => x.Id, x => x.MapFrom(MappingHelper.ToGuid))
       .ForMember(x => x.CustomAttributes, x => x.MapFrom(MappingHelper.GetCustomAttributes));
   }
 }

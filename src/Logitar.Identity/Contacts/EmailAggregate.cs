@@ -133,14 +133,26 @@ public class EmailAggregate : ContactAggregate
     bool isDefault = false, bool isVerified = false, string? label = null,
     Dictionary<string, string>? customAttributes = null)
   {
+    address = address.Trim();
+
+    VerificationAction verificationAction = VerificationAction.None;
+    if (isVerified)
+    {
+      verificationAction = VerificationAction.Verify;
+    }
+    else if (Address != address)
+    {
+      verificationAction = VerificationAction.Unverify;
+    }
+
     EmailUpdatedEvent e = new()
     {
       ActorId = actorId,
       IsArchived = isArchived,
       IsDefault = isDefault,
-      IsVerified = isVerified,
+      VerificationAction = verificationAction,
       Label = label?.CleanTrim(),
-      Address = address.Trim(),
+      Address = address,
       IsLogin = isLogin,
       CustomAttributes = customAttributes ?? new()
     };

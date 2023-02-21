@@ -23,8 +23,8 @@ internal class RealmQuerier : IRealmQuerier
   /// <summary>
   /// Initializes a new instance of the <see cref="RealmQuerier"/> class.
   /// </summary>
+  /// <param name="context">The identity context.</param>
   /// <param name="mapper">The mapper instance.</param>
-  /// <param name="realms">The data set of realms.</param>
   public RealmQuerier(IdentityContext context, IMapper mapper)
   {
     _mapper = mapper;

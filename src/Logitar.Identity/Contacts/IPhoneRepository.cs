@@ -19,6 +19,6 @@ public interface IPhoneRepository
   /// </summary>
   /// <param name="userId">The identifier of the user to retrieve the default phone number.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
-  /// <returns>The phone numbers or null if not found.</returns>
+  /// <returns>The default phone number or null if not found.</returns>
   Task<PhoneAggregate?> LoadDefaultAsync(AggregateId userId, CancellationToken cancellationToken = default);
 }

@@ -19,6 +19,6 @@ public interface IAddressRepository
   /// </summary>
   /// <param name="userId">The identifier of the user to retrieve the default postal address.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
-  /// <returns>The postal addresses or null if not found.</returns>
+  /// <returns>The default postal address or null if not found.</returns>
   Task<AddressAggregate?> LoadDefaultAsync(AggregateId userId, CancellationToken cancellationToken = default);
 }

@@ -91,7 +91,16 @@ public abstract class ContactAggregate : AggregateRoot
   {
     IsArchived = e.IsArchived;
     IsDefault = e.IsDefault;
-    IsVerified = e.IsVerified;
+
+    switch (e.VerificationAction)
+    {
+      case VerificationAction.Unverify:
+        IsVerified = false;
+        break;
+      case VerificationAction.Verify:
+        IsVerified = true;
+        break;
+    }
 
     Label = e.Label;
 

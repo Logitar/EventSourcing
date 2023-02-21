@@ -6,7 +6,7 @@ namespace Logitar.Identity.EntityFrameworkCore.PostgreSQL.Entities;
 /// <summary>
 /// The database model representing a realm.
 /// </summary>
-internal class RealmEntity : AggregateEntity
+internal class RealmEntity : AggregateEntity, ICustomAttributes
 {
   /// <summary>
   /// Initializes a new instance of the <see cref="RealmEntity"/> to the state of the specified event.

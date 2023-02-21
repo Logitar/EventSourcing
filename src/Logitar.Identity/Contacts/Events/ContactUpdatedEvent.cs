@@ -16,9 +16,9 @@ public abstract record ContactUpdatedEvent : DomainEvent
   /// </summary>
   public bool IsDefault { get; init; }
   /// <summary>
-  /// Gets or sets the verification status of the contact.
+  /// Gets or sets the verification action performed by this event.
   /// </summary>
-  public bool IsVerified { get; init; }
+  public VerificationAction VerificationAction { get; init; }
 
   /// <summary>
   /// Gets or sets the label describing the contact.

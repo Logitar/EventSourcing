@@ -147,16 +147,30 @@ public class PhoneAggregate : ContactAggregate
     string? extension = null, bool isArchived = false, bool isDefault = false, bool isVerified = false,
     string? label = null, Dictionary<string, string>? customAttributes = null)
   {
+    number = number.Trim();
+    countryCode = countryCode?.CleanTrim();
+    extension = extension?.CleanTrim();
+
+    VerificationAction verificationAction = VerificationAction.None;
+    if (isVerified)
+    {
+      verificationAction = VerificationAction.Verify;
+    }
+    else if (CountryCode != countryCode || Number != number || Extension != extension)
+    {
+      verificationAction = VerificationAction.Unverify;
+    }
+
     PhoneUpdatedEvent e = new()
     {
       ActorId = actorId,
       IsArchived = isArchived,
       IsDefault = isDefault,
-      IsVerified = isVerified,
+      VerificationAction = verificationAction,
       Label = label?.CleanTrim(),
-      Number = number.Trim(),
-      CountryCode = countryCode?.CleanTrim(),
-      Extension = extension?.CleanTrim(),
+      Number = number,
+      CountryCode = countryCode,
+      Extension = extension,
       CustomAttributes = customAttributes ?? new()
     };
     new PhoneUpdatedValidator(DefaultRegion).ValidateAndThrow(e);

@@ -19,6 +19,6 @@ public interface IEmailRepository
   /// </summary>
   /// <param name="userId">The identifier of the user to retrieve the default email address.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
-  /// <returns>The email addresses or null if not found.</returns>
+  /// <returns>The default email address or null if not found.</returns>
   Task<EmailAggregate?> LoadDefaultAsync(AggregateId userId, CancellationToken cancellationToken = default);
 }

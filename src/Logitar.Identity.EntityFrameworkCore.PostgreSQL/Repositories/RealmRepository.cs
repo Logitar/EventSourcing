@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Logitar.Identity.EntityFrameworkCore.PostgreSQL.Repositories;
 
 /// <summary>
-/// Implements methods to save and load realms from the event store.
+/// Implements methods to load realms from the event store.
 /// </summary>
 internal class RealmRepository : EventStore, IRealmRepository
 {

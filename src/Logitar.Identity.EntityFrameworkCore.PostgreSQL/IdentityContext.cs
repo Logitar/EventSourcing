@@ -17,9 +17,21 @@ public class IdentityContext : DbContext
   }
 
   /// <summary>
+  /// Gets or sets the data set of postal addresses.
+  /// </summary>
+  internal DbSet<AddressEntity> Addresses { get; private set; } = null!;
+  /// <summary>
+  /// Gets or sets the data set of email addresses.
+  /// </summary>
+  internal DbSet<EmailEntity> Emails { get; private set; } = null!;
+  /// <summary>
   /// Gets or sets the data set of external identifiers.
   /// </summary>
   internal DbSet<ExternalIdentifierEntity> ExternalIdentifiers { get; private set; } = null!;
+  /// <summary>
+  /// Gets or sets the data set of phone numbers.
+  /// </summary>
+  internal DbSet<PhoneEntity> Phones { get; private set; } = null!;
   /// <summary>
   /// Gets or sets the data set of realms.
   /// </summary>

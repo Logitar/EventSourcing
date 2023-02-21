@@ -170,19 +170,37 @@ public class AddressAggregate : ContactAggregate
     bool isDefault = false, bool isVerified = false, string? label = null,
     Dictionary<string, string>? customAttributes = null)
   {
+    line1 = line1.Trim();
+    locality = locality.Trim();
+    country = country.Trim();
+    line2 = line2?.CleanTrim();
+    postalCode = postalCode?.CleanTrim();
+    region = region?.CleanTrim();
+
+    VerificationAction verificationAction = VerificationAction.None;
+    if (isVerified)
+    {
+      verificationAction = VerificationAction.Verify;
+    }
+    else if (Line1 != line1 || Line2 != line2 || Locality != locality
+      || PostalCode != postalCode || Country != country || Region != region)
+    {
+      verificationAction = VerificationAction.Unverify;
+    }
+
     AddressUpdatedEvent e = new()
     {
       ActorId = actorId,
       IsArchived = isArchived,
       IsDefault = isDefault,
-      IsVerified = isVerified,
+      VerificationAction = verificationAction,
       Label = label?.CleanTrim(),
-      Line1 = line1.Trim(),
-      Line2 = line2?.CleanTrim(),
-      Locality = locality.Trim(),
-      PostalCode = postalCode?.CleanTrim(),
-      Country = country.Trim(),
-      Region = region?.CleanTrim(),
+      Line1 = line1,
+      Line2 = line2,
+      Locality = locality,
+      PostalCode = postalCode,
+      Country = country,
+      Region = region,
       CustomAttributes = customAttributes ?? new()
     };
     new AddressUpdatedValidator().ValidateAndThrow(e);
