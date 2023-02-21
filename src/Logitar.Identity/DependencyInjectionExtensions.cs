@@ -1,4 +1,5 @@
-﻿using Logitar.Identity.Realms;
+﻿using Logitar.Identity.Contacts;
+using Logitar.Identity.Realms;
 using Logitar.Identity.Roles;
 using Logitar.Identity.Users;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,9 +26,6 @@ public static class DependencyInjectionExtensions
       .AddMediatR(config => config.RegisterServicesFromAssembly(assembly))
       .AddTransient<IPasswordHelper, PasswordHelper>()
       .AddTransient<IUserHelper, UserHelper>();
-
-    // TODO(fpion): IIdentityContext
-    // TODO(fpion): IRequestPipeline
   }
 
   /// <summary>
@@ -38,6 +36,9 @@ public static class DependencyInjectionExtensions
   private static IServiceCollection AddFacades(this IServiceCollection services)
   {
     return services
+      .AddTransient<IAddressService, AddressService>()
+      .AddTransient<IEmailService, EmailService>()
+      .AddTransient<IPhoneService, PhoneService>()
       .AddTransient<IRealmService, RealmService>()
       .AddTransient<IRoleService, RoleService>()
       .AddTransient<IUserService, UserService>();

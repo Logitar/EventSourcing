@@ -7,7 +7,7 @@ namespace Logitar.Identity.EntityFrameworkCore.PostgreSQL.Configurations;
 /// <summary>
 /// The model configuration used to configure classes inheriting the <see cref="AggregateEntity"/> class.
 /// </summary>
-/// <typeparam name="T"></typeparam>
+/// <typeparam name="T">The type of the inheriting class.</typeparam>
 public abstract class AggregateConfiguration<T> where T : AggregateEntity
 {
   /// <summary>

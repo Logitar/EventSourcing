@@ -12,13 +12,13 @@ namespace Logitar.Identity.Users.Commands;
 internal class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, User>
 {
   /// <summary>
+  /// The actor context.
+  /// </summary>
+  private readonly IActorContext _actorContext;
+  /// <summary>
   /// The event store.
   /// </summary>
   private readonly IEventStore _eventStore;
-  /// <summary>
-  /// The identity context.
-  /// </summary>
-  private readonly IIdentityContext _identityContext;
   /// <summary>
   /// The password helper.
   /// </summary>
@@ -35,19 +35,19 @@ internal class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Use
   /// <summary>
   /// Initializes a new instance of the <see cref="UpdateUserCommandHandler"/> class using the specified arguments.
   /// </summary>
+  /// <param name="actorContext">The actor context.</param>
   /// <param name="eventStore">The event store.</param>
-  /// <param name="identityContext">The identity context.</param>
   /// <param name="passwordHelper">The password helper.</param>
   /// <param name="userHelper">The user helper.</param>
   /// <param name="userQuerier">The user querier.</param>
-  public UpdateUserCommandHandler(IEventStore eventStore,
-    IIdentityContext identityContext,
+  public UpdateUserCommandHandler(IActorContext actorContext,
+    IEventStore eventStore,
     IPasswordHelper passwordHelper,
     IUserHelper userHelper,
     IUserQuerier userQuerier)
   {
+    _actorContext = actorContext;
     _eventStore = eventStore;
-    _identityContext = identityContext;
     _passwordHelper = passwordHelper;
     _userHelper = userHelper;
     _userQuerier = userQuerier;
@@ -77,7 +77,7 @@ internal class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Use
     Dictionary<string, string>? customAttributes = input.CustomAttributes?.ToDictionary();
     IEnumerable<RoleAggregate>? roles = await _userHelper.GetRolesAsync(realm, input, cancellationToken);
 
-    user.Update(_identityContext.ActorId, passwordHash, input.FirstName, input.MiddleName, input.LastName,
+    user.Update(_actorContext.ActorId, passwordHash, input.FirstName, input.MiddleName, input.LastName,
       input.Nickname, input.Birthdate, gender, locale, input.TimeZone, input.Picture, input.Profile,
       input.Website, customAttributes, roles);
 

@@ -20,7 +20,7 @@ public abstract class AggregateEntity
   protected AggregateEntity(DomainEvent e)
   {
     AggregateId = e.AggregateId.Value;
-    Version = e.Version;
+    SetVersion(e);
 
     CreatedById = e.ActorId.Value;
     CreatedOn = e.OccurredOn;

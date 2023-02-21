@@ -6,7 +6,7 @@ namespace Logitar.Identity.EntityFrameworkCore.PostgreSQL.Entities;
 /// <summary>
 /// The database model representing a role.
 /// </summary>
-internal class RoleEntity : AggregateEntity
+internal class RoleEntity : AggregateEntity, ICustomAttributes
 {
   /// <summary>
   /// Initializes a new instance of the <see cref="RoleEntity"/> using the specified arguments.

@@ -11,13 +11,13 @@ namespace Logitar.Identity.Realms.Commands;
 internal class UpdateRealmCommandHandler : IRequestHandler<UpdateRealmCommand, Realm>
 {
   /// <summary>
+  /// The actor context.
+  /// </summary>
+  private readonly IActorContext _actorContext;
+  /// <summary>
   /// The event store.
   /// </summary>
   private readonly IEventStore _eventStore;
-  /// <summary>
-  /// The identity context.
-  /// </summary>
-  private readonly IIdentityContext _identityContext;
   /// <summary>
   /// The realm querier.
   /// </summary>
@@ -27,14 +27,14 @@ internal class UpdateRealmCommandHandler : IRequestHandler<UpdateRealmCommand, R
   /// Initializes a new instance of the <see cref="UpdateRealmCommandHandler"/> class using the specified arguments.
   /// </summary>
   /// <param name="eventStore">The event store.</param>
-  /// <param name="identityContext">The identity context.</param>
+  /// <param name="actorContext">The actor context.</param>
   /// <param name="realmQuerier">The realm querier.</param>
-  public UpdateRealmCommandHandler(IEventStore eventStore,
-    IIdentityContext identityContext,
+  public UpdateRealmCommandHandler(IActorContext actorContext,
+    IEventStore eventStore,
     IRealmQuerier realmQuerier)
   {
+    _actorContext = actorContext;
     _eventStore = eventStore;
-    _identityContext = identityContext;
     _realmQuerier = realmQuerier;
   }
 
@@ -60,7 +60,7 @@ internal class UpdateRealmCommandHandler : IRequestHandler<UpdateRealmCommand, R
     Dictionary<ExternalProvider, ExternalProviderConfiguration> externalProviders = RealmHelper.GetExternalProviders(input.GoogleOAuth2Configuration);
     Dictionary<string, string>? customAttributes = input.CustomAttributes?.ToDictionary();
 
-    realm.Update(_identityContext.ActorId, input.DisplayName, input.Description, defaultLocale, input.Url,
+    realm.Update(_actorContext.ActorId, input.DisplayName, input.Description, defaultLocale, input.Url,
       input.RequireConfirmedAccount, input.RequireUniqueEmail, usernameSettings, passwordSettings,
       input.JwtSecret, customAttributes, externalProviders);
 

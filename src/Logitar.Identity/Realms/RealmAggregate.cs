@@ -270,7 +270,7 @@ public class RealmAggregate : AggregateRoot
   /// <summary>
   /// Returns a string representation of the current realm.
   /// </summary>
-  /// <returns>The string representation</returns>
+  /// <returns>The string representation.</returns>
   public override string ToString() => $"{DisplayName ?? UniqueName} | {base.ToString()}";
 
   /// <summary>

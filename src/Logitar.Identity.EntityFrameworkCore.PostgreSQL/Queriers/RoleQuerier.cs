@@ -23,8 +23,8 @@ internal class RoleQuerier : IRoleQuerier
   /// <summary>
   /// Initializes a new instance of the <see cref="RoleQuerier"/> class.
   /// </summary>
+  /// <param name="context">The identity context.</param>
   /// <param name="mapper">The mapper instance.</param>
-  /// <param name="roles">The data set of roles.</param>
   public RoleQuerier(IdentityContext context, IMapper mapper)
   {
     _mapper = mapper;

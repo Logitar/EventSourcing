@@ -7,7 +7,7 @@ namespace Logitar.Identity.EntityFrameworkCore.PostgreSQL.Entities;
 /// <summary>
 /// The database model representing an user.
 /// </summary>
-internal class UserEntity : AggregateEntity
+internal class UserEntity : AggregateEntity, ICustomAttributes
 {
   /// <summary>
   /// Initializes a new instance of the <see cref="UserEntity"/> class using the specified arguments.
@@ -82,7 +82,7 @@ internal class UserEntity : AggregateEntity
   /// </summary>
   public string? PasswordChangedById { get; private set; }
   /// <summary>
-  /// Gets the date and time the password changed lastly.
+  /// Gets the date and time when the password changed lastly.
   /// </summary>
   public DateTime? PasswordChangedOn { get; private set; }
   /// <summary>
@@ -166,9 +166,21 @@ internal class UserEntity : AggregateEntity
   public string? CustomAttributes { get; private set; }
 
   /// <summary>
+  /// Gets the list of postal addresses of the user.
+  /// </summary>
+  public List<AddressEntity> Addresses { get; private set; } = new();
+  /// <summary>
+  /// Gets the list of email addresses of the user.
+  /// </summary>
+  public List<EmailEntity> Emails { get; private set; } = new();
+  /// <summary>
   /// Gets the list of external identifiers of the user.
   /// </summary>
   public List<ExternalIdentifierEntity> ExternalIdentifiers { get; private set; } = new();
+  /// <summary>
+  /// Gets the list of phone numbers of the user.
+  /// </summary>
+  public List<PhoneEntity> Phones { get; private set; } = new();
   /// <summary>
   /// Gets the list of roles of the user.
   /// </summary>
@@ -203,7 +215,7 @@ internal class UserEntity : AggregateEntity
   /// <summary>
   /// Adds, removes or updates an external identifier of the user.
   /// </summary>
-  /// <param name="e"></param>
+  /// <param name="e">The external identifier event.</param>
   public void SaveExternalIdentifier(ExternalIdentifierSavedEvent e)
   {
     ExternalIdentifierEntity? externalIdentifier = ExternalIdentifiers.SingleOrDefault(x => x.Key == e.Key);
@@ -262,16 +274,9 @@ internal class UserEntity : AggregateEntity
   /// <param name="passwordHash">The new password the user.</param>
   private void SetPassword(DomainEvent e, string? passwordHash)
   {
-    PasswordHash = passwordHash;
-
-    if (passwordHash == null)
+    if (passwordHash != null)
     {
-      PasswordChangedById = null;
-      PasswordChangedOn = null;
-      HasPassword = false;
-    }
-    else
-    {
+      PasswordHash = passwordHash;
       PasswordChangedById = e.ActorId.Value;
       PasswordChangedOn = e.OccurredOn;
       HasPassword = true;

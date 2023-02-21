@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Logitar.EventSourcing;
 using Logitar.Identity.EntityFrameworkCore.PostgreSQL.Entities;
 using Logitar.Identity.Realms;
 using System.Text.Json;
@@ -18,36 +17,12 @@ internal class RealmProfile : Profile
   {
     CreateMap<RealmEntity, Realm>()
       .IncludeBase<AggregateEntity, Aggregate>()
-      .ForMember(x => x.Id, x => x.MapFrom(y => new AggregateId(y.AggregateId).ToGuid()))
+      .ForMember(x => x.Id, x => x.MapFrom(MappingHelper.ToGuid))
       .ForMember(x => x.UsernameSettings, x => x.MapFrom(GetUsernameSettings))
       .ForMember(x => x.PasswordSettings, x => x.MapFrom(GetPasswordSettings))
       .ForMember(x => x.GoogleOAuth2Configuration, x => x.MapFrom(GetGoogleOAuth2Configuration))
-      .ForMember(x => x.CustomAttributes, x => x.MapFrom(GetCustomAttributes));
+      .ForMember(x => x.CustomAttributes, x => x.MapFrom(MappingHelper.GetCustomAttributes));
     CreateMap<ReadOnlyGoogleOAuth2Configuration, GoogleOAuth2Configuration>();
-  }
-
-  /// <summary>
-  /// Resolves the custom attributes from the specified realm entity.
-  /// </summary>
-  /// <param name="entity">The realm entity.</param>
-  /// <param name="realm">The realm output model.</param>
-  /// <returns>The custom attributes.</returns>
-  /// <exception cref="InvalidOperationException">The custom attributes could not be deserialized.</exception>
-  private static IEnumerable<CustomAttribute> GetCustomAttributes(RealmEntity entity, Realm realm)
-  {
-    if (entity.CustomAttributes == null)
-    {
-      return Enumerable.Empty<CustomAttribute>();
-    }
-
-    Dictionary<string, string> customAttributes = JsonSerializer.Deserialize<Dictionary<string, string>>(entity.CustomAttributes)
-      ?? throw new InvalidOperationException($"The custom attributes could not be deserialized on realm 'Id={entity.RealmId}'.");
-
-    return customAttributes.Select(customAttribute => new CustomAttribute
-    {
-      Key = customAttribute.Key,
-      Value = customAttribute.Value
-    });
   }
 
   /// <summary>

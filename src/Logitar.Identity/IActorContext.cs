@@ -3,9 +3,9 @@
 namespace Logitar.Identity;
 
 /// <summary>
-/// Represents the application context of the identity services.
+/// TODO(fpion): implement
 /// </summary>
-public interface IIdentityContext
+public interface IActorContext
 {
   /// <summary>
   /// Gets the current actor identifier.

@@ -1,4 +1,5 @@
-﻿using Logitar.Identity.EntityFrameworkCore.PostgreSQL.Queriers;
+﻿using Logitar.Identity.Contacts;
+using Logitar.Identity.EntityFrameworkCore.PostgreSQL.Queriers;
 using Logitar.Identity.EntityFrameworkCore.PostgreSQL.Repositories;
 using Logitar.Identity.Realms;
 using Logitar.Identity.Roles;
@@ -30,10 +31,6 @@ public static class DependencyInjectionExtensions
       .AddMediatR(config => config.RegisterServicesFromAssembly(assembly))
       .AddQueriers()
       .AddRepositories();
-
-    // TODO(fpion): EventContext
-    // TODO(fpion): IEventBus
-    // TODO(fpion): IEventStore
   }
 
   /// <summary>
@@ -44,6 +41,9 @@ public static class DependencyInjectionExtensions
   private static IServiceCollection AddQueriers(this IServiceCollection services)
   {
     return services
+      .AddScoped<IAddressQuerier, AddressQuerier>()
+      .AddScoped<IEmailQuerier, EmailQuerier>()
+      .AddScoped<IPhoneQuerier, PhoneQuerier>()
       .AddScoped<IRealmQuerier, RealmQuerier>()
       .AddScoped<IRoleQuerier, RoleQuerier>()
       .AddScoped<IUserQuerier, UserQuerier>();
@@ -57,6 +57,9 @@ public static class DependencyInjectionExtensions
   private static IServiceCollection AddRepositories(this IServiceCollection services)
   {
     return services
+      .AddScoped<IAddressRepository, AddressRepository>()
+      .AddScoped<IEmailRepository, EmailRepository>()
+      .AddScoped<IPhoneRepository, PhoneRepository>()
       .AddScoped<IRealmRepository, RealmRepository>()
       .AddScoped<IRoleRepository, RoleRepository>()
       .AddScoped<IUserRepository, UserRepository>();

@@ -10,13 +10,13 @@ namespace Logitar.Identity.Users.Commands;
 internal class SaveExternalIdentifierCommandHandler : IRequestHandler<SaveExternalIdentifierCommand, User>
 {
   /// <summary>
+  /// The actor context.
+  /// </summary>
+  private readonly IActorContext _actorContext;
+  /// <summary>
   /// The event store.
   /// </summary>
   private readonly IEventStore _eventStore;
-  /// <summary>
-  /// The identity context.
-  /// </summary>
-  private readonly IIdentityContext _identityContext;
   /// <summary>
   /// The user querier.
   /// </summary>
@@ -29,17 +29,17 @@ internal class SaveExternalIdentifierCommandHandler : IRequestHandler<SaveExtern
   /// <summary>
   /// Initializes a new instance of the <see cref="SaveExternalIdentifierCommandHandler"/> class using the specified arguments.
   /// </summary>
+  /// <param name="actorContext<">The actor context.</param>
   /// <param name="eventStore">The event store.</param>
-  /// <param name="identityContext">The identity context.</param>
   /// <param name="userQuerier">The user querier.</param>
   /// <param name="userRepository">The user repository.</param>
-  public SaveExternalIdentifierCommandHandler(IEventStore eventStore,
-    IIdentityContext identityContext,
+  public SaveExternalIdentifierCommandHandler(IActorContext actorContext,
+    IEventStore eventStore,
     IUserQuerier userQuerier,
     IUserRepository userRepository)
   {
+    _actorContext = actorContext;
     _eventStore = eventStore;
-    _identityContext = identityContext;
     _userQuerier = userQuerier;
     _userRepository = userRepository;
   }
@@ -70,7 +70,7 @@ internal class SaveExternalIdentifierCommandHandler : IRequestHandler<SaveExtern
       }
     }
 
-    user.SaveExternalIdentifier(_identityContext.ActorId, command.Key, command.Value);
+    user.SaveExternalIdentifier(_actorContext.ActorId, command.Key, command.Value);
 
     await _eventStore.SaveAsync(user, cancellationToken);
 

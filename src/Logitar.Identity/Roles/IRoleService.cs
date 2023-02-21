@@ -31,7 +31,7 @@ public interface IRoleService
   /// <summary>
   /// Retrieves a list of roles using the specified filters, sorting and paging arguments.
   /// </summary>
-  /// <param name="realmId">The identifier or unique name of the realm to filter by.</param>
+  /// <param name="realm">The identifier or unique name of the realm to filter by.</param>
   /// <param name="search">The text to search.</param>
   /// <param name="sort">The sort value.</param>
   /// <param name="isDescending">If true, the sort will be inverted.</param>

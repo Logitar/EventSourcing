@@ -11,13 +11,13 @@ namespace Logitar.Identity.Realms.Commands;
 internal class CreateRealmCommandHandler : IRequestHandler<CreateRealmCommand, Realm>
 {
   /// <summary>
+  /// The actor context.
+  /// </summary>
+  private readonly IActorContext _actorContext;
+  /// <summary>
   /// The event store.
   /// </summary>
   private readonly IEventStore _eventStore;
-  /// <summary>
-  /// The identity context.
-  /// </summary>
-  private readonly IIdentityContext _identityContext;
   /// <summary>
   /// The realm querier.
   /// </summary>
@@ -30,17 +30,17 @@ internal class CreateRealmCommandHandler : IRequestHandler<CreateRealmCommand, R
   /// <summary>
   /// Initializes a new instance of the <see cref="CreateRealmCommandHandler"/> class using the specified arguments.
   /// </summary>
+  /// <param name="actorContext">The actor context.</param>
   /// <param name="eventStore">The event store.</param>
-  /// <param name="identityContext">The identity context.</param>
   /// <param name="realmQuerier">The realm querier.</param>
   /// <param name="realmRepository">The realm repository.</param>
-  public CreateRealmCommandHandler(IEventStore eventStore,
-    IIdentityContext identityContext,
+  public CreateRealmCommandHandler(IActorContext actorContext,
+    IEventStore eventStore,
     IRealmQuerier realmQuerier,
     IRealmRepository realmRepository)
   {
+    _actorContext = actorContext;
     _eventStore = eventStore;
-    _identityContext = identityContext;
     _realmQuerier = realmQuerier;
     _realmRepository = realmRepository;
   }
@@ -68,7 +68,7 @@ internal class CreateRealmCommandHandler : IRequestHandler<CreateRealmCommand, R
     Dictionary<ExternalProvider, ExternalProviderConfiguration> externalProviders = RealmHelper.GetExternalProviders(input.GoogleOAuth2Configuration);
     Dictionary<string, string>? customAttributes = input.CustomAttributes?.ToDictionary();
 
-    RealmAggregate realm = new(_identityContext.ActorId, input.UniqueName, input.DisplayName, input.Description,
+    RealmAggregate realm = new(_actorContext.ActorId, input.UniqueName, input.DisplayName, input.Description,
       defaultLocale, input.Url, input.RequireConfirmedAccount, input.RequireUniqueEmail,
       usernameSettings, passwordSettings, input.JwtSecret, customAttributes, externalProviders);
 

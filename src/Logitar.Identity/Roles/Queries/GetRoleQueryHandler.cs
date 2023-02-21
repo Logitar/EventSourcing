@@ -28,7 +28,7 @@ internal class GetRoleQueryHandler : IRequestHandler<GetRoleQuery, Role?>
   /// <param name="request">The query to handle.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The retrieved role or null.</returns>
-  /// <exception cref="TooManyResultsException">More than one roles have been founded.</exception>
+  /// <exception cref="TooManyResultsException">More than one roles have been found.</exception>
   public async Task<Role?> Handle(GetRoleQuery request, CancellationToken cancellationToken)
   {
     List<Role> roles = new(capacity: 2);

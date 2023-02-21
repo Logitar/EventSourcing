@@ -11,9 +11,20 @@ namespace Logitar.Identity.EntityFrameworkCore.PostgreSQL.Queriers;
 /// </summary>
 internal class UserQuerier : IUserQuerier
 {
+  /// <summary>
+  /// The mapper instance.
+  /// </summary>
   private readonly IMapper _mapper;
+  /// <summary>
+  /// The data set of users.
+  /// </summary>
   private readonly DbSet<UserEntity> _users;
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="UserQuerier"/> class.
+  /// </summary>
+  /// <param name="context">The identity context.</param>
+  /// <param name="mapper">The mapper instance.</param>
   public UserQuerier(IdentityContext context, IMapper mapper)
   {
     _mapper = mapper;
