@@ -8,10 +8,10 @@ namespace Logitar.EventSourcing;
 public class CannotApplyPastEventException : Exception
 {
   /// <summary>
-  /// Initializes a new instance of the <see cref="CannotApplyPastEventException"/> class with the specified aggregate and past event.
+  /// Initializes a new instance of the <see cref="CannotApplyPastEventException"/> class with the specified arguments.
   /// </summary>
-  /// <param name="aggregate">The aggregate in a future state</param>
-  /// <param name="change">The event of a past state</param>
+  /// <param name="aggregate">The aggregate in a future state.</param>
+  /// <param name="change">The event of a past state.</param>
   public CannotApplyPastEventException(AggregateRoot aggregate, DomainEvent change) : base(GetMessage(aggregate, change))
   {
     Data["Aggregate"] = aggregate.ToString();
@@ -25,9 +25,9 @@ public class CannotApplyPastEventException : Exception
   /// <summary>
   /// Builds the exception message using the specfied aggregate and past event.
   /// </summary>
-  /// <param name="aggregate">The aggregate in a future state</param>
-  /// <param name="change">The event of a past state</param>
-  /// <returns>The exception message</returns>
+  /// <param name="aggregate">The aggregate in a future state.</param>
+  /// <param name="change">The event of a past state.</param>
+  /// <returns>The exception message.</returns>
   private static string GetMessage(AggregateRoot aggregate, DomainEvent change)
   {
     StringBuilder message = new();

@@ -12,7 +12,7 @@ public class EventConfiguration : IEntityTypeConfiguration<EventEntity>
   /// <summary>
   /// Configures the database model using the specified type builder.
   /// </summary>
-  /// <param name="builder">The type builder</param>
+  /// <param name="builder">The type builder.</param>
   public void Configure(EntityTypeBuilder<EventEntity> builder)
   {
     builder.HasKey(x => x.EventId);

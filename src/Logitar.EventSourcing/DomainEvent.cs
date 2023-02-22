@@ -6,30 +6,30 @@
 public abstract record DomainEvent
 {
   /// <summary>
-  /// The event unique identifier
+  /// Gets or sets the unique identifier of the event.
   /// </summary>
   public Guid Id { get; set; } = Guid.NewGuid();
 
   /// <summary>
-  /// The identifier of the aggregate owning the event
+  /// Gets or sets the identifier of the aggregate owning the event.
   /// </summary>
   public AggregateId AggregateId { get; set; }
   /// <summary>
-  /// The version of the event
+  /// Gets or sets the version of the event.
   /// </summary>
   public long Version { get; set; }
 
   /// <summary>
-  /// The identifier of the actor who triggered the event
+  /// Gets or sets the identifier of the actor who triggered the event.
   /// </summary>
   public AggregateId ActorId { get; set; } = new AggregateId("SYSTEM");
   /// <summary>
-  /// The date and time when the event happened
+  /// Gets or sets the date and time when the event happened.
   /// </summary>
   public DateTime OccurredOn { get; set; } = DateTime.UtcNow;
 
   /// <summary>
-  /// The delete action performed by this event
+  /// Gets or sets the delete action performed by the event.
   /// </summary>
   public DeleteAction DeleteAction { get; set; }
 }
