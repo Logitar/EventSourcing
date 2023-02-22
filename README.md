@@ -1,3 +1,3 @@
-# Logitar.NET
+# Event Sourcing
 
-Providing development tools for C# and ASP.NET Core.
+Implementation of the Event Sourcing architecture pattern.
