@@ -8,10 +8,10 @@ namespace Logitar.EventSourcing;
 public class EventAggregateMismatchException : Exception
 {
   /// <summary>
-  /// Initializes a new instance of the <see cref="EventAggregateMismatchException"/> class with the specified aggregate and event.
+  /// Initializes a new instance of the <see cref="EventAggregateMismatchException"/> class with the specified arguments.
   /// </summary>
-  /// <param name="aggregate">The aggregate unto which the event was applied</param>
-  /// <param name="change">The event belonging to another aggregate</param>
+  /// <param name="aggregate">The aggregate unto which the event was applied.</param>
+  /// <param name="change">The event belonging to another aggregate.</param>
   public EventAggregateMismatchException(AggregateRoot aggregate, DomainEvent change) : base(GetMessage(aggregate, change))
   {
     Data["Aggregate"] = aggregate.ToString();
@@ -22,11 +22,11 @@ public class EventAggregateMismatchException : Exception
   }
 
   /// <summary>
-  /// Builds the exception message using the specified aggregate and event
+  /// Builds the exception message using the specified arguments.
   /// </summary>
-  /// <param name="aggregate">The aggregate unto which the event was applied</param>
-  /// <param name="change">The event belonging to another aggregate</param>
-  /// <returns>The exception message</returns>
+  /// <param name="aggregate">The aggregate unto which the event was applied.</param>
+  /// <param name="change">The event belonging to another aggregate.</param>
+  /// <returns>The exception message.</returns>
   private static string GetMessage(AggregateRoot aggregate, DomainEvent change)
   {
     StringBuilder message = new();

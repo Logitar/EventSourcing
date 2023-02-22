@@ -12,10 +12,10 @@ public class CultureInfoConverter : JsonConverter<CultureInfo?>
   /// <summary>
   /// Reads an instance of the <see cref="CultureInfo"/> class from the specified JSON reader.
   /// </summary>
-  /// <param name="reader">The JSON reader</param>
-  /// <param name="typeToConvert">The type of the instance; it should be <see cref="CultureInfo"/></param>
-  /// <param name="options">The serialization options</param>
-  /// <returns>The instance of the <see cref="CultureInfo"/> class</returns>
+  /// <param name="reader">The JSON reader.</param>
+  /// <param name="typeToConvert">The type of the instance; it should be <see cref="CultureInfo"/>.</param>
+  /// <param name="options">The serialization options.</param>
+  /// <returns>The instance of the <see cref="CultureInfo"/> class.</returns>
   public override CultureInfo? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
   {
     string? name = reader.GetString();
@@ -26,9 +26,9 @@ public class CultureInfoConverter : JsonConverter<CultureInfo?>
   /// <summary>
   /// Writes an instance of the <see cref="CultureInfo"/> class to the specified JSON writer.
   /// </summary>
-  /// <param name="writer">The JSON writer</param>
-  /// <param name="value">The type of the instance; it should be <see cref="CultureInfo"/</param>
-  /// <param name="options">The serialization options</param>
+  /// <param name="writer">The JSON writer.</param>
+  /// <param name="value">The type of the instance; it should be <see cref="CultureInfo"/>.</param>
+  /// <param name="options">The serialization options.</param>
   public override void Write(Utf8JsonWriter writer, CultureInfo? value, JsonSerializerOptions options)
   {
     writer.WriteStringValue(value?.Name);

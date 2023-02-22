@@ -8,10 +8,10 @@ namespace Logitar.EventSourcing;
 public class EventNotSupportedException : NotSupportedException
 {
   /// <summary>
-  /// Initializes a new instance of the <see cref="EventNotSupportedException"/> class with the specifies types.
+  /// Initializes a new instance of the <see cref="EventNotSupportedException"/> class with the specified arguments.
   /// </summary>
-  /// <param name="aggregateType">The type of the aggregate missing the Apply method</param>
-  /// <param name="eventType">The type of the event for which the Apply method is missing</param>
+  /// <param name="aggregateType">The type of the aggregate missing the Apply method.</param>
+  /// <param name="eventType">The type of the event for which the Apply method is missing.</param>
   public EventNotSupportedException(Type aggregateType, Type eventType) : base(GetMessage(aggregateType, eventType))
   {
     Data["AggregateType"] = aggregateType.GetName();
@@ -21,9 +21,9 @@ public class EventNotSupportedException : NotSupportedException
   /// <summary>
   /// Builds the exception message using the specified types.
   /// </summary>
-  /// <param name="aggregateType">The type of the aggregate missing the Apply method</param>
-  /// <param name="eventType">The type of the event for which the Apply method is missing</param>
-  /// <returns>The exception message</returns>
+  /// <param name="aggregateType">The type of the aggregate missing the Apply method.</param>
+  /// <param name="eventType">The type of the event for which the Apply method is missing.</param>
+  /// <returns>The exception message.</returns>
   private static string GetMessage(Type aggregateType, Type eventType)
   {
     StringBuilder message = new();

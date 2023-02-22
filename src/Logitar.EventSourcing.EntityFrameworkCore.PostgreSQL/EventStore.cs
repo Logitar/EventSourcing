@@ -13,8 +13,8 @@ public class EventStore : IEventStore
   /// <summary>
   /// Initializes a new instance of the <see cref="EventStore"/> class using the specified database context and event bus.
   /// </summary>
-  /// <param name="context">The database context</param>
-  /// <param name="eventBus">The event bus</param>
+  /// <param name="context">The database context.</param>
+  /// <param name="eventBus">The event bus.</param>
   public EventStore(EventContext context, IEventBus eventBus)
   {
     Context = context;
@@ -22,21 +22,21 @@ public class EventStore : IEventStore
   }
 
   /// <summary>
-  /// The database context used to save and retrieve events
+  /// Gets the database context used to save and retrieve events.
   /// </summary>
   protected EventContext Context { get; }
   /// <summary>
-  /// The event bus used to publish domain events
+  /// Gets the event bus used to publish domain events.
   /// </summary>
   protected IEventBus EventBus { get; }
 
   /// <summary>
   /// Loads an aggregate of the specified type by its aggregate identifier to its most recent version.
   /// </summary>
-  /// <typeparam name="T">The aggregate type</typeparam>
-  /// <param name="id">The aggregate identifier</param>
-  /// <param name="cancellationToken">The cancellation token</param>
-  /// <returns>The loaded aggregate or null if none</returns>
+  /// <typeparam name="T">The aggregate type.</typeparam>
+  /// <param name="id">The aggregate identifier.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The loaded aggregate or null if none.</returns>
   public async Task<T?> LoadAsync<T>(AggregateId id, CancellationToken cancellationToken = default) where T : AggregateRoot
   {
     return await LoadAsync<T>(id, version: null, includeDeleted: false, cancellationToken);
@@ -44,11 +44,11 @@ public class EventStore : IEventStore
   /// <summary>
   /// Loads an aggregate of the specified type by its aggregate identifier, up to the specified version.
   /// </summary>
-  /// <typeparam name="T">The aggregate type</typeparam>
-  /// <param name="id">The aggregate identifier</param>
-  /// <param name="version">The aggregate version</param>
-  /// <param name="cancellationToken">The cancellation token</param>
-  /// <returns>The loaded aggregate or null if none</returns>
+  /// <typeparam name="T">The aggregate type.</typeparam>
+  /// <param name="id">The aggregate identifier.</param>
+  /// <param name="version">The aggregate version.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The loaded aggregate or null if none.</returns>
   public async Task<T?> LoadAsync<T>(AggregateId id, long version, CancellationToken cancellationToken = default) where T : AggregateRoot
   {
     return await LoadAsync<T>(id, version, includeDeleted: false, cancellationToken);
@@ -56,12 +56,12 @@ public class EventStore : IEventStore
   /// <summary>
   /// Loads an aggregate of the specified type by its aggregate identifier to its most recent version.
   /// </summary>
-  /// <typeparam name="T">The aggregate type</typeparam>
-  /// <param name="id">The aggregate identifier</param>
-  /// <param name="version">The aggregate version</param>
-  /// <param name="includeDeleted">A value indicating whether or not the aggregate should be loaded if it is deleted</param>
-  /// <param name="cancellationToken">The cancellation token</param>
-  /// <returns>The loaded aggregate or null if none</returns>
+  /// <typeparam name="T">The aggregate type.</typeparam>
+  /// <param name="id">The aggregate identifier.</param>
+  /// <param name="version">The aggregate version.</param>
+  /// <param name="includeDeleted">A value indicating whether or not the aggregate should be loaded if it is deleted.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The loaded aggregate or null if none.</returns>
   public async Task<T?> LoadAsync<T>(AggregateId id, bool includeDeleted, CancellationToken cancellationToken = default) where T : AggregateRoot
   {
     return await LoadAsync<T>(id, version: null, includeDeleted, cancellationToken);
@@ -69,12 +69,12 @@ public class EventStore : IEventStore
   /// <summary>
   /// Loads tan aggregate of the specified type by its aggregate identifier, up to the specified version.
   /// </summary>
-  /// <typeparam name="T">The aggregate type</typeparam>
-  /// <param name="id">The aggregate identifier</param>
-  /// <param name="version">The aggregate version</param>
-  /// <param name="includeDeleted">A value indicating whether or not the aggregate should be loaded if it is deleted</param>
-  /// <param name="cancellationToken">The cancellation token</param>
-  /// <returns>The loaded aggregate or null if none</returns>
+  /// <typeparam name="T">The aggregate type.</typeparam>
+  /// <param name="id">The aggregate identifier.</param>
+  /// <param name="version">The aggregate version.</param>
+  /// <param name="includeDeleted">A value indicating whether or not the aggregate should be loaded if it is deleted.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The loaded aggregate or null if none.</returns>
   public async Task<T?> LoadAsync<T>(AggregateId id, long? version, bool includeDeleted, CancellationToken cancellationToken) where T : AggregateRoot
   {
     string aggregateType = typeof(T).GetName();
@@ -93,10 +93,10 @@ public class EventStore : IEventStore
   /// <summary>
   /// Loads a list of aggregates of the specified type by their aggregate identifier.
   /// </summary>
-  /// <typeparam name="T">The aggregate type</typeparam>
-  /// <param name="ids">The aggregate identifiers</param>
-  /// <param name="cancellationToken">The cancellation token</param>
-  /// <returns>The loaded aggregates or an empty collection</returns>
+  /// <typeparam name="T">The aggregate type.</typeparam>
+  /// <param name="ids">The aggregate identifiers.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The loaded aggregates or an empty collection.</returns>
   public async Task<IEnumerable<T>> LoadAsync<T>(IEnumerable<AggregateId> ids, CancellationToken cancellationToken) where T : AggregateRoot
   {
     return await LoadAsync<T>(ids, includeDeleted: false, cancellationToken);
@@ -104,11 +104,11 @@ public class EventStore : IEventStore
   /// <summary>
   /// Loads a list of aggregates of the specified type by their aggregate identifier.
   /// </summary>
-  /// <typeparam name="T">The aggregate type</typeparam>
-  /// <param name="ids">The aggregate identifiers</param>
-  /// <param name="includeDeleted">A value indicating whether or not deleted aggregates should be loaded</param>
-  /// <param name="cancellationToken">The cancellation token</param>
-  /// <returns>The loaded aggregates or an empty collection</returns>
+  /// <typeparam name="T">The aggregate type.</typeparam>
+  /// <param name="ids">The aggregate identifiers.</param>
+  /// <param name="includeDeleted">A value indicating whether or not deleted aggregates should be loaded.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The loaded aggregates or an empty collection.</returns>
   public async Task<IEnumerable<T>> LoadAsync<T>(IEnumerable<AggregateId> ids, bool includeDeleted, CancellationToken cancellationToken) where T : AggregateRoot
   {
     string aggregateType = typeof(T).GetName();
@@ -125,9 +125,9 @@ public class EventStore : IEventStore
   /// <summary>
   /// Loads all the aggregates of the specified type.
   /// </summary>
-  /// <typeparam name="T">The aggregate type</typeparam>
-  /// <param name="cancellationToken">The cancellation token</param>
-  /// <returns>The loaded aggregates or an empty collection</returns>
+  /// <typeparam name="T">The aggregate type.</typeparam>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The loaded aggregates or an empty collection.</returns>
   public async Task<IEnumerable<T>> LoadAsync<T>(CancellationToken cancellationToken = default) where T : AggregateRoot
   {
     return await LoadAsync<T>(includeDeleted: false, cancellationToken);
@@ -135,10 +135,10 @@ public class EventStore : IEventStore
   /// <summary>
   /// Loads all the aggregates of the specified type.
   /// </summary>
-  /// <typeparam name="T">The aggregate type</typeparam>
-  /// <param name="includeDeleted">A value indicating whether or not the aggregate should be loaded if it is deleted</param>
-  /// <param name="cancellationToken">The cancellation token</param>
-  /// <returns>The loaded aggregates or an empty collection</returns>
+  /// <typeparam name="T">The aggregate type.</typeparam>
+  /// <param name="includeDeleted">A value indicating whether or not the aggregate should be loaded if it is deleted.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The loaded aggregates or an empty collection.</returns>
   public async Task<IEnumerable<T>> LoadAsync<T>(bool includeDeleted, CancellationToken cancellationToken = default) where T : AggregateRoot
   {
     string aggregateType = typeof(T).GetName();
@@ -154,11 +154,11 @@ public class EventStore : IEventStore
   /// <summary>
   /// Loads an aggregate of the specified type by its aggregate identifier and list of events.
   /// </summary>
-  /// <typeparam name="T">The aggregate type</typeparam>
-  /// <param name="id">The aggregate identifier</param>
-  /// <param name="events">The list of events</param>
-  /// <param name="includeDeleted">A value indicating whether or not the aggregate should be loaded if it is deleted</param>
-  /// <returns>The loaded aggregate or null if none</returns>
+  /// <typeparam name="T">The aggregate type.</typeparam>
+  /// <param name="id">The aggregate identifier.</param>
+  /// <param name="events">The list of events.</param>
+  /// <param name="includeDeleted">A value indicating whether or not the aggregate should be loaded if it is deleted.</param>
+  /// <returns>The loaded aggregate or null if none.</returns>
   protected virtual T? Load<T>(AggregateId id, IEnumerable<EventEntity> events, bool includeDeleted = false) where T : AggregateRoot
   {
     if (!events.Any())
@@ -172,12 +172,12 @@ public class EventStore : IEventStore
   }
 
   /// <summary>
-  /// Loads a list of aggregates of the specified type
+  /// Loads a list of aggregates of the specified type.
   /// </summary>
-  /// <typeparam name="T">The aggregate type</typeparam>
-  /// <param name="groupedEvents">The domain events grouped by aggregate identifier</param>
-  /// <param name="includeDeleted">A value indicating whether or not deleted aggregates should be loaded</param>
-  /// <returns>The loaded aggregates or an empty collection</returns>
+  /// <typeparam name="T">The aggregate type.</typeparam>
+  /// <param name="groupedEvents">The domain events grouped by aggregate identifier.</param>
+  /// <param name="includeDeleted">A value indicating whether or not deleted aggregates should be loaded.</param>
+  /// <returns>The loaded aggregates or an empty collection.</returns>
   protected virtual IEnumerable<T> Load<T>(IEnumerable<IGrouping<AggregateId, EventEntity>> groupedEvents, bool includeDeleted = false) where T : AggregateRoot
   {
     if (!groupedEvents.Any())
@@ -199,8 +199,8 @@ public class EventStore : IEventStore
   /// <summary>
   /// Gets the required constructor for the specified aggregate type.
   /// </summary>
-  /// <typeparam name="T">The aggregate type</typeparam>
-  /// <returns>The constructor</returns>
+  /// <typeparam name="T">The aggregate type.</typeparam>
+  /// <returns>The constructor.</returns>
   /// <exception cref="NotSupportedException">The aggregate type does not define a public constructor with a single <see cref="AggregateId"/> argument.</exception>
   private static ConstructorInfo GetConstructor<T>()
   {
@@ -219,13 +219,13 @@ public class EventStore : IEventStore
   /// <summary>
   /// Loads an aggregate of the specified type using the specified constructor, identifier and list of events.
   /// </summary>
-  /// <typeparam name="T">The aggregate type</typeparam>
-  /// <param name="constructor">The constructor to use</param>
-  /// <param name="id">The aggregate identifier</param>
-  /// <param name="events">The list of events</param>
-  /// <param name="includeDeleted">A value indicating whether or not the aggregate should be loaded if it is deleted</param>
-  /// <returns>The loaded aggregate or null if none</returns>
-  /// <exception cref="InvalidOperationException">The aggregate was null once the constructor was invoked</exception>
+  /// <typeparam name="T">The aggregate type.</typeparam>
+  /// <param name="constructor">The constructor to use.</param>
+  /// <param name="id">The aggregate identifier.</param>
+  /// <param name="events">The list of events.</param>
+  /// <param name="includeDeleted">A value indicating whether or not the aggregate should be loaded if it is deleted.</param>
+  /// <returns>The loaded aggregate or null if none.</returns>
+  /// <exception cref="InvalidOperationException">The aggregate was null once the constructor was invoked.</exception>
   private static T? Load<T>(ConstructorInfo constructor, AggregateId id, IEnumerable<EventEntity> events, bool includeDeleted) where T : AggregateRoot
   {
     T? aggregate = (T?)constructor.Invoke(new object[] { id });
@@ -247,9 +247,9 @@ public class EventStore : IEventStore
   /// <summary>
   /// Saves the specified aggregate in the event store.
   /// </summary>
-  /// <param name="aggregate">The aggregate to save</param>
-  /// <param name="cancellationToken">The cancellation token</param>
-  /// <returns>The asynchronous operation</returns>
+  /// <param name="aggregate">The aggregate to save.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The asynchronous operation.</returns>
   public async Task SaveAsync(AggregateRoot aggregate, CancellationToken cancellationToken)
   {
     if (aggregate.HasChanges)
@@ -266,9 +266,9 @@ public class EventStore : IEventStore
   /// <summary>
   /// Saves the specified aggregates in the event store.
   /// </summary>
-  /// <param name="aggregates">The aggregates to save</param>
-  /// <param name="cancellationToken">The cancellation token</param>
-  /// <returns>The asynchronous operation</returns>
+  /// <param name="aggregates">The aggregates to save.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The asynchronous operation.</returns>
   public async Task SaveAsync(IEnumerable<AggregateRoot> aggregates, CancellationToken cancellationToken)
   {
     IEnumerable<EventEntity> events = aggregates.SelectMany(EventEntity.FromChanges);
@@ -284,6 +284,12 @@ public class EventStore : IEventStore
     }
   }
 
+  /// <summary>
+  /// Publishes the uncommited changes of the specified aggregate before clearing them.
+  /// </summary>
+  /// <param name="aggregate">The aggregate to publish its changes.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The asynchronous operation.</returns>
   private async Task PublishAndClearChangesAsync(AggregateRoot aggregate, CancellationToken cancellationToken)
   {
     if (aggregate.HasChanges)
