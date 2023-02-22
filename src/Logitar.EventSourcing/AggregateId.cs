@@ -8,6 +8,13 @@ namespace Logitar.EventSourcing;
 public readonly struct AggregateId
 {
   /// <summary>
+  /// Initializes a new instance of the <see cref="AggregateId"/> struct.
+  /// </summary>
+  public AggregateId()
+  {
+    Value = string.Empty;
+  }
+  /// <summary>
   /// Initializes a new instance of the <see cref="AggregateId"/> struct with the specified <see cref="Guid"/>.
   /// To optimize storage and comparisons, the Guid bytes will be encoded in base64.
   /// </summary>

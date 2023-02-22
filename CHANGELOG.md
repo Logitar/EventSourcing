@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+Nothing here.
+
+## [1.2.2] - 2023-02-22
+
+### Fixed
+
+- Fixed default AggregateId bugs.
+
+## [1.2.1] - 2023-02-21
+
+### Added
+
+- Added this change log file.
+
 ## 1.2.0 - 2023-02-21
 
 ### Changed
@@ -30,3 +46,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Implemented the Event Sourcing architecture pattern.
 - Implemented the EntityFrameworkCore.PostgreSQL event store.
 - Configured NuGet packages.
+
+[unreleased]: https://github.com/Logitar/EventSourcing/compare/v1.2.2...HEAD
+[1.2.2]: https://github.com/Logitar/EventSourcing/compare/v1.2.1...v1.2.2
+[1.2.1]: https://github.com/Logitar/EventSourcing/releases/tag/v1.2.1

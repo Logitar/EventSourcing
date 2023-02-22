@@ -3,6 +3,13 @@
 [Trait(Traits.Category, Categories.Unit)]
 public class AggregateIdTests
 {
+  [Fact]
+  public void Given_default_value_Then_correct_hash_code()
+  {
+    AggregateId id = new();
+    Assert.Equal(string.Empty.GetHashCode(), id.GetHashCode());
+  }
+
   [Theory]
   [InlineData("SYSTEM")]
   public void Given_different_type_Then_not_equal(string value)
