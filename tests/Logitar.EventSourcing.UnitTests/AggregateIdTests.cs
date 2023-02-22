@@ -1,4 +1,6 @@
-﻿namespace Logitar.EventSourcing;
+﻿using System.Security.Cryptography;
+
+namespace Logitar.EventSourcing;
 
 [Trait(Traits.Category, Categories.Unit)]
 public class AggregateIdTests
@@ -88,5 +90,12 @@ public class AggregateIdTests
   {
     AggregateId id = new(value);
     Assert.Equal(value, id.ToString());
+  }
+
+  [Fact]
+  public void Given_value_too_long_Then_ArgumentException()
+  {
+    string valueTooLong = Convert.ToBase64String(RandomNumberGenerator.GetBytes(192));
+    Assert.Throws<ArgumentException>(() => new AggregateId(valueTooLong));
   }
 }
