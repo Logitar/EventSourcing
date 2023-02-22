@@ -13,55 +13,55 @@ public class EventEntity
   }
 
   /// <summary>
-  /// The sequential identifier of the event
+  /// Gets or sets the sequential identifier of the event.
   /// </summary>
   public long EventId { get; private set; }
   /// <summary>
-  /// The random identifier of the event
+  /// Gets or sets the random identifier of the event.
   /// </summary>
   public Guid Id { get; private set; }
   /// <summary>
-  /// The version of the event
+  /// Gets or sets the version of the event.
   /// </summary>
   public long Version { get; private set; }
 
   /// <summary>
-  /// The identifier of the actor who triggered the event
+  /// Gets or sets the identifier of the actor who triggered the event.
   /// </summary>
   public string ActorId { get; private set; } = string.Empty;
   /// <summary>
-  /// The date and time when the event occurred
+  /// Gets or sets the date and time when the event occurred.
   /// </summary>
   public DateTime OccurredOn { get; private set; }
 
   /// <summary>
-  /// The delete action performed by the event
+  /// Gets or sets the delete action performed by the event.
   /// </summary>
   public DeleteAction DeleteAction { get; private set; }
 
   /// <summary>
-  /// The type of the aggregate
+  /// Gets or sets the type of the aggregate owning the event.
   /// </summary>
   public string AggregateType { get; private set; } = string.Empty;
   /// <summary>
-  /// The identifier of the aggregate
+  /// Gets or sets the identifier of the aggregate owning the event.
   /// </summary>
   public string AggregateId { get; private set; } = string.Empty;
 
   /// <summary>
-  /// The event type
+  /// Gets or sets the type of the event.
   /// </summary>
   public string EventType { get; private set; } = string.Empty;
   /// <summary>
-  /// The event data as JSON
+  /// Gets or sets the JSON serialized data of the event.
   /// </summary>
   public string EventData { get; private set; } = string.Empty;
 
   /// <summary>
   /// Returns a list of event entities from the specified aggregate's changes.
   /// </summary>
-  /// <param name="aggregate">The aggregate</param>
-  /// <returns>The list of event entities</returns>
+  /// <param name="aggregate">The aggregate.</param>
+  /// <returns>The list of event entities.</returns>
   public static IEnumerable<EventEntity> FromChanges(AggregateRoot aggregate)
   {
     string aggregateType = aggregate.GetType().GetName();

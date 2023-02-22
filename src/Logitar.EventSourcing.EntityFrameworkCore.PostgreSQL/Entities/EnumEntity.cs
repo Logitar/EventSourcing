@@ -3,7 +3,7 @@
 /// <summary>
 /// The database model used to represent an enumeration value.
 /// </summary>
-/// <typeparam name="T">The type of the enumeration value</typeparam>
+/// <typeparam name="T">The type of the enumeration value.</typeparam>
 public abstract class EnumEntity<T>
 {
   /// <summary>
@@ -15,8 +15,8 @@ public abstract class EnumEntity<T>
   /// <summary>
   /// Initializes a new instance of the <see cref="EnumEntity{T}"/> class using the specified value and name.
   /// </summary>
-  /// <param name="value">The enumeration value</param>
-  /// <param name="name">The enumeration name</param>
+  /// <param name="value">The enumeration value.</param>
+  /// <param name="name">The enumeration name.</param>
   protected EnumEntity(T value, string name)
   {
     Value = value;
@@ -24,11 +24,11 @@ public abstract class EnumEntity<T>
   }
 
   /// <summary>
-  /// The enumeration unique value
+  /// Gets or sets the enumeration unique value.
   /// </summary>
   public T Value { get; private set; } = default!;
   /// <summary>
-  /// The enumeration unique name
+  /// Gets or sets the enumeration unique name.
   /// </summary>
   public string Name { get; private set; } = string.Empty;
 }

@@ -9,7 +9,7 @@ public static class TypeExtensions
   /// Returns the most precise name of a <see cref="Type"/>, starting with its AssemblyQualifiedName,
   /// then its FullName, and finally its Name.
   /// </summary>
-  /// <param name="type">The type</param>
-  /// <returns>The type's name</returns>
+  /// <param name="type">The type.</param>
+  /// <returns>The type's name.</returns>
   public static string GetName(this Type type) => type.AssemblyQualifiedName ?? type.FullName ?? type.Name;
 }

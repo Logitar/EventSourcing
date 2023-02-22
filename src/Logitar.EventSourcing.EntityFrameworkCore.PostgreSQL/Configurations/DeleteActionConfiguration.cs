@@ -12,7 +12,7 @@ public class DeleteActionConfiguration : EnumEntityConfiguration<DeleteActionEnt
   /// <summary>
   /// Configures the database model using the specified type builder.
   /// </summary>
-  /// <param name="builder">The type builder</param>
+  /// <param name="builder">The type builder.</param>
   public override void Configure(EntityTypeBuilder<DeleteActionEntity> builder)
   {
     base.Configure(builder);

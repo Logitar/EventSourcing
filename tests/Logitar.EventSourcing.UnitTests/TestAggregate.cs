@@ -2,7 +2,10 @@
 
 public class TestAggregate : AggregateRoot
 {
-  public TestAggregate(AggregateId? id = null) : base(id)
+  public TestAggregate() : base()
+  {
+  }
+  public TestAggregate(AggregateId id) : base(id)
   {
   }
 
