@@ -1,4 +1,5 @@
-﻿using Logitar.Identity.Contacts;
+﻿using Logitar.Identity.ApiKeys;
+using Logitar.Identity.Contacts;
 using Logitar.Identity.EntityFrameworkCore.PostgreSQL.Queriers;
 using Logitar.Identity.EntityFrameworkCore.PostgreSQL.Repositories;
 using Logitar.Identity.Realms;
@@ -42,6 +43,7 @@ public static class DependencyInjectionExtensions
   {
     return services
       .AddScoped<IAddressQuerier, AddressQuerier>()
+      .AddScoped<IApiKeyQuerier, ApiKeyQuerier>()
       .AddScoped<IEmailQuerier, EmailQuerier>()
       .AddScoped<IPhoneQuerier, PhoneQuerier>()
       .AddScoped<IRealmQuerier, RealmQuerier>()

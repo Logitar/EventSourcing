@@ -21,6 +21,10 @@ public class IdentityContext : DbContext
   /// </summary>
   internal DbSet<AddressEntity> Addresses { get; private set; } = null!;
   /// <summary>
+  /// Gets or sets the data set of API keys.
+  /// </summary>
+  internal DbSet<ApiKeyEntity> ApiKeys { get; private set; } = null!;
+  /// <summary>
   /// Gets or sets the data set of email addresses.
   /// </summary>
   internal DbSet<EmailEntity> Emails { get; private set; } = null!;
