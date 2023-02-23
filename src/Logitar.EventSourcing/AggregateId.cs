@@ -8,11 +8,17 @@ namespace Logitar.EventSourcing;
 public readonly struct AggregateId
 {
   /// <summary>
+  /// The value of the aggregate identifier.
+  /// </summary>
+  private readonly string _value;
+
+  /// <summary>
   /// Initializes a new instance of the <see cref="AggregateId"/> struct.
   /// </summary>
+  [Obsolete("To be removed in the next major version, since it masks the default implicit constructor, and does not work as intended.")]
   public AggregateId()
   {
-    Value = string.Empty;
+    _value = string.Empty;
   }
   /// <summary>
   /// Initializes a new instance of the <see cref="AggregateId"/> struct with the specified <see cref="Guid"/>.
@@ -36,13 +42,13 @@ public readonly struct AggregateId
       throw new ArgumentException($"The value cannot exceed {byte.MaxValue} characters.", nameof(value));
     }
 
-    Value = value;
+    _value = value;
   }
 
   /// <summary>
   /// Gets the value of the aggregate identifier.
   /// </summary>
-  public string Value { get; }
+  public string Value => _value ?? string.Empty;
 
   /// <summary>
   /// Creates a new <see cref="AggregateId"/> using a random <see cref="Guid"/>.
