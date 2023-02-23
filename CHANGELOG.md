@@ -6,7 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
-Nothing here.
+### Changed
+
+- Added length limit on AggregateId values.
+- Refactored event store methods.
 
 ## [1.2.2] - 2023-02-22
 
