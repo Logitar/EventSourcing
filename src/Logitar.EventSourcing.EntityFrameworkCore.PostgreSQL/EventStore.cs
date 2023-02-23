@@ -87,7 +87,7 @@ public class EventStore : IEventStore
     }
     EventEntity[] events = await query.OrderBy(x => x.Version).ToArrayAsync(cancellationToken);
 
-    return Load<T>(id, events, includeDeleted);
+    return Load<T>(events, includeDeleted).SingleOrDefault();
   }
 
   /// <summary>
@@ -119,7 +119,7 @@ public class EventStore : IEventStore
       .OrderBy(x => x.Version)
       .ToArrayAsync(cancellationToken);
 
-    return Load<T>(events.GroupBy(e => new AggregateId(e.AggregateId)), includeDeleted);
+    return Load<T>(events, includeDeleted);
   }
 
   /// <summary>
@@ -148,49 +148,30 @@ public class EventStore : IEventStore
       .OrderBy(x => x.Version)
       .ToArrayAsync(cancellationToken);
 
-    return Load<T>(events.GroupBy(e => new AggregateId(e.AggregateId)), includeDeleted);
-  }
-
-  /// <summary>
-  /// Loads an aggregate of the specified type by its aggregate identifier and list of events.
-  /// </summary>
-  /// <typeparam name="T">The aggregate type.</typeparam>
-  /// <param name="id">The aggregate identifier.</param>
-  /// <param name="events">The list of events.</param>
-  /// <param name="includeDeleted">A value indicating whether or not the aggregate should be loaded if it is deleted.</param>
-  /// <returns>The loaded aggregate or null if none.</returns>
-  protected virtual T? Load<T>(AggregateId id, IEnumerable<EventEntity> events, bool includeDeleted = false) where T : AggregateRoot
-  {
-    if (!events.Any())
-    {
-      return null;
-    }
-
-    ConstructorInfo constructor = GetConstructor<T>();
-
-    return Load<T>(constructor, id, events, includeDeleted);
+    return Load<T>(events, includeDeleted);
   }
 
   /// <summary>
   /// Loads a list of aggregates of the specified type.
   /// </summary>
   /// <typeparam name="T">The aggregate type.</typeparam>
-  /// <param name="groupedEvents">The domain events grouped by aggregate identifier.</param>
+  /// <param name="events">The domain events.</param>
   /// <param name="includeDeleted">A value indicating whether or not deleted aggregates should be loaded.</param>
   /// <returns>The loaded aggregates or an empty collection.</returns>
-  protected virtual IEnumerable<T> Load<T>(IEnumerable<IGrouping<AggregateId, EventEntity>> groupedEvents, bool includeDeleted = false) where T : AggregateRoot
+  protected virtual IEnumerable<T> Load<T>(IEnumerable<EventEntity> events, bool includeDeleted = false) where T : AggregateRoot
   {
-    if (!groupedEvents.Any())
+    if (!events.Any())
     {
       return Enumerable.Empty<T>();
     }
 
     ConstructorInfo constructor = GetConstructor<T>();
 
-    List<T> aggregates = new(capacity: groupedEvents.Count());
-    foreach (IGrouping<AggregateId, EventEntity> events in groupedEvents)
+    IGrouping<string, EventEntity>[] groupedEvents = events.GroupBy(e => e.AggregateId).ToArray();
+    List<T> aggregates = new(capacity: groupedEvents.Length);
+    foreach (IGrouping<string, EventEntity> group in groupedEvents)
     {
-      aggregates.AddIfNotNull(Load<T>(constructor, events.Key, events, includeDeleted));
+      aggregates.AddIfNotNull(Load<T>(constructor, new AggregateId(group.Key), group, includeDeleted));
     }
 
     return aggregates.AsReadOnly();

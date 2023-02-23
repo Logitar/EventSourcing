@@ -29,7 +29,14 @@ public readonly struct AggregateId
   /// <exception cref="ArgumentException">The string is null, empty or only white spaces.</exception>
   public AggregateId(string value)
   {
-    Value = value.CleanTrim() ?? throw new ArgumentException("The value cannot be null, empty or only white spaces.", nameof(value));
+    value = value.CleanTrim() ?? throw new ArgumentException("The value cannot be null, empty or only white spaces.", nameof(value));
+
+    if (value.Length > byte.MaxValue)
+    {
+      throw new ArgumentException($"The value cannot exceed {byte.MaxValue} characters.", nameof(value));
+    }
+
+    Value = value;
   }
 
   /// <summary>
