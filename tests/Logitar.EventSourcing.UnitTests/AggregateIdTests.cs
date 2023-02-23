@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace Logitar.EventSourcing;
+﻿namespace Logitar.EventSourcing;
 
 [Trait(Traits.Category, Categories.Unit)]
 public class AggregateIdTests
@@ -10,6 +8,11 @@ public class AggregateIdTests
   {
     AggregateId id = new();
     Assert.Equal(string.Empty.GetHashCode(), id.GetHashCode());
+
+    TestEvent e = new();
+    Assert.Equal(string.Empty, e.AggregateId.ToString());
+    Assert.Equal(id, e.AggregateId);
+    Assert.Equal(string.Empty.GetHashCode(), e.AggregateId.GetHashCode());
   }
 
   [Theory]

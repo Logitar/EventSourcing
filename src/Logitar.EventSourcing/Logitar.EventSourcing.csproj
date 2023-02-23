@@ -7,7 +7,7 @@
     <WarningsAsErrors>Nullable</WarningsAsErrors>
 
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
     <Authors>Francis Pion</Authors>
     <Company>Logitar</Company>
     <Description>Provides an implementation of Event Sourcing for domain aggregates and events.</Description>
@@ -16,7 +16,7 @@
     <RepositoryUrl>https://github.com/Utar94/Logitar.NET/tree/main</RepositoryUrl>
     <PackageTags>event sourcing</PackageTags>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Added maximum length on AggregateId values.</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed yet again default AggregateId bugs.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
