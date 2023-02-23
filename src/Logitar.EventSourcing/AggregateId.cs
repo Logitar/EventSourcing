@@ -1,4 +1,6 @@
-﻿namespace Logitar.EventSourcing;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Logitar.EventSourcing;
 
 /// <summary>
 /// Represents the unique identifier of a domain aggregate.
