@@ -1,4 +1,6 @@
-﻿namespace Logitar.EventSourcing;
+﻿using System.Security.Cryptography;
+
+namespace Logitar.EventSourcing;
 
 [Trait(Traits.Category, Categories.Unit)]
 public class AggregateIdTests
