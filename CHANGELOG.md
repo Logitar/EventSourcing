@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 Nothing yet.
 
+## [2.0.2] 2023-03-02
+
+### Fixed
+
+- Fixed ToUriSafeBase64 extension method and associated tests.
+
 ## [2.0.1] 2023-02-22
 
 ### Fixed
@@ -60,7 +66,8 @@ Nothing yet.
 - Implemented the EntityFrameworkCore.PostgreSQL event store.
 - Configured NuGet packages.
 
-[unreleased]: https://github.com/Logitar/EventSourcing/compare/v2.0.1...HEAD
+[unreleased]: https://github.com/Logitar/EventSourcing/compare/v2.0.2...HEAD
+[2.0.2]: https://github.com/Logitar/EventSourcing/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/Logitar/EventSourcing/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/Logitar/EventSourcing/compare/v1.2.2...v2.0.1
 [1.2.2]: https://github.com/Logitar/EventSourcing/compare/v1.2.1...v1.2.2
