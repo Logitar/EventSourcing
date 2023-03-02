@@ -3,12 +3,15 @@
 [Trait(Traits.Category, Categories.Unit)]
 public class StringExtensionsTests
 {
-  [Fact]
-  public void Given_base64_string_Then_uri_safe_base64()
+  [Theory]
+  [InlineData("Qe0YB5A/MUaRmUk+CXGRsg==")]
+  [InlineData("Qe0YB5AcMUaRmUkpCXGRsgOy")]
+  public void Given_base64_string_Then_uri_safe_base64(string s)
   {
-    string s = Convert.ToBase64String(Guid.NewGuid().ToByteArray()).ToUriSafeBase64();
+    string expected = s.Replace('+', '-').Replace('/', '_').TrimEnd('=');
+    string actual = s.ToUriSafeBase64();
 
-    Assert.True(s.All(c => char.IsLetterOrDigit(c) || c == '-' || c == '_'));
+    Assert.Equal(expected, actual);
   }
 
   [Theory]
@@ -42,12 +45,14 @@ public class StringExtensionsTests
     Assert.Equal(s.Trim(), s.CleanTrim());
   }
 
-  [Fact]
-  public void Given_uri_safe_base64_string_Then_correctly_parsed()
+  [Theory]
+  [InlineData("knqQH2V/ukW0IK3+UYlFaw==")]
+  [InlineData("knqQH2VZukW0IK30UYlFaw8x")]
+  public void Given_uri_safe_base64_string_Then_correctly_parsed(string base64)
   {
-    Guid guid = Guid.NewGuid();
-    string s = Convert.ToBase64String(guid.ToByteArray()).Replace('+', '-').Replace('/', '_').TrimEnd('=');
-    Guid other = new(Convert.FromBase64String(s.FromUriSafeBase64()));
-    Assert.Equal(guid, other);
+    byte[] bytes = Convert.FromBase64String(base64);
+    string s = Convert.ToBase64String(bytes).ToUriSafeBase64();
+    byte[] other = Convert.FromBase64String(s.FromUriSafeBase64());
+    Assert.Equal(bytes, other);
   }
 }

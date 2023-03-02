@@ -43,5 +43,5 @@ public static class StringExtensions
   /// </summary>
   /// <param name="s">The string to encode.</param>
   /// <returns>The encoded string.</returns>
-  public static string ToUriSafeBase64(this string s) => s.Replace('+', '_').Replace('/', '_').TrimEnd('=');
+  public static string ToUriSafeBase64(this string s) => s.Replace('+', '-').Replace('/', '_').TrimEnd('=');
 }

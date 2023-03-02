@@ -6,7 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
-Nothing yet.
+### Fixed
+
+- Fixed ToUriSafeBase64 extension method and associated tests.
 
 ## [2.0.1] 2023-02-22
 
