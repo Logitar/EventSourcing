@@ -8,19 +8,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 Nothing yet.
 
-## [2.0.2] 2023-03-02
+## [2.0.2] - 2023-03-02
 
 ### Fixed
 
 - Fixed ToUriSafeBase64 extension method and associated tests.
 
-## [2.0.1] 2023-02-22
+## [2.0.1] - 2023-02-22
 
 ### Fixed
 
 - Fixed yet again default AggregateId bugs.
 
-## [2.0.0] 2023-02-22
+## [2.0.0] - 2023-02-22
 
 ### Changed
 
