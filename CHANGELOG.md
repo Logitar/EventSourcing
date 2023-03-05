@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.1.0] - 2023-03-04
+
 ### Added
 
 - `ListExtensions.AddIfNotNull` now returns `true` if the item was added to the list, or `false` if it was null.
@@ -68,7 +72,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Implemented the EntityFrameworkCore.PostgreSQL event store.
 - Configured NuGet packages.
 
-[unreleased]: https://github.com/Logitar/EventSourcing/compare/v2.0.2...HEAD
+[unreleased]: https://github.com/Logitar/EventSourcing/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/Logitar/EventSourcing/compare/v2.0.2...v2.1.0
 [2.0.2]: https://github.com/Logitar/EventSourcing/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/Logitar/EventSourcing/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/Logitar/EventSourcing/compare/v1.2.2...v2.0.1
