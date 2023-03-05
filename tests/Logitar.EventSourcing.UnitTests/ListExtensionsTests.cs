@@ -9,7 +9,7 @@ public class ListExtensionsTests
     List<TestAggregate> aggregates = new();
     Assert.Empty(aggregates);
 
-    aggregates.Add(new TestAggregate());
+    Assert.True(aggregates.AddIfNotNull(new TestAggregate()));
     Assert.NotEmpty(aggregates);
   }
 
@@ -19,7 +19,7 @@ public class ListExtensionsTests
     List<TestAggregate> aggregates = new();
     Assert.Empty(aggregates);
 
-    aggregates.AddIfNotNull(null!);
+    Assert.False(aggregates.AddIfNotNull(null!));
     Assert.Empty(aggregates);
   }
 }
