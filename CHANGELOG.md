@@ -7,81 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+Nothing yet.
 
-- Implemented ErrorMessageBuilder, ExceptionDetail, ExceptionExtensions and TypeExtensions.
-- Added Raise and Handle methods on AggregateRoot.
-
-### Changed
-
-- Marked old TypeExtensions as obsolete.
-- Refactored AggregateRoot.
-
-### Removed
-
-- Removed Identity projects.
-- Removed Demo project.
-
-## [1.7.0] - 2023-09-21
+## [4.1.0] - 2023-11-03
 
 ### Added
 
-- Implemented JOIN extensions.
-
-### Changed
-
-- Marked Purpose claim as obsolete.
-
-### Fixed
-
-- Renamed JOIN parameters.
-
-## [1.6.0] - 2023-09-01
-
-### Added
-
-- Implemented a ClaimHelper.
-
-## [1.5.0] - 2023-08-25
-
-### Added
-
-- Implemented user password change.
-- Added claim constants.
-
-### Changed
-
-- Created a Locale value object.
-
-## [1.4.0] - 2023-08-13
-
-### Added
-
-- Implemented a RandomStringGenerator.
-- Added an AggregateId argument in Identity aggregate constructors.
-
-## [1.3.0] - 2023-08-13
-
-### Added
-
-- Created a RoleAggregate.
-- Created an UserAggregate.
-- Created a SessionAggregate.
-
-### Changed
-
-- Protected setters on aggregate metadata.
-
-## [1.2.0] - 2023-08-06
-
-### Added
-
-- Implemented query JOINs.
+- Implemented Event Sourcing with multiple data stores.
 - Added AggregateRoot metadata.
 - Created a struct for actor identifiers.
 - Implemented an EventSourcing MongoDB store.
-- Added a demo TodoController with CRUD endpoints.
-- Implemented DeleteBuilders and UpdateBuilders for PostgreSQL and Microsoft SQL Server.
+- Added Raise and Handle methods on AggregateRoot.
 
 ### Changed
 
@@ -90,28 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced DeleteAction by a nullable boolean.
 - Refactored AggregateRoot and DomainEvent.
 - Injecting IEventSerializer as a dependency.
+- Protected setters on aggregate metadata.
+- Marked old TypeExtensions as obsolete.
+- Refactored AggregateRoot.
 
-## [1.1.0] - 2023-07-11
-
-### Added
-
-- Implemented CollectionExtensions.
-- Implemented InsertBuilders and QueryBuilders for PostgreSQL and Microsoft SQL Server.
-- Implemented a Demo API with Swagger.
-- Implemented Event Sourcing with multiple data stores.
-
-## [1.0.0] - 2023-07-07
-
-### Added
-
-- Implemented StringExtensions.
-
-[unreleased]: https://github.com/Logitar/Logitar.NET/compare/v1.7.0...HEAD
-[1.7.0]: https://github.com/Logitar/Logitar.NET/compare/v1.6.0...v1.7.0
-[1.6.0]: https://github.com/Logitar/Logitar.NET/compare/v1.5.0...v1.6.0
-[1.5.0]: https://github.com/Logitar/Logitar.NET/compare/v1.4.0...v1.5.0
-[1.4.0]: https://github.com/Logitar/Logitar.NET/compare/v1.3.0...v1.4.0
-[1.3.0]: https://github.com/Logitar/Logitar.NET/compare/v1.2.0...v1.3.0
-[1.2.0]: https://github.com/Logitar/Logitar.NET/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/Logitar/Logitar.NET/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/Logitar/Logitar.NET/releases/tag/v1.0.0
+[unreleased]: https://github.com/Logitar/Logitar.NET/compare/v4.1.0...HEAD
+[4.1.0]: https://github.com/Logitar/Logitar.NET/releases/tag/v4.1.0
