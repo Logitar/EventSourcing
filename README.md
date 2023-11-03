@@ -1,3 +1,3 @@
-# Logitar.NET
+# EventSourcing
 
-A set of tools that are to be used into different C#/.NET projects.
+Implementation of the Event Sourcing architecture pattern.
