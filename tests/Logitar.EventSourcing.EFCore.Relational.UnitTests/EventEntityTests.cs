@@ -30,9 +30,9 @@ public class EventEntityTests
     Assert.Equal(entity.IsDeleted, change.IsDeleted);
     Assert.Equal(entity.OccurredOn, change.OccurredOn.ToUniversalTime());
     Assert.Equal(entity.Version, change.Version);
-    Assert.Equal(entity.AggregateType, aggregate.GetType().GetName());
+    Assert.Equal(entity.AggregateType, aggregate.GetType().GetNamespaceQualifiedName());
     Assert.Equal(entity.AggregateId, aggregate.Id.Value);
-    Assert.Equal(entity.EventType, change.GetType().GetName());
+    Assert.Equal(entity.EventType, change.GetType().GetNamespaceQualifiedName());
     Assert.Equal(entity.EventData, _eventSerializer.Serialize(change));
   }
 }

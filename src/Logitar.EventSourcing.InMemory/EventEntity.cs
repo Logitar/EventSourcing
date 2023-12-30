@@ -21,7 +21,7 @@ public class EventEntity : IEventEntity
   public static IEnumerable<EventEntity> FromChanges(AggregateRoot aggregate, IEventSerializer eventSerializer)
   {
     string aggregateId = aggregate.Id.Value;
-    string aggregateType = aggregate.GetType().GetName();
+    string aggregateType = aggregate.GetType().GetNamespaceQualifiedName();
 
     return aggregate.Changes.Select(change => new EventEntity
     {
@@ -29,7 +29,7 @@ public class EventEntity : IEventEntity
       Version = change.Version,
       AggregateType = aggregateType,
       AggregateId = aggregateId,
-      EventType = change.GetType().GetName(),
+      EventType = change.GetType().GetNamespaceQualifiedName(),
       EventData = eventSerializer.Serialize(change)
     });
   }

@@ -52,7 +52,7 @@ public class EventSerializerTests
     EventEntityMock entity = new()
     {
       Id = expected.Id,
-      EventType = expected.GetType().GetName(),
+      EventType = expected.GetType().GetNamespaceQualifiedName(),
       EventData = _serializer.Serialize(expected)
     };
 
@@ -66,7 +66,7 @@ public class EventSerializerTests
     EventEntityMock entity = new()
     {
       Id = Guid.NewGuid(),
-      EventType = typeof(DefaultLanguageChangedEvent).GetName(),
+      EventType = typeof(DefaultLanguageChangedEvent).GetNamespaceQualifiedName(),
       EventData = "null"
     };
     var exception = Assert.Throws<EventDataDeserializationFailedException>(() => _serializer.Deserialize(entity));
