@@ -17,7 +17,7 @@ public class MissingAggregateConstructorException : Exception
       throw new ArgumentOutOfRangeException(nameof(type), $"The type must be a subclass of the '{nameof(AggregateRoot)}' type.");
     }
 
-    AggregateType = type.GetName();
+    AggregateType = type.GetNamespaceQualifiedName();
   }
 
   /// <summary>
@@ -39,7 +39,7 @@ public class MissingAggregateConstructorException : Exception
     StringBuilder message = new();
 
     message.AppendLine("The specified aggregate type does not declare a public constructor receiving an AggregateId as its only argument.");
-    message.Append("TypeName: ").AppendLine(type.GetName());
+    message.Append("TypeName: ").AppendLine(type.GetNamespaceQualifiedName());
 
     return message.ToString();
   }

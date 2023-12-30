@@ -37,7 +37,7 @@ public class AggregateRepository : Infrastructure.AggregateRepository
   {
     List<FilterDefinition<EventEntity>> filters = new(capacity: 3)
     {
-      Builders<EventEntity>.Filter.Eq(x => x.AggregateType, typeof(T).GetName()),
+      Builders<EventEntity>.Filter.Eq(x => x.AggregateType, typeof(T).GetNamespaceQualifiedName()),
       Builders<EventEntity>.Filter.Eq(x => x.AggregateId, id.Value)
     };
     if (version.HasValue)
@@ -46,7 +46,7 @@ public class AggregateRepository : Infrastructure.AggregateRepository
     }
 
     List<EventEntity> events = await _events
-      .Find(Builders<EventEntity>.Filter.And(filters.ToArray()))
+      .Find(Builders<EventEntity>.Filter.And([.. filters]))
       .Sort(Builders<EventEntity>.Sort.Ascending(x => x.Version))
       .ToListAsync(cancellationToken);
 
@@ -62,7 +62,7 @@ public class AggregateRepository : Infrastructure.AggregateRepository
   protected override async Task<IEnumerable<DomainEvent>> LoadChangesAsync<T>(CancellationToken cancellationToken)
   {
     List<EventEntity> events = await _events
-      .Find(Builders<EventEntity>.Filter.Eq(x => x.AggregateType, typeof(T).GetName()))
+      .Find(Builders<EventEntity>.Filter.Eq(x => x.AggregateType, typeof(T).GetNamespaceQualifiedName()))
       .Sort(Builders<EventEntity>.Sort.Ascending(x => x.Version))
       .ToListAsync(cancellationToken);
 
@@ -81,12 +81,12 @@ public class AggregateRepository : Infrastructure.AggregateRepository
     HashSet<string> aggregateIds = ids.Select(id => id.Value).ToHashSet();
     List<FilterDefinition<EventEntity>> filters = new(capacity: 3)
     {
-      Builders<EventEntity>.Filter.Eq(x => x.AggregateType, typeof(T).GetName()),
+      Builders<EventEntity>.Filter.Eq(x => x.AggregateType, typeof(T).GetNamespaceQualifiedName()),
       Builders<EventEntity>.Filter.In(x => x.AggregateId, aggregateIds)
     };
 
     List<EventEntity> events = await _events
-      .Find(Builders<EventEntity>.Filter.And(filters.ToArray()))
+      .Find(Builders<EventEntity>.Filter.And([.. filters]))
       .Sort(Builders<EventEntity>.Sort.Ascending(x => x.Version))
       .ToListAsync(cancellationToken);
 

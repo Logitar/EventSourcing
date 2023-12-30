@@ -29,7 +29,7 @@ public abstract class AggregateRepositoryTests : Infrastructure.AggregateReposit
 
   protected override IEnumerable<IEventEntity> GetEventEntities(AggregateRoot aggregate)
   {
-    string aggregateType = aggregate.GetType().GetName();
+    string aggregateType = aggregate.GetType().GetNamespaceQualifiedName();
     string aggregateId = aggregate.Id.Value;
 
     return aggregate.Changes.Select(change => new EventEntity
@@ -41,7 +41,7 @@ public abstract class AggregateRepositoryTests : Infrastructure.AggregateReposit
       Version = change.Version,
       AggregateType = aggregateType,
       AggregateId = aggregateId,
-      EventType = change.GetType().GetName(),
+      EventType = change.GetType().GetNamespaceQualifiedName(),
       EventData = EventSerializer.Serialize(change)
     });
   }
@@ -58,7 +58,7 @@ public abstract class AggregateRepositoryTests : Infrastructure.AggregateReposit
     command.CommandText = query.Text;
     command.Parameters.AddRange(query.Parameters.ToArray());
 
-    List<EventEntity> entities = new();
+    List<EventEntity> entities = [];
 
     using DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
     if (reader.HasRows)
@@ -81,22 +81,29 @@ public abstract class AggregateRepositoryTests : Infrastructure.AggregateReposit
   {
     Assert.NotNull(Connection);
 
-    ColumnId[] columns = new[] { Events.Id, Events.ActorId, Events.IsDeleted, Events.OccurredOn,
-      Events.Version, Events.AggregateType, Events.AggregateId, Events.EventType, Events.EventData };
+    ColumnId[] columns = [Events.Id,
+      Events.ActorId,
+      Events.IsDeleted,
+      Events.OccurredOn,
+      Events.Version,
+      Events.AggregateType,
+      Events.AggregateId,
+      Events.EventType,
+      Events.EventData];
     IInsertBuilder builder = CreateInsertBuilder(columns);
 
     foreach (AggregateRoot aggregate in aggregates)
     {
       if (aggregate.HasChanges)
       {
-        string aggregateType = aggregate.GetType().GetName();
+        string aggregateType = aggregate.GetType().GetNamespaceQualifiedName();
         string aggregateId = aggregate.Id.Value;
 
         foreach (DomainEvent change in aggregate.Changes)
         {
           builder = builder.Value(change.Id, change.ActorId.Value, change.IsDeleted,
             change.OccurredOn.ToUniversalTime(), change.Version, aggregateType, aggregateId,
-            change.GetType().GetName(), EventSerializer.Serialize(change));
+            change.GetType().GetNamespaceQualifiedName(), EventSerializer.Serialize(change));
         }
       }
     }

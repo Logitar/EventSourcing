@@ -19,7 +19,7 @@ public class AggregateConstructionFailedException : Exception
       throw new ArgumentOutOfRangeException(nameof(type), $"The type must be a subclass of the '{nameof(AggregateRoot)}' type.");
     }
 
-    AggregateType = type.GetName();
+    AggregateType = type.GetNamespaceQualifiedName();
     AggregateId = id.ToString();
   }
 
@@ -51,7 +51,7 @@ public class AggregateConstructionFailedException : Exception
     StringBuilder message = new();
 
     message.AppendLine("The aggregate construction failed.");
-    message.Append("TypeName: ").AppendLine(type.GetName());
+    message.Append("TypeName: ").AppendLine(type.GetNamespaceQualifiedName());
     message.Append("AggregateId: ").Append(id).AppendLine();
 
     return message.ToString();

@@ -38,11 +38,11 @@ public abstract class AggregateRoot
   /// <summary>
   /// The uncommitted changes of the aggregate.
   /// </summary>
-  private readonly List<DomainEvent> _changes = new();
+  private readonly List<DomainEvent> _changes = [];
   /// <summary>
   /// Gets a value indicating whether or not the aggregate has uncommitted changes.
   /// </summary>
-  public bool HasChanges => _changes.Any();
+  public bool HasChanges => _changes.Count > 0;
   /// <summary>
   /// Gets the uncommitted changes of the aggregate.
   /// </summary>
@@ -79,7 +79,7 @@ public abstract class AggregateRoot
   /// <returns>The loaded aggregate.</returns>
   public static T LoadFromChanges<T>(AggregateId id, IEnumerable<DomainEvent> changes) where T : AggregateRoot
   {
-    ConstructorInfo constructor = typeof(T).GetConstructor(new[] { typeof(AggregateId) })
+    ConstructorInfo constructor = typeof(T).GetConstructor([typeof(AggregateId)])
       ?? throw new MissingAggregateConstructorException<T>();
 
     T aggregate = (T?)constructor.Invoke(new object[] { id })
@@ -93,13 +93,6 @@ public abstract class AggregateRoot
 
     return aggregate;
   }
-
-  /// <summary>
-  /// Applies the specified change to the current aggregate.
-  /// </summary>
-  /// <param name="change">The change to apply.</param>
-  [Obsolete("This method will be removed in the next major release, since it will be replaced by the Raise method.")]
-  protected void ApplyChange(DomainEvent change) => Raise(change);
   /// <summary>
   /// Raises the specified uncommited change to the current aggregate. The change will be associated to this aggregate, then applied to this aggregate before
   /// being added to the list of uncommited changes.
@@ -156,7 +149,7 @@ public abstract class AggregateRoot
   /// <param name="change">The change to apply.</param>
   protected virtual void Dispatch(DomainEvent change)
   {
-    MethodInfo? apply = GetType().GetMethod("Apply", BindingFlags.Instance | BindingFlags.NonPublic, new[] { change.GetType() });
+    MethodInfo? apply = GetType().GetMethod("Apply", BindingFlags.Instance | BindingFlags.NonPublic, [change.GetType()]);
     apply?.Invoke(this, new[] { change });
   }
 

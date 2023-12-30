@@ -35,7 +35,7 @@ public abstract class AggregateRepository : Infrastructure.AggregateRepository
   /// <returns>The loaded events.</returns>
   protected override async Task<IEnumerable<DomainEvent>> LoadChangesAsync<T>(AggregateId id, long? version, CancellationToken cancellationToken)
   {
-    string aggregateType = typeof(T).GetName();
+    string aggregateType = typeof(T).GetNamespaceQualifiedName();
     string aggregateId = id.Value;
 
     List<Condition> conditions = new(capacity: 3)
@@ -49,7 +49,7 @@ public abstract class AggregateRepository : Infrastructure.AggregateRepository
     }
 
     IQuery query = From(Events.Table)
-      .WhereAnd(conditions.ToArray())
+      .WhereAnd([.. conditions])
       .OrderBy(Events.Version)
       .Select(Events.Id, Events.EventType, Events.EventData)
       .Build();
@@ -65,7 +65,7 @@ public abstract class AggregateRepository : Infrastructure.AggregateRepository
   /// <returns>The list of loaded events.</returns>
   protected override async Task<IEnumerable<DomainEvent>> LoadChangesAsync<T>(CancellationToken cancellationToken)
   {
-    string aggregateType = typeof(T).GetName();
+    string aggregateType = typeof(T).GetNamespaceQualifiedName();
 
     IQuery query = From(Events.Table)
       .Where(Events.AggregateType, Operators.IsEqualTo(aggregateType))
@@ -85,7 +85,7 @@ public abstract class AggregateRepository : Infrastructure.AggregateRepository
   /// <returns>The list of loaded events.</returns>
   protected override async Task<IEnumerable<DomainEvent>> LoadChangesAsync<T>(IEnumerable<AggregateId> ids, CancellationToken cancellationToken)
   {
-    string aggregateType = typeof(T).GetName();
+    string aggregateType = typeof(T).GetNamespaceQualifiedName();
     string[] aggregateIds = ids.Select(id => id.Value).Distinct().ToArray();
 
     IQuery query = From(Events.Table)
@@ -113,7 +113,7 @@ public abstract class AggregateRepository : Infrastructure.AggregateRepository
       command.Parameters.Add(parameter);
     }
 
-    List<DomainEvent> changes = new();
+    List<DomainEvent> changes = [];
 
     using DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
     if (reader.HasRows)
@@ -150,14 +150,14 @@ public abstract class AggregateRepository : Infrastructure.AggregateRepository
     {
       if (aggregate.HasChanges)
       {
-        string aggregateType = aggregate.GetType().GetName();
+        string aggregateType = aggregate.GetType().GetNamespaceQualifiedName();
         string aggregateId = aggregate.Id.Value;
 
         foreach (DomainEvent change in aggregate.Changes)
         {
           builder = builder.Value(change.Id, change.ActorId.Value, change.IsDeleted,
             change.OccurredOn.ToUniversalTime(), change.Version, aggregateType, aggregateId,
-            change.GetType().GetName(), EventSerializer.Serialize(change));
+            change.GetType().GetNamespaceQualifiedName(), EventSerializer.Serialize(change));
         }
       }
     }

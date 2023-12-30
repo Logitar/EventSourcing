@@ -4,7 +4,7 @@ namespace Logitar.EventSourcing.InMemory;
 
 public class AggregateRepository : Infrastructure.AggregateRepository
 {
-  private readonly List<EventEntity> _events = new();
+  private readonly List<EventEntity> _events = [];
 
   public AggregateRepository(IEventBus eventBus, IEventSerializer eventSerializer)
     : base(eventBus, eventSerializer)
@@ -13,7 +13,7 @@ public class AggregateRepository : Infrastructure.AggregateRepository
 
   protected override Task<IEnumerable<DomainEvent>> LoadChangesAsync<T>(AggregateId id, long? version, CancellationToken cancellationToken)
   {
-    string aggregateType = typeof(T).GetName();
+    string aggregateType = typeof(T).GetNamespaceQualifiedName();
     string aggregateId = id.Value;
 
     IEnumerable<DomainEvent> changes = _events.Where(e => e.AggregateType == aggregateType && e.AggregateId == aggregateId
@@ -26,7 +26,7 @@ public class AggregateRepository : Infrastructure.AggregateRepository
 
   protected override Task<IEnumerable<DomainEvent>> LoadChangesAsync<T>(CancellationToken cancellationToken)
   {
-    string aggregateType = typeof(T).GetName();
+    string aggregateType = typeof(T).GetNamespaceQualifiedName();
 
     IEnumerable<DomainEvent> changes = _events.Where(e => e.AggregateType == aggregateType)
       .OrderBy(e => e.Version)
@@ -37,7 +37,7 @@ public class AggregateRepository : Infrastructure.AggregateRepository
 
   protected override Task<IEnumerable<DomainEvent>> LoadChangesAsync<T>(IEnumerable<AggregateId> ids, CancellationToken cancellationToken)
   {
-    string aggregateType = typeof(T).GetName();
+    string aggregateType = typeof(T).GetNamespaceQualifiedName();
     HashSet<string> aggregateIds = ids.Select(id => id.Value).ToHashSet();
 
     IEnumerable<DomainEvent> changes = _events.Where(e => e.AggregateType == aggregateType && aggregateIds.Contains(e.AggregateId))

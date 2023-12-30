@@ -35,7 +35,7 @@ public class AggregateRepository : Infrastructure.AggregateRepository
   /// <returns>The loaded events.</returns>
   protected override async Task<IEnumerable<DomainEvent>> LoadChangesAsync<T>(AggregateId id, long? version, CancellationToken cancellationToken)
   {
-    string aggregateType = typeof(T).GetName();
+    string aggregateType = typeof(T).GetNamespaceQualifiedName();
     string aggregateId = id.Value;
 
     EventEntity[] events = await EventContext.Events.AsNoTracking()
@@ -54,7 +54,7 @@ public class AggregateRepository : Infrastructure.AggregateRepository
   /// <returns>The list of loaded events.</returns>
   protected override async Task<IEnumerable<DomainEvent>> LoadChangesAsync<T>(CancellationToken cancellationToken)
   {
-    string aggregateType = typeof(T).GetName();
+    string aggregateType = typeof(T).GetNamespaceQualifiedName();
 
     EventEntity[] events = await EventContext.Events.AsNoTracking()
       .Where(e => e.AggregateType == aggregateType)
@@ -73,7 +73,7 @@ public class AggregateRepository : Infrastructure.AggregateRepository
   /// <returns>The list of loaded events.</returns>
   protected override async Task<IEnumerable<DomainEvent>> LoadChangesAsync<T>(IEnumerable<AggregateId> ids, CancellationToken cancellationToken)
   {
-    string aggregateType = typeof(T).GetName();
+    string aggregateType = typeof(T).GetNamespaceQualifiedName();
     HashSet<string> aggregateIds = ids.Select(id => id.Value).ToHashSet();
 
     EventEntity[] events = await EventContext.Events.AsNoTracking()

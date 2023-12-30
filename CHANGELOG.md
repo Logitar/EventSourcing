@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing yet.
+### Changed
+
+- Upgraded to .NET8.
 
 ## [4.1.0] - 2023-11-03
 
