@@ -20,6 +20,10 @@ Nothing yet.
 - Upgraded NuGet packages.
 - Simplified integration test configurations.
 
+### Fixed
+
+- Updated LICENSE year.
+
 ## [5.0.0] - 2023-12-30
 
 ### Changed
