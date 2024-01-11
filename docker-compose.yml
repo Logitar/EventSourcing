@@ -1,5 +1,14 @@
 version: '3.8'
 services:
+  eventsourcing_mongo:
+    image: mongo
+    container_name: Logitar.EventSourcing_mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: demo
+      MONGO_INITDB_ROOT_PASSWORD: AwHE5MRKBeY9CsJu
+    ports:
+      - 27015:27017
+
   eventsourcing_mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: Logitar.EventSourcing_mssql
