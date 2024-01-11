@@ -9,7 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing yet.
 
-## [5.0.0] - 2023-11-03
+## [5.1.0] - 2024-01-10
+
+### Added
+
+- docker-compose.yml
+
+### Changed
+
+- Upgraded NuGet packages.
+- Simplified integration test configurations.
+
+## [5.0.0] - 2023-12-30
 
 ### Changed
 
@@ -36,6 +47,7 @@ Nothing yet.
 - Marked old TypeExtensions as obsolete.
 - Refactored AggregateRoot.
 
-[unreleased]: https://github.com/Logitar/Logitar.NET/compare/v5.0.0...HEAD
+[unreleased]: https://github.com/Logitar/Logitar.NET/compare/v5.1.0...HEAD
+[5.1.0]: https://github.com/Logitar/Logitar.NET/compare/v5.0.0...v5.1.0
 [5.0.0]: https://github.com/Logitar/Logitar.NET/compare/v4.1.0...v5.0.0
 [4.1.0]: https://github.com/Logitar/Logitar.NET/releases/tag/v4.1.0
