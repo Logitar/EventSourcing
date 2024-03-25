@@ -40,18 +40,18 @@ public abstract class AggregateRepository : Infrastructure.AggregateRepository
 
     List<Condition> conditions = new(capacity: 3)
     {
-      new OperatorCondition(Events.AggregateType, Operators.IsEqualTo(aggregateType)),
-      new OperatorCondition(Events.AggregateId, Operators.IsEqualTo(aggregateId))
+      new OperatorCondition(EventDb.Events.AggregateType, Operators.IsEqualTo(aggregateType)),
+      new OperatorCondition(EventDb.Events.AggregateId, Operators.IsEqualTo(aggregateId))
     };
     if (version.HasValue)
     {
-      conditions.Add(new OperatorCondition(Events.Version, Operators.IsLessThanOrEqualTo(version.Value)));
+      conditions.Add(new OperatorCondition(EventDb.Events.Version, Operators.IsLessThanOrEqualTo(version.Value)));
     }
 
-    IQuery query = From(Events.Table)
+    IQuery query = From(EventDb.Events.Table)
       .WhereAnd([.. conditions])
-      .OrderBy(Events.Version)
-      .Select(Events.Id, Events.EventType, Events.EventData)
+      .OrderBy(EventDb.Events.Version)
+      .Select(EventDb.Events.Id, EventDb.Events.EventType, EventDb.Events.EventData)
       .Build();
 
     return await ReadChangesAsync(query, cancellationToken);
@@ -67,10 +67,10 @@ public abstract class AggregateRepository : Infrastructure.AggregateRepository
   {
     string aggregateType = typeof(T).GetNamespaceQualifiedName();
 
-    IQuery query = From(Events.Table)
-      .Where(Events.AggregateType, Operators.IsEqualTo(aggregateType))
-      .OrderBy(Events.Version)
-      .Select(Events.Id, Events.EventType, Events.EventData)
+    IQuery query = From(EventDb.Events.Table)
+      .Where(EventDb.Events.AggregateType, Operators.IsEqualTo(aggregateType))
+      .OrderBy(EventDb.Events.Version)
+      .Select(EventDb.Events.Id, EventDb.Events.EventType, EventDb.Events.EventData)
       .Build();
 
     return await ReadChangesAsync(query, cancellationToken);
@@ -88,11 +88,12 @@ public abstract class AggregateRepository : Infrastructure.AggregateRepository
     string aggregateType = typeof(T).GetNamespaceQualifiedName();
     string[] aggregateIds = ids.Select(id => id.Value).Distinct().ToArray();
 
-    IQuery query = From(Events.Table)
-      .WhereAnd(new OperatorCondition(Events.AggregateType, Operators.IsEqualTo(aggregateType)),
-        new OperatorCondition(Events.AggregateId, Operators.IsIn(aggregateIds)))
-      .OrderBy(Events.Version)
-      .Select(Events.Id, Events.EventType, Events.EventData)
+    IQuery query = From(EventDb.Events.Table)
+      .WhereAnd(new OperatorCondition(EventDb.Events.AggregateType, Operators.IsEqualTo(aggregateType)),
+        new OperatorCondition(EventDb.Events.AggregateId, Operators.IsIn(aggregateIds))
+      )
+      .OrderBy(EventDb.Events.Version)
+      .Select(EventDb.Events.Id, EventDb.Events.EventType, EventDb.Events.EventData)
       .Build();
 
     return await ReadChangesAsync(query, cancellationToken);
@@ -142,9 +143,8 @@ public abstract class AggregateRepository : Infrastructure.AggregateRepository
   /// <returns>The asynchronous operation.</returns>
   protected override async Task SaveChangesAsync(IEnumerable<AggregateRoot> aggregates, CancellationToken cancellationToken)
   {
-    IInsertBuilder builder = InsertInto(Events.Id, Events.ActorId, Events.IsDeleted,
-      Events.OccurredOn, Events.Version, Events.AggregateType, Events.AggregateId, Events.EventType,
-      Events.EventData);
+    IInsertBuilder builder = InsertInto(EventDb.Events.Id, EventDb.Events.ActorId, EventDb.Events.IsDeleted, EventDb.Events.OccurredOn,
+      EventDb.Events.Version, EventDb.Events.AggregateType, EventDb.Events.AggregateId, EventDb.Events.EventType, EventDb.Events.EventData);
 
     foreach (AggregateRoot aggregate in aggregates)
     {

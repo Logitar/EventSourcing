@@ -4,7 +4,6 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <WarningsAsErrors>Nullable</WarningsAsErrors>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Logitar.EventSourcing.EntityFrameworkCore.SqlServer</Title>
     <Authors>Francis Pion</Authors>
@@ -27,8 +26,16 @@
     <PackageProjectUrl>https://github.com/Logitar/Logitar.NET/tree/dev/src/Logitar.EventSourcing.EntityFrameworkCore.SqlServer</PackageProjectUrl>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
   </ItemGroup>
 
   <ItemGroup>

@@ -196,8 +196,8 @@ public class AggregateRootTests
   public void LoadFromChanges_it_constructs_the_correct_aggregate()
   {
     AggregateId id = AggregateId.NewId();
-    DomainEvent[] events = new DomainEvent[]
-    {
+    DomainEvent[] events =
+    [
       new PersonCreatedEvent(_faker.Person.FullName)
       {
         AggregateId = id,
@@ -210,7 +210,7 @@ public class AggregateRootTests
         Version = 2,
         OccurredOn = DateTime.Now
       }
-    };
+    ];
 
     PersonAggregate person = AggregateRoot.LoadFromChanges<PersonAggregate>(id, events);
     Assert.Equal(id, person.Id);
@@ -223,7 +223,7 @@ public class AggregateRootTests
   public void LoadFromChanges_it_throws_MissingAggregateConstructorException_when_public_identifier_constructor_is_missing()
   {
     AggregateId id = AggregateId.NewId();
-    List<DomainEvent> changes = new();
+    List<DomainEvent> changes = [];
     Assert.Throws<MissingAggregateConstructorException<CarAggregate>>(() => AggregateRoot.LoadFromChanges<CarAggregate>(id, changes));
   }
 

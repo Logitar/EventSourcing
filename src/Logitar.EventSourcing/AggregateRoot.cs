@@ -82,7 +82,7 @@ public abstract class AggregateRoot
     ConstructorInfo constructor = typeof(T).GetConstructor([typeof(AggregateId)])
       ?? throw new MissingAggregateConstructorException<T>();
 
-    T aggregate = (T?)constructor.Invoke(new object[] { id })
+    T aggregate = (T?)constructor.Invoke([id])
       ?? throw new AggregateConstructionFailedException<T>(id);
 
     IOrderedEnumerable<DomainEvent> ordered = changes.OrderBy(e => e.Version);
@@ -93,20 +93,53 @@ public abstract class AggregateRoot
 
     return aggregate;
   }
+
   /// <summary>
   /// Raises the specified uncommited change to the current aggregate. The change will be associated to this aggregate, then applied to this aggregate before
   /// being added to the list of uncommited changes.
   /// </summary>
   /// <param name="change">The uncommited change.</param>
-  protected void Raise(DomainEvent change)
+  protected void Raise(DomainEvent change) => Raise(change, actorId: null);
+  /// <summary>
+  /// Raises the specified uncommited change to the current aggregate. The change will be associated to this aggregate, then applied to this aggregate before
+  /// being added to the list of uncommited changes.
+  /// </summary>
+  /// <param name="change">The uncommited change.</param>
+  /// <param name="actorId">The identifier of the actor who triggered the event.</param>
+  protected void Raise(DomainEvent change, ActorId? actorId) => Raise(change, actorId, occurredOn: null);
+  /// <summary>
+  /// Raises the specified uncommited change to the current aggregate. The change will be associated to this aggregate, then applied to this aggregate before
+  /// being added to the list of uncommited changes.
+  /// </summary>
+  /// <param name="change">The uncommited change.</param>
+  /// <param name="occurredOn">The date and time when the event occurred.</param>
+  protected void Raise(DomainEvent change, DateTime? occurredOn) => Raise(change, actorId: null, occurredOn);
+  /// <summary>
+  /// Raises the specified uncommited change to the current aggregate. The change will be associated to this aggregate, then applied to this aggregate before
+  /// being added to the list of uncommited changes.
+  /// </summary>
+  /// <param name="change">The uncommited change.</param>
+  /// <param name="actorId">The identifier of the actor who triggered the event.</param>
+  /// <param name="occurredOn">The date and time when the event occurred.</param>
+  protected void Raise(DomainEvent change, ActorId? actorId, DateTime? occurredOn)
   {
     change.AggregateId = Id;
     change.Version = Version + 1;
+
+    if (actorId.HasValue)
+    {
+      change.ActorId = actorId.Value;
+    }
+    if (occurredOn.HasValue)
+    {
+      change.OccurredOn = occurredOn.Value;
+    }
 
     Handle(change);
 
     _changes.Add(change);
   }
+
   /// <summary>
   /// Handles the specified change in the current aggregate, effectively applying the change and its metadata.
   /// </summary>
