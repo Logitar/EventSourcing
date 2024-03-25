@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Treat warnings as errors.
 - Deprecated Events and added EventDb classes.
+- NuGet update.
 
 ### Removed
 
