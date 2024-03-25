@@ -1,6 +1,6 @@
 ﻿using Logitar.Data;
 
-namespace Logitar.EventSourcing.Relational;
+namespace Logitar.EventSourcing.EntityFrameworkCore.Relational;
 
 /// <summary>
 /// Represents the event sourcing database.
@@ -15,7 +15,7 @@ public static class EventDb
     /// <summary>
     /// Gets the events table.
     /// </summary>
-    public static readonly TableId Table = new("Events");
+    public static readonly TableId Table = new(nameof(EventContext.Events));
 
     /// <summary>
     /// Gets the ActorId column of the Events table.

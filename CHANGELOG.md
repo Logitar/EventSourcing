@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Treat warnings as errors.
-- Deprecated Events and added EventDb.
+- Deprecated Events and added EventDb classes.
 
 ### Removed
 
