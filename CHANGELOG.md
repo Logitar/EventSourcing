@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [5.2.0] - 2024-03-25
+
 ### Added
 
 - Aggregate `Raise` methods.
@@ -69,7 +73,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Marked old TypeExtensions as obsolete.
 - Refactored AggregateRoot.
 
-[unreleased]: https://github.com/Logitar/Logitar.NET/compare/v5.1.1...HEAD
+[unreleased]: https://github.com/Logitar/Logitar.NET/compare/v5.2.0...HEAD
+[5.2.0]: https://github.com/Logitar/Logitar.NET/compare/v5.1.1...v5.2.0
 [5.1.1]: https://github.com/Logitar/Logitar.NET/compare/v5.1.0...v5.1.1
 [5.1.0]: https://github.com/Logitar/Logitar.NET/compare/v5.0.0...v5.1.0
 [5.0.0]: https://github.com/Logitar/Logitar.NET/compare/v4.1.0...v5.0.0
