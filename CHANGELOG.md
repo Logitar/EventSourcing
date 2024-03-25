@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing yet.
+### Changed
+
+- Treat warnings as errors.
+- Deprecated Events and added EventDb.
 
 ## [5.1.1] - 2024-03-25
 

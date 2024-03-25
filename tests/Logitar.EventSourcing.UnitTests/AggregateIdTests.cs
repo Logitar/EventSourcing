@@ -33,9 +33,9 @@ public class AggregateIdTests
   [InlineData(null)]
   [InlineData("")]
   [InlineData("  ")]
-  public void Ctor_it_throws_ArgumentException_when_value_is_null_or_white_space(string value)
+  public void Ctor_it_throws_ArgumentException_when_value_is_null_or_white_space(string? value)
   {
-    var exception = Assert.Throws<ArgumentException>(() => new AggregateId(value));
+    var exception = Assert.Throws<ArgumentException>(() => new AggregateId(value!));
     Assert.Equal("value", exception.ParamName);
   }
 

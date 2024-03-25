@@ -5,6 +5,7 @@ namespace Logitar.EventSourcing.Relational;
 /// <summary>
 /// Represents the Events table.
 /// </summary>
+[Obsolete($"This class has been moved inside the {nameof(EventDb)} class and will be removed in the next major release.")]
 public static class Events
 {
   /// <summary>

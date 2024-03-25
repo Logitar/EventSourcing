@@ -50,8 +50,8 @@ public abstract class AggregateRepositoryTests : Infrastructure.AggregateReposit
   {
     Assert.NotNull(Connection);
 
-    IQuery query = CreateQueryBuilder(Events.Table)
-      .Select(Events.Id, Events.EventType, Events.EventData)
+    IQuery query = CreateQueryBuilder(EventDb.Events.Table)
+      .Select(EventDb.Events.Id, EventDb.Events.EventType, EventDb.Events.EventData)
       .Build();
 
     using DbCommand command = Connection.CreateCommand();
@@ -81,15 +81,18 @@ public abstract class AggregateRepositoryTests : Infrastructure.AggregateReposit
   {
     Assert.NotNull(Connection);
 
-    ColumnId[] columns = [Events.Id,
-      Events.ActorId,
-      Events.IsDeleted,
-      Events.OccurredOn,
-      Events.Version,
-      Events.AggregateType,
-      Events.AggregateId,
-      Events.EventType,
-      Events.EventData];
+    ColumnId[] columns =
+    [
+      EventDb.Events.Id,
+      EventDb.Events.ActorId,
+      EventDb.Events.IsDeleted,
+      EventDb.Events.OccurredOn,
+      EventDb.Events.Version,
+      EventDb.Events.AggregateType,
+      EventDb.Events.AggregateId,
+      EventDb.Events.EventType,
+      EventDb.Events.EventData
+    ];
     IInsertBuilder builder = CreateInsertBuilder(columns);
 
     foreach (AggregateRoot aggregate in aggregates)
