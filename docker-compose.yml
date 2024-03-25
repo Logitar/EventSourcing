@@ -1,6 +1,7 @@
 version: '3.8'
+name: event_sourcing
 services:
-  eventsourcing_mongo:
+  event_sourcing_mongo:
     image: mongo
     container_name: Logitar.EventSourcing_mongo
     environment:
@@ -9,7 +10,7 @@ services:
     ports:
       - 27015:27017
 
-  eventsourcing_mssql:
+  event_sourcing_mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: Logitar.EventSourcing_mssql
     environment:
@@ -18,7 +19,7 @@ services:
     ports:
       - 1435:1433
 
-  eventsourcing_postgres:
+  event_sourcing_postgres:
     image: postgres
     container_name: Logitar.EventSourcing_postgres
     environment:
