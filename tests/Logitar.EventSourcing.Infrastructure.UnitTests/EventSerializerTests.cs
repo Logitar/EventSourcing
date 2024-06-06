@@ -34,6 +34,7 @@ public class EventSerializerTests
 
     Assert.Contains(options.Converters, converter => converter is ActorIdConverter);
     Assert.Contains(options.Converters, converter => converter is AggregateIdConverter);
+    Assert.Contains(options.Converters, converter => converter is EventIdConverter);
     Assert.Contains(options.Converters, converter => converter is JsonStringEnumConverter);
     Assert.Contains(options.Converters, converter => converter is CultureInfoConverter);
   }
@@ -43,7 +44,7 @@ public class EventSerializerTests
   {
     DefaultLanguageChangedEvent expected = new(CultureInfo.GetCultureInfo("en-CA"))
     {
-      Id = Guid.NewGuid(),
+      Id = EventId.NewId(),
       AggregateId = AggregateId.NewId(),
       Version = 5,
       ActorId = new ActorId("fpion"),
@@ -51,7 +52,7 @@ public class EventSerializerTests
     };
     EventEntityMock entity = new()
     {
-      Id = expected.Id,
+      Id = expected.Id.ToGuid(),
       EventType = expected.GetType().GetNamespaceQualifiedName(),
       EventData = _serializer.Serialize(expected)
     };
@@ -110,7 +111,7 @@ public class EventSerializerTests
   {
     DefaultLanguageChangedEvent e = new(CultureInfo.GetCultureInfo("en-CA"))
     {
-      Id = Guid.NewGuid(),
+      Id = EventId.NewId(),
       AggregateId = AggregateId.NewId(),
       Version = 5,
       ActorId = new ActorId("fpion"),
