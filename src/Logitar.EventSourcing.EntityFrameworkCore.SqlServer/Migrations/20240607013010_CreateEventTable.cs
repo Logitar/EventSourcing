@@ -16,7 +16,7 @@ namespace Logitar.EventSourcing.EntityFrameworkCore.SqlServer.Migrations
                 {
                     EventId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     ActorId = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: true),
                     OccurredOn = table.Column<DateTime>(type: "datetime2", nullable: false),
