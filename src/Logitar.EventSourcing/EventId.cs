@@ -1,9 +1,9 @@
 ﻿namespace Logitar.EventSourcing;
 
 /// <summary>
-/// Represents the identifier of an <see cref="AggregateRoot"/>.
+/// Represents the identifier of a <see cref="DomainEvent"/>.
 /// </summary>
-public readonly struct AggregateId
+public readonly struct EventId
 {
   /// <summary>
   /// The maximum length of the identifier value.
@@ -20,20 +20,20 @@ public readonly struct AggregateId
   public string Value => _value ?? string.Empty;
 
   /// <summary>
-  /// Initializes a new instance of the <see cref="AggregateId"/> struct.
+  /// Initializes a new instance of the <see cref="EventId"/> struct.
   /// </summary>
   /// <param name="value">The value of the identifier.</param>
-  public AggregateId(Guid value) : this(Convert.ToBase64String(value.ToByteArray()).ToUriSafeBase64())
+  public EventId(Guid value) : this(Convert.ToBase64String(value.ToByteArray()).ToUriSafeBase64())
   {
   }
 
   /// <summary>
-  /// Initializes a new instance of the <see cref="AggregateId"/> struct.
+  /// Initializes a new instance of the <see cref="EventId"/> struct.
   /// </summary>
   /// <param name="value">The value of the identifier.</param>
   /// <exception cref="ArgumentException">The value is null, empty or only white space.</exception>
   /// <exception cref="ArgumentOutOfRangeException">The value exceeds the maximum length.</exception>
-  public AggregateId(string value)
+  public EventId(string value)
   {
     if (string.IsNullOrWhiteSpace(value))
     {
@@ -50,10 +50,10 @@ public readonly struct AggregateId
   }
 
   /// <summary>
-  /// Creates a new instance of the <see cref="AggregateId"/> struct from a random <see cref="Guid"/>.
+  /// Creates a new instance of the <see cref="EventId"/> struct from a random <see cref="Guid"/>.
   /// </summary>
   /// <returns>The created instance.</returns>
-  public static AggregateId NewId() => new(Guid.NewGuid());
+  public static EventId NewId() => new(Guid.NewGuid());
 
   /// <summary>
   /// Converts the identifier to a <see cref="Guid"/>. The conversion will fail if the identifier has not been created from a <see cref="Guid"/>.
@@ -67,21 +67,21 @@ public readonly struct AggregateId
   /// <param name="left">The first identifier to compare.</param>
   /// <param name="right">The other identifier to compare.</param>
   /// <returns>True if the identifiers are equal.</returns>
-  public static bool operator ==(AggregateId left, AggregateId right) => left.Equals(right);
+  public static bool operator ==(EventId left, EventId right) => left.Equals(right);
   /// <summary>
   /// Returns a value indicating whether or not the specified identifiers are different.
   /// </summary>
   /// <param name="left">The first identifier to compare.</param>
   /// <param name="right">The other identifier to compare.</param>
   /// <returns>True if the identifiers are different.</returns>
-  public static bool operator !=(AggregateId left, AggregateId right) => !left.Equals(right);
+  public static bool operator !=(EventId left, EventId right) => !left.Equals(right);
 
   /// <summary>
   /// Returns a value indicating whether or not the specified object is equal to the identifier.
   /// </summary>
   /// <param name="obj">The object to be compared to.</param>
   /// <returns>True if the object is equal to the identifier.</returns>
-  public override bool Equals([NotNullWhen(true)] object? obj) => obj is AggregateId id && id.Value == Value;
+  public override bool Equals([NotNullWhen(true)] object? obj) => obj is EventId id && id.Value == Value;
   /// <summary>
   /// Returns the hash code of the current identifier.
   /// </summary>

@@ -6,7 +6,7 @@ namespace Logitar.EventSourcing.MongoDB;
 /// <summary>
 /// Represents the MongoDB storage model for events.
 /// </summary>
-public record EventEntity : IEventEntity
+public class EventEntity : IEventEntity
 {
   /// <summary>
   /// Initializes a new instance of the <see cref="EventEntity"/> class.
@@ -22,7 +22,7 @@ public record EventEntity : IEventEntity
   /// <summary>
   ///  Gets or sets the identifier of the event.
   /// </summary>
-  public Guid Id { get; private set; }
+  public string Id { get; private set; } = string.Empty;
 
   /// <summary>
   /// Gets or sets the identifier of the actor who triggered the event.
@@ -72,7 +72,7 @@ public record EventEntity : IEventEntity
 
     return aggregate.Changes.Select(change => new EventEntity
     {
-      Id = change.Id,
+      Id = change.Id.Value,
       ActorId = change.ActorId.Value,
       IsDeleted = change.IsDeleted,
       OccurredOn = change.OccurredOn.ToUniversalTime(),

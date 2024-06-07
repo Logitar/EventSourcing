@@ -18,6 +18,10 @@ public readonly struct ActorId
   /// The value of the identifier.
   /// </summary>
   private readonly string? _value = null;
+  /// <summary>
+  /// Gets the value of the identifier.
+  /// </summary>
+  public string Value => _value ?? DefaultValue;
 
   /// <summary>
   /// Initializes a new instance of the <see cref="ActorId"/> struct.
@@ -26,6 +30,7 @@ public readonly struct ActorId
   public ActorId(Guid value) : this(Convert.ToBase64String(value.ToByteArray()).ToUriSafeBase64())
   {
   }
+
   /// <summary>
   /// Initializes a new instance of the <see cref="ActorId"/> struct.
   /// </summary>
@@ -49,9 +54,16 @@ public readonly struct ActorId
   }
 
   /// <summary>
-  /// Gets the value of the identifier.
+  /// Creates a new instance of the <see cref="ActorId"/> struct from a random <see cref="Guid"/>.
   /// </summary>
-  public string Value => _value ?? DefaultValue;
+  /// <returns>The created instance.</returns>
+  public static ActorId NewId() => new(Guid.NewGuid());
+
+  /// <summary>
+  /// Converts the identifier to a <see cref="Guid"/>. The conversion will fail if the identifier has not been created from a <see cref="Guid"/>.
+  /// </summary>
+  /// <returns>The resulting Guid.</returns>
+  public Guid ToGuid() => new(Convert.FromBase64String(Value.FromUriSafeBase64()));
 
   /// <summary>
   /// Returns a value indicating whether or not the specified identifiers are equal.
@@ -67,17 +79,6 @@ public readonly struct ActorId
   /// <param name="right">The other identifier to compare.</param>
   /// <returns>True if the identifiers are different.</returns>
   public static bool operator !=(ActorId left, ActorId right) => !left.Equals(right);
-
-  /// <summary>
-  /// Creates a new instance of the <see cref="ActorId"/> struct from a random <see cref="Guid"/>.
-  /// </summary>
-  /// <returns>The created instance.</returns>
-  public static ActorId NewId() => new(Guid.NewGuid());
-  /// <summary>
-  /// Converts the identifier to a <see cref="Guid"/>. The conversion will fail if the identifier has not been created from a <see cref="Guid"/>.
-  /// </summary>
-  /// <returns>The resulting Guid.</returns>
-  public Guid ToGuid() => new(Convert.FromBase64String(Value.FromUriSafeBase64()));
 
   /// <summary>
   /// Returns a value indicating whether or not the specified object is equal to the identifier.

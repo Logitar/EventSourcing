@@ -22,7 +22,7 @@ GO
 
 CREATE TABLE [Events] (
     [EventId] bigint NOT NULL IDENTITY,
-    [Id] uniqueidentifier NOT NULL,
+    [Id] nvarchar(255) NOT NULL,
     [ActorId] nvarchar(255) NOT NULL,
     [IsDeleted] bit NULL,
     [OccurredOn] datetime2 NOT NULL,
@@ -60,7 +60,7 @@ CREATE INDEX [IX_Events_Version] ON [Events] ([Version]);
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20230804163434_CreateEventTable', N'7.0.9');
+VALUES (N'20240607013010_CreateEventTable', N'8.0.6');
 GO
 
 COMMIT;

@@ -8,7 +8,7 @@ public interface IEventEntity
   /// <summary>
   /// Gets the identifier of the event.
   /// </summary>
-  Guid Id { get; }
+  string Id { get; }
 
   /// <summary>
   /// Gets the type of the event.

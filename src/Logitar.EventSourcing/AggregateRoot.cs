@@ -59,31 +59,33 @@ public abstract class AggregateRoot
   /// <exception cref="ArgumentException">The identifier value is missing.</exception>
   protected AggregateRoot(AggregateId? id = null)
   {
-    id ??= AggregateId.NewId();
-    if (string.IsNullOrWhiteSpace(id.Value.Value))
+    if (id.HasValue)
     {
-      throw new ArgumentException("The identifier value is required.", nameof(id));
-    }
+      if (string.IsNullOrWhiteSpace(id.Value.Value))
+      {
+        throw new ArgumentException("The identifier value is required.", nameof(id));
+      }
 
-    Id = id.Value;
+      Id = id.Value;
+    }
+    else
+    {
+      Id = AggregateId.NewId();
+    }
   }
 
   /// <summary>
   /// Loads an aggregate from its changes and assign its identifier.
   /// </summary>
-  /// <typeparam name="T">The type of the aggregate to load.</typeparam>
   /// <param name="id">The identifier of the aggregate.</param>
   /// <param name="changes">The changes of the aggregate.</param>
-  /// <exception cref="AggregateConstructionFailedException">The aggregate construction failed.</exception>
-  /// <exception cref="MissingAggregateConstructorException">The aggregate does not declare a public identifier constructor.</exception>
   /// <returns>The loaded aggregate.</returns>
-  public static T LoadFromChanges<T>(AggregateId id, IEnumerable<DomainEvent> changes) where T : AggregateRoot
+  public static T LoadFromChanges<T>(AggregateId id, IEnumerable<DomainEvent> changes) where T : AggregateRoot, new()
   {
-    ConstructorInfo constructor = typeof(T).GetConstructor([typeof(AggregateId)])
-      ?? throw new MissingAggregateConstructorException<T>();
-
-    T aggregate = (T?)constructor.Invoke([id])
-      ?? throw new AggregateConstructionFailedException<T>(id);
+    T aggregate = new()
+    {
+      Id = id
+    };
 
     IOrderedEnumerable<DomainEvent> ordered = changes.OrderBy(e => e.Version);
     foreach (DomainEvent change in ordered)
@@ -174,6 +176,7 @@ public abstract class AggregateRoot
     UpdatedBy = change.ActorId;
     UpdatedOn = change.OccurredOn;
   }
+
   /// <summary>
   /// Dispatches the specified change to be applied through the current aggregate. This method can be overriden to provide a more efficient way of applying
   /// changes, such as using <see href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/patterns">type pattern matching</see>
@@ -182,7 +185,7 @@ public abstract class AggregateRoot
   /// <param name="change">The change to apply.</param>
   protected virtual void Dispatch(DomainEvent change)
   {
-    MethodInfo? apply = GetType().GetMethod("Apply", BindingFlags.Instance | BindingFlags.NonPublic, [change.GetType()]);
+    MethodInfo? apply = GetType().GetMethod("Apply", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, [change.GetType()], modifiers: []);
     apply?.Invoke(this, new[] { change });
   }
 
@@ -204,5 +207,5 @@ public abstract class AggregateRoot
   /// Returns a string representation of the aggregate.
   /// </summary>
   /// <returns>The string representation.</returns>
-  public override string ToString() => $"{GetType()} ({Id})";
+  public override string ToString() => $"{GetType()} (Id={Id})";
 }

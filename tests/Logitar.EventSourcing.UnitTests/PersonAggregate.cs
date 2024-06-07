@@ -2,6 +2,10 @@
 
 public class PersonAggregate : AggregateRoot
 {
+  public PersonAggregate() : base()
+  {
+  }
+
   public PersonAggregate(AggregateId id) : base(id)
   {
   }
