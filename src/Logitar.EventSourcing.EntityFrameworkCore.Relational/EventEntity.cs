@@ -21,7 +21,7 @@ public class EventEntity : IEventEntity
   /// <summary>
   /// Gets or sets the identifier of the event.
   /// </summary>
-  public Guid Id { get; private set; }
+  public string Id { get; private set; } = string.Empty;
 
   /// <summary>
   /// Gets or sets the identifier of the actor who triggered the event.
@@ -71,7 +71,7 @@ public class EventEntity : IEventEntity
 
     return aggregate.Changes.Select(change => new EventEntity
     {
-      Id = change.Id,
+      Id = change.Id.Value,
       ActorId = change.ActorId.Value,
       IsDeleted = change.IsDeleted,
       OccurredOn = change.OccurredOn.ToUniversalTime(),

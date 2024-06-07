@@ -26,9 +26,10 @@ public class EventConfiguration : IEntityTypeConfiguration<EventEntity>
     builder.HasIndex(x => x.EventType);
     builder.HasIndex(x => new { x.AggregateType, x.AggregateId });
 
-    builder.Property(x => x.ActorId).HasMaxLength(byte.MaxValue);
+    builder.Property(x => x.Id).IsRequired().HasMaxLength(EventId.MaximumLength);
+    builder.Property(x => x.ActorId).HasMaxLength(ActorId.MaximumLength);
     builder.Property(x => x.AggregateType).HasMaxLength(byte.MaxValue);
-    builder.Property(x => x.AggregateId).HasMaxLength(byte.MaxValue);
+    builder.Property(x => x.AggregateId).HasMaxLength(AggregateId.MaximumLength);
     builder.Property(x => x.EventType).HasMaxLength(byte.MaxValue);
   }
 }
