@@ -15,6 +15,7 @@ CREATE TABLE [__EFMigrationsHistory] (
     [ProductVersion] nvarchar(32) NOT NULL,
     CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
 );
+GO
 
 BEGIN TRANSACTION;
 GO
