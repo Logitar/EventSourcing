@@ -94,7 +94,7 @@ public abstract class AggregateRoot
     }
 
     return aggregate;
-  } // TODO(fpion): static or not?
+  }
 
   /// <summary>
   /// Raises the specified uncommited change to the current aggregate. The change will be associated to this aggregate, then applied to this aggregate before
