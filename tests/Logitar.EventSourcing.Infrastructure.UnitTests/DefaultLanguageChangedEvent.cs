@@ -1,3 +1,11 @@
 ﻿namespace Logitar.EventSourcing.Infrastructure;
 
-internal record DefaultLanguageChangedEvent(CultureInfo Culture) : DomainEvent;
+internal class DefaultLanguageChangedEvent : DomainEvent
+{
+  public CultureInfo Culture { get; }
+
+  public DefaultLanguageChangedEvent(CultureInfo culture)
+  {
+    Culture = culture;
+  }
+}

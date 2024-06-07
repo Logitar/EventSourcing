@@ -2,10 +2,6 @@
 
 public class ContactAggregate : AggregateRoot
 {
-  public ContactAggregate(AggregateId id) : base(id)
-  {
-  }
-
   public ContactAggregate(PersonAggregate person, ContactType type, string value) : base()
   {
     Raise(new ContactCreatedEvent(person.Id, type, value));

@@ -41,7 +41,7 @@ public class AggregateRepositoryTests
   {
     PersonAggregate person = new(new Faker().Person.FullName);
     PersonAggregate deleted = new(new Faker().Person.FullName);
-    PersonAggregate noChange = new(AggregateId.NewId());
+    PersonAggregate noChange = new();
 
     deleted.Delete();
 
