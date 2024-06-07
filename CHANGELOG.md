@@ -7,7 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+
+- Database migration tools.
+
+### Changed
+
+- `DomainEvent` is now a class, and uses an `EventId` struct.
+- Using `ErrorMessageBuilder` in exceptions.
+- Recreated scripts and migrations.
+- Refactored the `LoadFromChanges<T>` method to remove Reflection.
+- Core package now targets .NET Standard 2.1.
+- `ToString` methods now include ID prefix.
+
+### Fixed
+
+- README files and migration commands.
+- Docker Compose file.
 
 ## [5.2.0] - 2024-03-25
 
