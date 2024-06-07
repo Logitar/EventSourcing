@@ -6,6 +6,11 @@
 public class EventTypeNotFoundException : Exception
 {
   /// <summary>
+  /// The detailed error message.
+  /// </summary>
+  private const string ErrorMessage = "The specified event type could not be found.";
+
+  /// <summary>
   /// Gets or sets the identifier of the invalid event.
   /// </summary>
   public string EventId
@@ -37,14 +42,8 @@ public class EventTypeNotFoundException : Exception
   /// </summary>
   /// <param name="entity">The invalid event.</param>
   /// <returns>The exception message.</returns>
-  private static string BuildMessage(IEventEntity entity)
-  {
-    StringBuilder message = new();
-
-    message.AppendLine("The specified event type could not be found.");
-    message.Append("EventId: ").Append(entity.Id).AppendLine();
-    message.Append("TypeName: ").AppendLine(entity.EventType);
-
-    return message.ToString();
-  }
+  private static string BuildMessage(IEventEntity entity) => new ErrorMessageBuilder(ErrorMessage)
+    .AddData(nameof(EventId), entity.Id)
+    .AddData(nameof(TypeName), entity.EventType)
+    .Build();
 }

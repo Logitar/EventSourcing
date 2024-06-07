@@ -6,6 +6,11 @@
 public class CannotApplyPastEventException : Exception
 {
   /// <summary>
+  /// The detailed error message.
+  /// </summary>
+  private const string ErrorMessage = "The specified event is past the current state of the specified aggregate.";
+
+  /// <summary>
   /// Gets or sets the string representation of the aggregate.
   /// </summary>
   public string Aggregate
@@ -75,18 +80,12 @@ public class CannotApplyPastEventException : Exception
   /// <param name="aggregate">The aggregate in a future state.</param>
   /// <param name="change">The event of a past state.</param>
   /// <returns>The exception message.</returns>
-  private static string BuildMessage(AggregateRoot aggregate, DomainEvent change)
-  {
-    StringBuilder message = new();
-
-    message.AppendLine("The specified event is past the current state of the specified aggregate.");
-    message.Append("Aggregate: ").Append(aggregate).AppendLine();
-    message.Append("AggregateId: ").Append(aggregate.Id).AppendLine();
-    message.Append("AggregateVersion: ").Append(aggregate.Version).AppendLine();
-    message.Append("Event: ").Append(change).AppendLine();
-    message.Append("EventId: ").Append(change.Id).AppendLine();
-    message.Append("EventVersion: ").Append(change.Version).AppendLine();
-
-    return message.ToString();
-  }
+  private static string BuildMessage(AggregateRoot aggregate, DomainEvent change) => new ErrorMessageBuilder(ErrorMessage)
+    .AddData(nameof(Aggregate), aggregate)
+    .AddData(nameof(AggregateId), aggregate.Id)
+    .AddData(nameof(AggregateVersion), aggregate.Version)
+    .AddData(nameof(Event), change)
+    .AddData(nameof(EventId), change.Id)
+    .AddData(nameof(EventVersion), change.Version)
+    .Build();
 }

@@ -6,6 +6,11 @@
 public class EventDataDeserializationFailedException : Exception
 {
   /// <summary>
+  /// The detailed error message.
+  /// </summary>
+  private const string ErrorMessage = "The specified event data could not be deserialized.";
+
+  /// <summary>
   /// Gets or sets the identifier of the invalid event.
   /// </summary>
   public string EventId
@@ -46,15 +51,9 @@ public class EventDataDeserializationFailedException : Exception
   /// </summary>
   /// <param name="entity">The invalid event.</param>
   /// <returns>The exception message</returns>
-  private static string BuildMessage(IEventEntity entity)
-  {
-    StringBuilder message = new();
-
-    message.AppendLine("The specified event data could not be deserialized.");
-    message.Append("EventId: ").Append(entity.Id).AppendLine();
-    message.Append("EventType: ").AppendLine(entity.EventType);
-    message.Append("EventData: ").AppendLine(entity.EventData);
-
-    return message.ToString();
-  }
+  private static string BuildMessage(IEventEntity entity) => new ErrorMessageBuilder(ErrorMessage)
+    .AddData(nameof(EventId), entity.Id)
+    .AddData(nameof(EventType), entity.EventType)
+    .AddData(nameof(EventData), entity.EventData)
+    .Build();
 }
