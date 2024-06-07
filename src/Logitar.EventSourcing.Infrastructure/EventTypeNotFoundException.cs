@@ -6,21 +6,11 @@
 public class EventTypeNotFoundException : Exception
 {
   /// <summary>
-  /// Initializes a new instance of the <see cref="EventTypeNotFoundException"/> class.
-  /// </summary>
-  /// <param name="entity">The invalid event.</param>
-  internal EventTypeNotFoundException(IEventEntity entity) : base(BuildMessage(entity))
-  {
-    EventId = entity.Id;
-    TypeName = entity.EventType;
-  }
-
-  /// <summary>
   /// Gets or sets the identifier of the invalid event.
   /// </summary>
-  public Guid EventId
+  public string EventId
   {
-    get => (Guid)Data[nameof(EventId)]!;
+    get => (string)Data[nameof(EventId)]!;
     private set => Data[nameof(EventId)] = value;
   }
   /// <summary>
@@ -30,6 +20,16 @@ public class EventTypeNotFoundException : Exception
   {
     get => (string)Data[nameof(TypeName)]!;
     private set => Data[nameof(TypeName)] = value;
+  }
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="EventTypeNotFoundException"/> class.
+  /// </summary>
+  /// <param name="entity">The invalid event.</param>
+  internal EventTypeNotFoundException(IEventEntity entity) : base(BuildMessage(entity))
+  {
+    EventId = entity.Id;
+    TypeName = entity.EventType;
   }
 
   /// <summary>

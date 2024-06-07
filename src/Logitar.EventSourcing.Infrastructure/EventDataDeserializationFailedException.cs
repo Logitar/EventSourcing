@@ -6,22 +6,11 @@
 public class EventDataDeserializationFailedException : Exception
 {
   /// <summary>
-  /// Initializes a new instance of the <see cref="EventDataDeserializationFailedException"/> class.
-  /// </summary>
-  /// <param name="entity">The invalid event.</param>
-  internal EventDataDeserializationFailedException(IEventEntity entity) : base(BuildMessage(entity))
-  {
-    EventId = entity.Id;
-    EventType = entity.EventType;
-    EventData = entity.EventData;
-  }
-
-  /// <summary>
   /// Gets or sets the identifier of the invalid event.
   /// </summary>
-  public Guid EventId
+  public string EventId
   {
-    get => (Guid)Data[nameof(EventId)]!;
+    get => (string)Data[nameof(EventId)]!;
     private set => Data[nameof(EventId)] = value;
   }
   /// <summary>
@@ -39,6 +28,17 @@ public class EventDataDeserializationFailedException : Exception
   {
     get => (string)Data[nameof(EventData)]!;
     private set => Data[nameof(EventData)] = value;
+  }
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="EventDataDeserializationFailedException"/> class.
+  /// </summary>
+  /// <param name="entity">The invalid event.</param>
+  internal EventDataDeserializationFailedException(IEventEntity entity) : base(BuildMessage(entity))
+  {
+    EventId = entity.Id;
+    EventType = entity.EventType;
+    EventData = entity.EventData;
   }
 
   /// <summary>

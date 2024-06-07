@@ -6,20 +6,6 @@
 public class EventAggregateMismatchException : Exception
 {
   /// <summary>
-  /// Initializes a new instance of the <see cref="EventAggregateMismatchException"/> class.
-  /// </summary>
-  /// <param name="aggregate">The aggregate unto which the event was applied.</param>
-  /// <param name="change">The event belonging to another aggregate.</param>
-  public EventAggregateMismatchException(AggregateRoot aggregate, DomainEvent change) : base(BuildMessage(aggregate, change))
-  {
-    Aggregate = aggregate.ToString();
-    AggregateId = aggregate.Id.ToString();
-    Event = change.ToString();
-    EventId = change.Id;
-    EventAggregateId = change.AggregateId.ToString();
-  }
-
-  /// <summary>
   /// Gets or sets the string representation of the aggregate.
   /// </summary>
   public string Aggregate
@@ -46,9 +32,9 @@ public class EventAggregateMismatchException : Exception
   /// <summary>
   /// Gets or sets the identifier of the event.
   /// </summary>
-  public Guid EventId
+  public string EventId
   {
-    get => (Guid)Data[nameof(EventId)]!;
+    get => (string)Data[nameof(EventId)]!;
     private set => Data[nameof(EventId)] = value;
   }
   /// <summary>
@@ -58,6 +44,20 @@ public class EventAggregateMismatchException : Exception
   {
     get => (string)Data[nameof(EventAggregateId)]!;
     private set => Data[nameof(EventAggregateId)] = value;
+  }
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="EventAggregateMismatchException"/> class.
+  /// </summary>
+  /// <param name="aggregate">The aggregate unto which the event was applied.</param>
+  /// <param name="change">The event belonging to another aggregate.</param>
+  public EventAggregateMismatchException(AggregateRoot aggregate, DomainEvent change) : base(BuildMessage(aggregate, change))
+  {
+    Aggregate = aggregate.ToString();
+    AggregateId = aggregate.Id.ToString();
+    Event = change.ToString();
+    EventId = change.Id.ToString();
+    EventAggregateId = change.AggregateId.ToString();
   }
 
   /// <summary>
@@ -80,3 +80,4 @@ public class EventAggregateMismatchException : Exception
     return message.ToString();
   }
 }
+

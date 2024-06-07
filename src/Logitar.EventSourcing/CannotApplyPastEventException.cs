@@ -6,21 +6,6 @@
 public class CannotApplyPastEventException : Exception
 {
   /// <summary>
-  /// Initializes a new instance of the <see cref="CannotApplyPastEventException"/> class.
-  /// </summary>
-  /// <param name="aggregate">The aggregate in a future state.</param>
-  /// <param name="change">The event of a past state.</param>
-  public CannotApplyPastEventException(AggregateRoot aggregate, DomainEvent change) : base(BuildMessage(aggregate, change))
-  {
-    Aggregate = aggregate.ToString();
-    AggregateId = aggregate.Id.ToString();
-    AggregateVersion = aggregate.Version;
-    Event = change.ToString();
-    EventId = change.Id;
-    EventVersion = change.Version;
-  }
-
-  /// <summary>
   /// Gets or sets the string representation of the aggregate.
   /// </summary>
   public string Aggregate
@@ -55,9 +40,9 @@ public class CannotApplyPastEventException : Exception
   /// <summary>
   /// Gets or sets the identifier of the event.
   /// </summary>
-  public Guid? EventId
+  public string? EventId
   {
-    get => (Guid?)Data[nameof(EventId)];
+    get => (string?)Data[nameof(EventId)];
     private set => Data[nameof(EventId)] = value;
   }
   /// <summary>
@@ -67,6 +52,21 @@ public class CannotApplyPastEventException : Exception
   {
     get => (long?)Data[nameof(EventVersion)];
     private set => Data[nameof(EventVersion)] = value;
+  }
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="CannotApplyPastEventException"/> class.
+  /// </summary>
+  /// <param name="aggregate">The aggregate in a future state.</param>
+  /// <param name="change">The event of a past state.</param>
+  public CannotApplyPastEventException(AggregateRoot aggregate, DomainEvent change) : base(BuildMessage(aggregate, change))
+  {
+    Aggregate = aggregate.ToString();
+    AggregateId = aggregate.Id.ToString();
+    AggregateVersion = aggregate.Version;
+    Event = change.ToString();
+    EventId = change.Id.ToString();
+    EventVersion = change.Version;
   }
 
   /// <summary>
