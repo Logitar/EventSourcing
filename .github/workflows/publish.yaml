@@ -17,13 +17,13 @@ jobs:
         run: dotnet restore
 
       - name: Build Solution
-        run: dotnet build -c Release --no-restore
+        run: dotnet build --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test -c Release --no-build --verbosity normal --filter Category=Unit
+        run: dotnet test --configuration Release --no-build --verbosity normal --filter Category=Unit
 
       #- name: Pack NuGet
-      #  run: dotnet pack -c Release --no-build --output .
+      #  run: dotnet pack --configuration Release --no-build --output .
 
       - name: Push NuGet
-        run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push "**/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
