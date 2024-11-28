@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [6.0.1] - 2024-11-28
+
 ### Added
 
 - Added `publish.yaml`.
@@ -105,7 +109,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Marked old TypeExtensions as obsolete.
 - Refactored AggregateRoot.
 
-[unreleased]: https://github.com/Logitar/EventSourcing/compare/v6.0.0...HEAD
+[unreleased]: https://github.com/Logitar/EventSourcing/compare/v6.0.1...HEAD
+[6.0.1]: https://github.com/Logitar/EventSourcing/compare/v6.0.0...v6.0.1
 [6.0.0]: https://github.com/Logitar/EventSourcing/compare/v5.2.0...v6.0.0
 [5.2.0]: https://github.com/Logitar/EventSourcing/compare/v5.1.1...v5.2.0
 [5.1.1]: https://github.com/Logitar/EventSourcing/compare/v5.1.0...v5.1.1
