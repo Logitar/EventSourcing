@@ -1,4 +1,3 @@
-version: '3.8'
 name: event_sourcing
 services:
   event_sourcing_mongo:

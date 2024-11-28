@@ -1,5 +1,6 @@
 ﻿using Logitar.EventSourcing.Infrastructure;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Logitar.EventSourcing.MongoDB;
 
@@ -22,6 +23,7 @@ public record EventEntity : IEventEntity
   /// <summary>
   ///  Gets or sets the identifier of the event.
   /// </summary>
+  [BsonRepresentation(BsonType.String)]
   public Guid Id { get; private set; }
 
   /// <summary>
