@@ -35,7 +35,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Logitar.Data" Version="3.0.0" />
+    <PackageReference Include="Logitar.Data" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
