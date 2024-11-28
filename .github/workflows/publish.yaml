@@ -22,8 +22,5 @@ jobs:
       - name: Test
         run: dotnet test --configuration Release --no-build --verbosity normal --filter Category=Unit
 
-      #- name: Pack NuGet
-      #  run: dotnet pack --configuration Release --no-build --output .
-
       - name: Push NuGet
         run: dotnet nuget push "**/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
