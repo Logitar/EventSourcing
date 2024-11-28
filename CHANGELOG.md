@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Repository URL and Project URL in NuGet packages.
 - Upgraded NuGet packages.
 
 ## [6.0.0] - 2024-06-06
@@ -99,10 +100,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Marked old TypeExtensions as obsolete.
 - Refactored AggregateRoot.
 
-[unreleased]: https://github.com/Logitar/Logitar.NET/compare/v6.0.0...HEAD
-[6.0.0]: https://github.com/Logitar/Logitar.NET/compare/v5.2.0...v6.0.0
-[5.2.0]: https://github.com/Logitar/Logitar.NET/compare/v5.1.1...v5.2.0
-[5.1.1]: https://github.com/Logitar/Logitar.NET/compare/v5.1.0...v5.1.1
-[5.1.0]: https://github.com/Logitar/Logitar.NET/compare/v5.0.0...v5.1.0
-[5.0.0]: https://github.com/Logitar/Logitar.NET/compare/v4.1.0...v5.0.0
-[4.1.0]: https://github.com/Logitar/Logitar.NET/releases/tag/v4.1.0
+[unreleased]: https://github.com/Logitar/EventSourcing/compare/v6.0.0...HEAD
+[6.0.0]: https://github.com/Logitar/EventSourcing/compare/v5.2.0...v6.0.0
+[5.2.0]: https://github.com/Logitar/EventSourcing/compare/v5.1.1...v5.2.0
+[5.1.1]: https://github.com/Logitar/EventSourcing/compare/v5.1.0...v5.1.1
+[5.1.0]: https://github.com/Logitar/EventSourcing/compare/v5.0.0...v5.1.0
+[5.0.0]: https://github.com/Logitar/EventSourcing/compare/v4.1.0...v5.0.0
+[4.1.0]: https://github.com/Logitar/EventSourcing/releases/tag/v4.1.0

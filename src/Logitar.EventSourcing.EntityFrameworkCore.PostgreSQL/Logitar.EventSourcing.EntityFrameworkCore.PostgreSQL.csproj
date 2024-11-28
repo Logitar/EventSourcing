@@ -13,17 +13,17 @@
     <PackageIcon>logitar.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/Logitar/Logitar.NET</RepositoryUrl>
-    <AssemblyVersion>6.0.0.0</AssemblyVersion>
+    <RepositoryUrl>https://github.com/Logitar/EventSourcing</RepositoryUrl>
+    <AssemblyVersion>6.0.1.0</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <Version>6.0.0</Version>
+    <Version>6.0.1</Version>
     <NeutralLanguage>en-CA</NeutralLanguage>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <PackageReleaseNotes>Multiple changes, see CHANGELOG for details.</PackageReleaseNotes>
     <PackageTags>logitar net framework event sourcing entityframeworkcore postgres</PackageTags>
-    <PackageProjectUrl>https://github.com/Logitar/Logitar.NET/tree/dev/src/Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/Logitar/EventSourcing/tree/main/src/Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
