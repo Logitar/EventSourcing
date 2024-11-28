@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added `publish.yaml`.
+
 ### Changed
 
 - Renamed `docker-compose.yml` to `docker-compose.yaml`.
@@ -14,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Repository URL and Project URL in NuGet packages.
+- Standardized `build.yml`.
 - Upgraded NuGet packages.
 
 ## [6.0.0] - 2024-06-06
