@@ -1,6 +1,5 @@
 ﻿using Logitar.EventSourcing.Infrastructure;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 
 namespace Logitar.EventSourcing.MongoDB;
 
