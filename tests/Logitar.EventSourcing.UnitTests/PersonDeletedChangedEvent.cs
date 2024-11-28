@@ -1,6 +1,6 @@
 ﻿namespace Logitar.EventSourcing;
 
-public record PersonDeletedChangedEvent : DomainEvent
+public class PersonDeletedChangedEvent : DomainEvent
 {
   public PersonDeletedChangedEvent(bool? isDeleted)
   {

@@ -6,22 +6,16 @@
 public class EventDataDeserializationFailedException : Exception
 {
   /// <summary>
-  /// Initializes a new instance of the <see cref="EventDataDeserializationFailedException"/> class.
+  /// The detailed error message.
   /// </summary>
-  /// <param name="entity">The invalid event.</param>
-  internal EventDataDeserializationFailedException(IEventEntity entity) : base(BuildMessage(entity))
-  {
-    EventId = entity.Id;
-    EventType = entity.EventType;
-    EventData = entity.EventData;
-  }
+  private const string ErrorMessage = "The specified event data could not be deserialized.";
 
   /// <summary>
   /// Gets or sets the identifier of the invalid event.
   /// </summary>
-  public Guid EventId
+  public string EventId
   {
-    get => (Guid)Data[nameof(EventId)]!;
+    get => (string)Data[nameof(EventId)]!;
     private set => Data[nameof(EventId)] = value;
   }
   /// <summary>
@@ -42,19 +36,24 @@ public class EventDataDeserializationFailedException : Exception
   }
 
   /// <summary>
+  /// Initializes a new instance of the <see cref="EventDataDeserializationFailedException"/> class.
+  /// </summary>
+  /// <param name="entity">The invalid event.</param>
+  internal EventDataDeserializationFailedException(IEventEntity entity) : base(BuildMessage(entity))
+  {
+    EventId = entity.Id;
+    EventType = entity.EventType;
+    EventData = entity.EventData;
+  }
+
+  /// <summary>
   /// Builds the exception message.
   /// </summary>
   /// <param name="entity">The invalid event.</param>
   /// <returns>The exception message</returns>
-  private static string BuildMessage(IEventEntity entity)
-  {
-    StringBuilder message = new();
-
-    message.AppendLine("The specified event data could not be deserialized.");
-    message.Append("EventId: ").Append(entity.Id).AppendLine();
-    message.Append("EventType: ").AppendLine(entity.EventType);
-    message.Append("EventData: ").AppendLine(entity.EventData);
-
-    return message.ToString();
-  }
+  private static string BuildMessage(IEventEntity entity) => new ErrorMessageBuilder(ErrorMessage)
+    .AddData(nameof(EventId), entity.Id)
+    .AddData(nameof(EventType), entity.EventType)
+    .AddData(nameof(EventData), entity.EventData)
+    .Build();
 }

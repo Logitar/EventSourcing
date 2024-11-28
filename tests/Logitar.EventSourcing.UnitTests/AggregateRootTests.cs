@@ -17,7 +17,7 @@ public class AggregateRootTests
   [Fact(DisplayName = "ClearChanges: it should clear uncommitted changes correctly.")]
   public void ClearChanges_it_should_clear_uncommitted_changes_correctly()
   {
-    PersonAggregate person = new(AggregateId.NewId());
+    PersonAggregate person = new();
     person.ClearChanges();
 
     person.Delete();
@@ -116,7 +116,7 @@ public class AggregateRootTests
     Assert.Equal(_person.Id.ToString(), exception.AggregateId);
     Assert.Equal(_person.Version, exception.AggregateVersion);
     Assert.Equal(e.ToString(), exception.Event);
-    Assert.Equal(e.Id, exception.EventId);
+    Assert.Equal(e.Id.ToString(), exception.EventId);
     Assert.Equal(e.Version, exception.EventVersion);
   }
 
@@ -131,7 +131,7 @@ public class AggregateRootTests
     var exception = Assert.Throws<EventAggregateMismatchException>(() => _person.Handle(e));
     Assert.Equal(_person.Id.ToString(), exception.AggregateId);
     Assert.Equal(e.ToString(), exception.Event);
-    Assert.Equal(e.Id, exception.EventId);
+    Assert.Equal(e.Id.ToString(), exception.EventId);
     Assert.Equal(e.AggregateId.ToString(), exception.EventAggregateId);
   }
 
@@ -183,48 +183,13 @@ public class AggregateRootTests
   [Fact(DisplayName = "It should track changes correctly.")]
   public void It_should_track_changes_correctly()
   {
-    PersonAggregate person = new(AggregateId.NewId());
+    PersonAggregate person = new();
     Assert.False(person.HasChanges);
     Assert.Empty(person.Changes);
 
     person.Delete();
     Assert.True(person.HasChanges);
     Assert.NotEmpty(person.Changes);
-  }
-
-  [Fact(DisplayName = "LoadFromChanges: it constructs the correct aggregate.")]
-  public void LoadFromChanges_it_constructs_the_correct_aggregate()
-  {
-    AggregateId id = AggregateId.NewId();
-    DomainEvent[] events =
-    [
-      new PersonCreatedEvent(_faker.Person.FullName)
-      {
-        AggregateId = id,
-        Version = 1,
-        OccurredOn = DateTime.Now.AddYears(-20)
-      },
-      new PersonDeletedChangedEvent(isDeleted: true)
-      {
-        AggregateId = id,
-        Version = 2,
-        OccurredOn = DateTime.Now
-      }
-    ];
-
-    PersonAggregate person = AggregateRoot.LoadFromChanges<PersonAggregate>(id, events);
-    Assert.Equal(id, person.Id);
-    Assert.Equal(2, person.Version);
-    Assert.True(person.IsDeleted);
-    Assert.Equal(_faker.Person.FullName, person.FullName);
-  }
-
-  [Fact(DisplayName = "LoadFromChanges: it throws MissingAggregateConstructorException when public identifier constructor is missing.")]
-  public void LoadFromChanges_it_throws_MissingAggregateConstructorException_when_public_identifier_constructor_is_missing()
-  {
-    AggregateId id = AggregateId.NewId();
-    List<DomainEvent> changes = [];
-    Assert.Throws<MissingAggregateConstructorException<CarAggregate>>(() => AggregateRoot.LoadFromChanges<CarAggregate>(id, changes));
   }
 
   [Fact(DisplayName = "Raise: it applies the change correctly.")]
@@ -245,7 +210,7 @@ public class AggregateRootTests
     Assert.NotNull(changes);
 
     DomainEvent e = changes.Single();
-    Assert.NotEqual(Guid.Empty, e.Id);
+    Assert.NotEqual(string.Empty, e.Id.Value);
     Assert.Equal(person.Id, e.AggregateId);
     Assert.Equal(person.Version, e.Version);
     Assert.Equal(actorId, e.ActorId);
@@ -256,7 +221,7 @@ public class AggregateRootTests
   [Fact(DisplayName = "ToString: it returns the correct string representation.")]
   public void ToString_it_returns_the_correct_string_representation()
   {
-    string s = string.Concat(_person.GetType(), " (", _person.Id, ')');
+    string s = string.Concat(_person.GetType(), " (Id=", _person.Id, ')');
     Assert.Equal(s, _person.ToString());
   }
 }

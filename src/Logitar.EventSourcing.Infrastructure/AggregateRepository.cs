@@ -33,7 +33,7 @@ public abstract class AggregateRepository : IAggregateRepository
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The loaded aggregate.</returns>
   public virtual async Task<T?> LoadAsync<T>(AggregateId id, CancellationToken cancellationToken)
-    where T : AggregateRoot
+    where T : AggregateRoot, new()
   {
     return await LoadAsync<T>(id, includeDeleted: false, cancellationToken);
   }
@@ -46,7 +46,7 @@ public abstract class AggregateRepository : IAggregateRepository
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The loaded aggregate.</returns>
   public virtual async Task<T?> LoadAsync<T>(AggregateId id, long? version, CancellationToken cancellationToken)
-    where T : AggregateRoot
+    where T : AggregateRoot, new()
   {
     return await LoadAsync<T>(id, version, includeDeleted: false, cancellationToken);
   }
@@ -59,7 +59,7 @@ public abstract class AggregateRepository : IAggregateRepository
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The loaded aggregate.</returns>
   public virtual async Task<T?> LoadAsync<T>(AggregateId id, bool includeDeleted, CancellationToken cancellationToken)
-    where T : AggregateRoot
+    where T : AggregateRoot, new()
   {
     return await LoadAsync<T>(id, version: null, includeDeleted, cancellationToken);
   }
@@ -73,7 +73,7 @@ public abstract class AggregateRepository : IAggregateRepository
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The loaded aggregate.</returns>
   public virtual async Task<T?> LoadAsync<T>(AggregateId id, long? version, bool includeDeleted, CancellationToken cancellationToken)
-    where T : AggregateRoot
+    where T : AggregateRoot, new()
   {
     IEnumerable<DomainEvent> changes = await LoadChangesAsync<T>(id, version, cancellationToken);
     return Load<T>(changes, includeDeleted).SingleOrDefault();
@@ -95,7 +95,7 @@ public abstract class AggregateRepository : IAggregateRepository
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The list of loaded aggregates.</returns>
   public virtual async Task<IEnumerable<T>> LoadAsync<T>(CancellationToken cancellationToken)
-    where T : AggregateRoot
+    where T : AggregateRoot, new()
   {
     return await LoadAsync<T>(includeDeleted: false, cancellationToken);
   }
@@ -107,7 +107,7 @@ public abstract class AggregateRepository : IAggregateRepository
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The list of loaded aggregates.</returns>
   public virtual async Task<IEnumerable<T>> LoadAsync<T>(bool includeDeleted, CancellationToken cancellationToken)
-    where T : AggregateRoot
+    where T : AggregateRoot, new()
   {
     IEnumerable<DomainEvent> changes = await LoadChangesAsync<T>(cancellationToken);
     return Load<T>(changes, includeDeleted);
@@ -128,7 +128,7 @@ public abstract class AggregateRepository : IAggregateRepository
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The list of loaded aggregates.</returns>
   public virtual async Task<IEnumerable<T>> LoadAsync<T>(IEnumerable<AggregateId> ids, CancellationToken cancellationToken)
-    where T : AggregateRoot
+    where T : AggregateRoot, new()
   {
     return await LoadAsync<T>(ids, includeDeleted: false, cancellationToken);
   }
@@ -141,7 +141,7 @@ public abstract class AggregateRepository : IAggregateRepository
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The list of loaded aggregates.</returns>
   public virtual async Task<IEnumerable<T>> LoadAsync<T>(IEnumerable<AggregateId> ids, bool includeDeleted, CancellationToken cancellationToken)
-    where T : AggregateRoot
+    where T : AggregateRoot, new()
   {
     IEnumerable<DomainEvent> changes = await LoadChangesAsync<T>(ids, cancellationToken);
     return Load<T>(changes, includeDeleted);
@@ -163,7 +163,7 @@ public abstract class AggregateRepository : IAggregateRepository
   /// <returns>The asynchronous operation.</returns>
   public virtual async Task SaveAsync(AggregateRoot aggregate, CancellationToken cancellationToken)
   {
-    await SaveAsync(new[] { aggregate }, cancellationToken);
+    await SaveAsync([aggregate], cancellationToken);
   }
   /// <summary>
   /// Persists a list of aggregates to the event store.
@@ -193,7 +193,7 @@ public abstract class AggregateRepository : IAggregateRepository
   /// <param name="includeDeleted">A value indicating whether or not deleted aggregates will be returned.</param>
   /// <returns>The loaded aggregates.</returns>
   protected virtual IEnumerable<T> Load<T>(IEnumerable<DomainEvent> events, bool includeDeleted = false)
-    where T : AggregateRoot
+    where T : AggregateRoot, new()
   {
     List<T> aggregates = new(events.Count());
 

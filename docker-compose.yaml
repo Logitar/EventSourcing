@@ -3,6 +3,7 @@ services:
   event_sourcing_mongo:
     image: mongo
     container_name: Logitar.EventSourcing_mongo
+    restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: demo
       MONGO_INITDB_ROOT_PASSWORD: AwHE5MRKBeY9CsJu
@@ -12,6 +13,7 @@ services:
   event_sourcing_mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: Logitar.EventSourcing_mssql
+    restart: unless-stopped
     environment:
       ACCEPT_EULA: 'Y'
       SA_PASSWORD: mWGEgJcrV5dzRyqb
@@ -21,6 +23,7 @@ services:
   event_sourcing_postgres:
     image: postgres
     container_name: Logitar.EventSourcing_postgres
+    restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: cptBg3hZ9qC6a5Vb
     ports:

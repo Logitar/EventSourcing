@@ -6,21 +6,16 @@
 public class EventTypeNotFoundException : Exception
 {
   /// <summary>
-  /// Initializes a new instance of the <see cref="EventTypeNotFoundException"/> class.
+  /// The detailed error message.
   /// </summary>
-  /// <param name="entity">The invalid event.</param>
-  internal EventTypeNotFoundException(IEventEntity entity) : base(BuildMessage(entity))
-  {
-    EventId = entity.Id;
-    TypeName = entity.EventType;
-  }
+  private const string ErrorMessage = "The specified event type could not be found.";
 
   /// <summary>
   /// Gets or sets the identifier of the invalid event.
   /// </summary>
-  public Guid EventId
+  public string EventId
   {
-    get => (Guid)Data[nameof(EventId)]!;
+    get => (string)Data[nameof(EventId)]!;
     private set => Data[nameof(EventId)] = value;
   }
   /// <summary>
@@ -33,18 +28,22 @@ public class EventTypeNotFoundException : Exception
   }
 
   /// <summary>
+  /// Initializes a new instance of the <see cref="EventTypeNotFoundException"/> class.
+  /// </summary>
+  /// <param name="entity">The invalid event.</param>
+  internal EventTypeNotFoundException(IEventEntity entity) : base(BuildMessage(entity))
+  {
+    EventId = entity.Id;
+    TypeName = entity.EventType;
+  }
+
+  /// <summary>
   /// Builds the exception message.
   /// </summary>
   /// <param name="entity">The invalid event.</param>
   /// <returns>The exception message.</returns>
-  private static string BuildMessage(IEventEntity entity)
-  {
-    StringBuilder message = new();
-
-    message.AppendLine("The specified event type could not be found.");
-    message.Append("EventId: ").Append(entity.Id).AppendLine();
-    message.Append("TypeName: ").AppendLine(entity.EventType);
-
-    return message.ToString();
-  }
+  private static string BuildMessage(IEventEntity entity) => new ErrorMessageBuilder(ErrorMessage)
+    .AddData(nameof(EventId), entity.Id)
+    .AddData(nameof(TypeName), entity.EventType)
+    .Build();
 }

@@ -18,7 +18,7 @@ public class EventContext : DbContext
   /// <summary>
   /// Gets or sets the data set of events.
   /// </summary>
-  public DbSet<EventEntity> Events { get; private set; } = null!;
+  public DbSet<EventEntity> Events { get; private set; }
 
   /// <summary>
   /// Configures the specified model builder.

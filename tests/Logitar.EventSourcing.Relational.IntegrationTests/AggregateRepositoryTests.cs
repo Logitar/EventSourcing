@@ -34,7 +34,7 @@ public abstract class AggregateRepositoryTests : Infrastructure.AggregateReposit
 
     return aggregate.Changes.Select(change => new EventEntity
     {
-      Id = change.Id,
+      Id = change.Id.Value,
       ActorId = change.ActorId.Value,
       IsDeleted = change.IsDeleted,
       OccurredOn = change.OccurredOn.ToUniversalTime(),
@@ -67,7 +67,7 @@ public abstract class AggregateRepositoryTests : Infrastructure.AggregateReposit
       {
         entities.Add(new EventEntity
         {
-          Id = reader.GetGuid(0),
+          Id = reader.GetString(0),
           EventType = reader.GetString(1),
           EventData = reader.GetString(2)
         });
@@ -104,7 +104,7 @@ public abstract class AggregateRepositoryTests : Infrastructure.AggregateReposit
 
         foreach (DomainEvent change in aggregate.Changes)
         {
-          builder = builder.Value(change.Id, change.ActorId.Value, change.IsDeleted,
+          builder = builder.Value(change.Id.Value, change.ActorId.Value, change.IsDeleted,
             change.OccurredOn.ToUniversalTime(), change.Version, aggregateType, aggregateId,
             change.GetType().GetNamespaceQualifiedName(), EventSerializer.Serialize(change));
         }

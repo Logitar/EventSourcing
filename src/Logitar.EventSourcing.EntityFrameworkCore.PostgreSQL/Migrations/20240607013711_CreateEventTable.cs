@@ -17,7 +17,7 @@ namespace Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.Migrations
                 {
                     EventId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     ActorId = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: true),
                     OccurredOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),

@@ -8,7 +8,7 @@ public class EventEntity : IEventEntity
   {
   }
 
-  public Guid Id { get; private set; }
+  public string Id { get; private set; } = string.Empty;
 
   public long Version { get; private set; }
 
@@ -25,7 +25,7 @@ public class EventEntity : IEventEntity
 
     return aggregate.Changes.Select(change => new EventEntity
     {
-      Id = change.Id,
+      Id = change.Id.Value,
       Version = change.Version,
       AggregateType = aggregateType,
       AggregateId = aggregateId,

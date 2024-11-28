@@ -100,7 +100,7 @@ public abstract class AggregateRepositoryTests
 
     PersonAggregate[] aggregates = new[] { _person1, _person2, _person3 };
     DomainEvent[] changes = aggregates.SelectMany(p => p.Changes).ToArray();
-    Dictionary<Guid, IEventEntity> events = aggregates.SelectMany(GetEventEntities)
+    Dictionary<string, IEventEntity> events = aggregates.SelectMany(GetEventEntities)
       .ToDictionary(e => e.Id, e => e);
 
     await _repository.SaveAsync(aggregates, _cancellationToken);
@@ -126,7 +126,7 @@ public abstract class AggregateRepositoryTests
     await AssertDatabaseIsEmptyAsync();
 
     DomainEvent[] changes = _deleted.Changes.ToArray();
-    Dictionary<Guid, IEventEntity> events = GetEventEntities(_deleted)
+    Dictionary<string, IEventEntity> events = GetEventEntities(_deleted)
       .ToDictionary(e => e.Id, e => e);
 
     await _repository.SaveAsync(_deleted, _cancellationToken);

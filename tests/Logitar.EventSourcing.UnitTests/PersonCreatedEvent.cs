@@ -1,3 +1,11 @@
 ﻿namespace Logitar.EventSourcing;
 
-public record PersonCreatedEvent(string FullName) : DomainEvent;
+public class PersonCreatedEvent : DomainEvent
+{
+  public string FullName { get; }
+
+  public PersonCreatedEvent(string fullName)
+  {
+    FullName = fullName;
+  }
+}

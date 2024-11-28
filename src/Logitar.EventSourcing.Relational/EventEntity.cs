@@ -14,7 +14,7 @@ public class EventEntity : IEventEntity
   /// <summary>
   /// Gets or sets the identifier of the event.
   /// </summary>
-  public Guid Id { get; set; }
+  public string Id { get; set; } = string.Empty;
 
   /// <summary>
   /// Gets or sets the identifier of the actor who triggered the event.

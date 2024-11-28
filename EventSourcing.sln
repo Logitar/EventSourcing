@@ -63,6 +63,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logitar.EventSourcing.Mongo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logitar.EventSourcing.MongoDB.IntegrationTests", "tests\Logitar.EventSourcing.MongoDB.IntegrationTests\Logitar.EventSourcing.MongoDB.IntegrationTests.csproj", "{CEEFD05A-DC09-4756-8473-527539E478F1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{9C6D5EFE-FF9F-4D87-B70B-916701A1CD6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Database", "tools\Logitar.EventSourcing.Database\Logitar.EventSourcing.Database.csproj", "{7D816D68-A25C-466C-B1D1-5722AE64F9CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -161,6 +165,10 @@ Global
 		{CEEFD05A-DC09-4756-8473-527539E478F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEEFD05A-DC09-4756-8473-527539E478F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEEFD05A-DC09-4756-8473-527539E478F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D816D68-A25C-466C-B1D1-5722AE64F9CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D816D68-A25C-466C-B1D1-5722AE64F9CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D816D68-A25C-466C-B1D1-5722AE64F9CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D816D68-A25C-466C-B1D1-5722AE64F9CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -179,6 +187,7 @@ Global
 		{5FBFB540-E143-4C73-837E-5672E71D18B6} = {D092FA68-D3D5-460E-9A38-61033D6F9692}
 		{FD1A7AF8-FEDF-4EA1-9966-C46677584BB2} = {D092FA68-D3D5-460E-9A38-61033D6F9692}
 		{CEEFD05A-DC09-4756-8473-527539E478F1} = {D092FA68-D3D5-460E-9A38-61033D6F9692}
+		{7D816D68-A25C-466C-B1D1-5722AE64F9CB} = {9C6D5EFE-FF9F-4D87-B70B-916701A1CD6B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B0AA9E53-02AD-4000-8ED5-53AFF5D1B32D}
