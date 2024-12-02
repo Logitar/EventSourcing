@@ -11,12 +11,12 @@ public class EventAggregateMismatchException : Exception
   private const string ErrorMessage = "The specified event does not belong to the specified aggregate.";
 
   /// <summary>
-  /// Gets or sets the string representation of the aggregate.
+  /// Gets or sets the type of the aggregate.
   /// </summary>
-  public string Aggregate
+  public string AggregateType
   {
-    get => (string)Data[nameof(Aggregate)]!;
-    private set => Data[nameof(Aggregate)] = value;
+    get => (string)Data[nameof(AggregateType)]!;
+    private set => Data[nameof(AggregateType)] = value;
   }
   /// <summary>
   /// Gets or sets the string representation of the aggregate identifier.
@@ -27,12 +27,12 @@ public class EventAggregateMismatchException : Exception
     private set => Data[nameof(AggregateId)] = value;
   }
   /// <summary>
-  /// Gets or sets the string representation of the event.
+  /// Gets or sets the type of the event.
   /// </summary>
-  public string Event
+  public string EventType
   {
-    get => (string)Data[nameof(Event)]!;
-    private set => Data[nameof(Event)] = value;
+    get => (string)Data[nameof(EventType)]!;
+    private set => Data[nameof(EventType)] = value;
   }
   /// <summary>
   /// Gets or sets the identifier of the event.
@@ -58,9 +58,9 @@ public class EventAggregateMismatchException : Exception
   /// <param name="change">The event belonging to another aggregate.</param>
   public EventAggregateMismatchException(AggregateRoot aggregate, DomainEvent change) : base(BuildMessage(aggregate, change))
   {
-    Aggregate = aggregate.ToString();
+    AggregateType = aggregate.GetType().GetNamespaceQualifiedName();
     AggregateId = aggregate.Id.ToString();
-    Event = change.ToString();
+    EventType = change.GetType().GetNamespaceQualifiedName();
     EventId = change.Id.ToString();
     EventAggregateId = change.AggregateId.ToString();
   }
@@ -72,9 +72,9 @@ public class EventAggregateMismatchException : Exception
   /// <param name="change">The event belonging to another aggregate.</param>
   /// <returns>The exception message.</returns>
   private static string BuildMessage(AggregateRoot aggregate, DomainEvent change) => new ErrorMessageBuilder(ErrorMessage)
-    .AddData(nameof(Aggregate), aggregate)
+    .AddData(nameof(AggregateType), aggregate.GetType().GetNamespaceQualifiedName())
     .AddData(nameof(AggregateId), aggregate.Id)
-    .AddData(nameof(Event), change)
+    .AddData(nameof(EventType), change.GetType().GetNamespaceQualifiedName())
     .AddData(nameof(EventId), change.Id)
     .AddData(nameof(EventAggregateId), change.AggregateId)
     .Build();
