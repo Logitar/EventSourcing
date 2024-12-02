@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing yet.
+### Changed
+
+- Migrated to .NET9.
+- Upgraded NuGet packages.
 
 ## [6.0.1] - 2024-11-28
 
