@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Documented upgrade to .NET 8.
+
 ### Changed
 
 - Migrated to .NET9.
