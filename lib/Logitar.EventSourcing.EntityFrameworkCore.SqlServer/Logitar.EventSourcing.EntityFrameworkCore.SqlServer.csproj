@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <LangVersion>10</LangVersion>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -14,16 +14,9 @@
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Logitar" Version="7.0.0" />
-  </ItemGroup>
 
   <ItemGroup>
-    <Using Include="System" />
-    <Using Include="System.Collections.Generic" />
-    <Using Include="System.Diagnostics.CodeAnalysis" />
-    <Using Include="System.Threading" />
-    <Using Include="System.Threading.Tasks" />
+    <ProjectReference Include="..\Logitar.EventSourcing.EntityFrameworkCore.Relational\Logitar.EventSourcing.EntityFrameworkCore.Relational.csproj" />
   </ItemGroup>
 
 </Project>
