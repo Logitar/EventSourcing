@@ -66,6 +66,20 @@ public class EventEntity : IEventEntity
   /// <returns>The list of storage models.</returns>
   public static IEnumerable<EventEntity> FromChanges(IAggregate aggregate, IEventSerializer eventSerializer)
   {
-    return []; // TODO(fpion): implement
+    string aggregateId = aggregate.Id.Value;
+    string aggregateType = aggregate.GetType().GetNamespaceQualifiedName();
+
+    return aggregate.Changes.Select(change => new EventEntity
+    {
+      Id = string.Empty, // TODO(fpion): change.Id.Value,
+      ActorId = string.Empty, // TODO(fpion): change.ActorId.Value,
+      IsDeleted = false, // TODO(fpion): change.IsDeleted,
+      OccurredOn = DateTime.UtcNow, // TODO(fpion): change.OccurredOn.AsUniversalTime(),
+      Version = 0, // TODO(fpion): change.Version,
+      AggregateType = aggregateType,
+      AggregateId = aggregateId,
+      EventType = change.GetType().GetNamespaceQualifiedName(),
+      EventData = eventSerializer.Serialize(change)
+    });
   }
 }
