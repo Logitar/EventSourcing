@@ -112,10 +112,10 @@ public class AggregateRootTests
     };
 
     var exception = Assert.Throws<CannotApplyPastEventException>(() => _person.Handle(e));
-    Assert.Equal(_person.ToString(), exception.Aggregate);
+    Assert.Equal(_person.GetType().GetNamespaceQualifiedName(), exception.AggregateType);
     Assert.Equal(_person.Id.ToString(), exception.AggregateId);
     Assert.Equal(_person.Version, exception.AggregateVersion);
-    Assert.Equal(e.ToString(), exception.Event);
+    Assert.Equal(e.GetType().GetNamespaceQualifiedName(), exception.EventType);
     Assert.Equal(e.Id.ToString(), exception.EventId);
     Assert.Equal(e.Version, exception.EventVersion);
   }
@@ -129,8 +129,9 @@ public class AggregateRootTests
     };
 
     var exception = Assert.Throws<EventAggregateMismatchException>(() => _person.Handle(e));
+    Assert.Equal(_person.GetType().GetNamespaceQualifiedName(), exception.AggregateType);
     Assert.Equal(_person.Id.ToString(), exception.AggregateId);
-    Assert.Equal(e.ToString(), exception.Event);
+    Assert.Equal(e.GetType().GetNamespaceQualifiedName(), exception.EventType);
     Assert.Equal(e.Id.ToString(), exception.EventId);
     Assert.Equal(e.AggregateId.ToString(), exception.EventAggregateId);
   }
