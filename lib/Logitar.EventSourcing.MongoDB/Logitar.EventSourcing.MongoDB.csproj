@@ -14,7 +14,6 @@
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
 
-
   <ItemGroup>
     <ProjectReference Include="..\Logitar.EventSourcing.Infrastructure\Logitar.EventSourcing.Infrastructure.csproj" />
   </ItemGroup>
