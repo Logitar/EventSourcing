@@ -30,6 +30,11 @@ public readonly struct StreamExpectation
   }
   public StreamExpectation(long version)
   {
+    if (version <= 0)
+    {
+      throw new ArgumentOutOfRangeException(nameof(version), "The expected stream version should be greater than 0.");
+    }
+
     Kind = StreamExpectationKind.ShouldBeAtVersion;
     Version = version;
   }
