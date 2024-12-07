@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents an operation that apprends events to a stream.
 /// </summary>
-public record AppendToStream
+public sealed record AppendToStream
 {
   /// <summary>
   /// Gets the stream identifier.
