@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <LangVersion>11</LangVersion>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Title>Logitar.EventSourcing</Title>
+    <Title>Logitar.EventSourcing.Kurrent</Title>
     <Authors>Francis Pion</Authors>
     <Product>Logitar.NET</Product>
-    <Description>Provides an implementation of the Event Sourcing architecture pattern.</Description>
+    <Description>Provides an implementation of an event store to be used with the Event Sourcing architecture pattern, and EventStoreDB/Kurrent.</Description>
     <Copyright>© 2024 Logitar All Rights Reserved.</Copyright>
     <PackageIcon>logitar.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -22,8 +22,8 @@
     <NeutralLanguage>en-CA</NeutralLanguage>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <PackageReleaseNotes>TODO</PackageReleaseNotes>
-    <PackageTags>logitar net framework event sourcing</PackageTags>
-    <PackageProjectUrl>https://github.com/Logitar/EventSourcing/tree/main/lib/Logitar.EventSourcing</PackageProjectUrl>
+    <PackageTags>logitar net framework event sourcing eventstore eventstoredb kurrent</PackageTags>
+    <PackageProjectUrl>https://github.com/Logitar/EventSourcing/tree/v7/lib/Logitar.EventSourcing.Kurrent</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -33,32 +33,5 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Logitar" Version="7.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Using Include="System" />
-    <Using Include="System.Collections.Generic" />
-    <Using Include="System.Diagnostics.CodeAnalysis" />
-    <Using Include="System.Threading" />
-    <Using Include="System.Threading.Tasks" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="LICENSE">
-      <PackagePath>\</PackagePath>
-      <Pack>True</Pack>
-    </None>
-    <None Update="logitar.png">
-      <PackagePath>\</PackagePath>
-      <Pack>True</Pack>
-    </None>
-    <None Update="README.md">
-      <PackagePath>\</PackagePath>
-      <Pack>True</Pack>
-    </None>
-  </ItemGroup>
 
 </Project>
