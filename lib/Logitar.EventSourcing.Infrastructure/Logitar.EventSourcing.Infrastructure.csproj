@@ -5,10 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Title>Logitar.EventSourcing.Kurrent</Title>
+    <Title>Logitar.EventSourcing.Infrastructure</Title>
     <Authors>Francis Pion</Authors>
     <Product>Logitar.NET</Product>
-    <Description>Provides an implementation of an event store to be used with the Event Sourcing architecture pattern, and EventStoreDB/Kurrent.</Description>
+    <Description>Provides an abstraction of an event store to be used with the Event Sourcing architecture pattern.</Description>
     <Copyright>© 2024 Logitar All Rights Reserved.</Copyright>
     <PackageIcon>logitar.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -22,8 +22,8 @@
     <NeutralLanguage>en-CA</NeutralLanguage>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <PackageReleaseNotes>TODO</PackageReleaseNotes>
-    <PackageTags>logitar net framework event sourcing eventstore eventstoredb kurrent</PackageTags>
-    <PackageProjectUrl>https://github.com/Logitar/EventSourcing/tree/v7/lib/Logitar.EventSourcing.Kurrent</PackageProjectUrl>
+    <PackageTags>logitar net framework event sourcing infrastructure</PackageTags>
+    <PackageProjectUrl>https://github.com/Logitar/EventSourcing/tree/v7/lib/Logitar.EventSourcing.Infrastructure</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -35,7 +35,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Logitar.EventSourcing.Infrastructure\Logitar.EventSourcing.Infrastructure.csproj" />
+    <ProjectReference Include="..\Logitar.EventSourcing\Logitar.EventSourcing.csproj" />
   </ItemGroup>
 
 </Project>
