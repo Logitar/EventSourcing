@@ -1,4 +1,5 @@
-﻿using Logitar.EventSourcing.Infrastructure;
+﻿using EventStore.Client;
+using Logitar.EventSourcing.Infrastructure;
 
 namespace Logitar.EventSourcing.Kurrent;
 
@@ -11,6 +12,26 @@ public sealed class EventStore : IEventStore
   /// The uncommitted operations.
   /// </summary>
   private readonly List<AppendToStream> _operations = [];
+
+  /// <summary>
+  /// The EventStoreDB/Kurrent client.
+  /// </summary>
+  private readonly EventStoreClient _client;
+  /// <summary>
+  /// The event converter.
+  /// </summary>
+  private readonly IEventConverter _converter;
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="EventStore"/> class.
+  /// </summary>
+  /// <param name="client">The EventStoreDB/Kurrent client.</param>
+  /// <param name="converter">The event converter.</param>
+  public EventStore(EventStoreClient client, IEventConverter converter)
+  {
+    _client = client;
+    _converter = converter;
+  }
 
   /// <summary>
   /// Appends the specified events to the specified stream.
@@ -56,6 +77,26 @@ public sealed class EventStore : IEventStore
       return;
     }
 
-    await Task.Delay(0, cancellationToken); // TODO(fpion): implement
+    foreach (AppendToStream operation in _operations)
+    {
+      IEnumerable<EventData> events = operation.Events.Select(_converter.ToEventData);
+      if (operation.Expectation.Kind == StreamExpectation.StreamExpectationKind.ShouldBeAtVersion)
+      {
+        long revision = operation.Expectation.Version - operation.Events.Count() - 1;
+        await _client.AppendToStreamAsync(operation.Id.Value, StreamRevision.FromInt64(revision), events, cancellationToken: cancellationToken);
+      }
+      else
+      {
+        StreamState state = operation.Expectation.Kind switch
+        {
+          StreamExpectation.StreamExpectationKind.ShouldExist => StreamState.StreamExists,
+          StreamExpectation.StreamExpectationKind.ShouldNotExist => StreamState.NoStream,
+          _ => StreamState.Any,
+        };
+        await _client.AppendToStreamAsync(operation.Id.Value, state, events, cancellationToken: cancellationToken);
+      }
+    }
+
+    _operations.Clear(); // TODO(fpion): how to retry?
   }
 }
