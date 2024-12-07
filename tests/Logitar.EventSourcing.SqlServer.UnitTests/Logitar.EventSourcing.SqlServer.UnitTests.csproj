@@ -7,7 +7,7 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>Logitar.EventSourcing</RootNamespace>
+    <RootNamespace>Logitar.EventSourcing.SqlServer</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -19,9 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus" Version="35.6.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -34,12 +32,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Logitar.EventSourcing\Logitar.EventSourcing.csproj" />
+    <ProjectReference Include="..\..\src\Logitar.EventSourcing.SqlServer\Logitar.EventSourcing.SqlServer.csproj" />
+    <ProjectReference Include="..\Logitar.EventSourcing.UnitTests\Logitar.EventSourcing.UnitTests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="System.Diagnostics.CodeAnalysis" />
-    <Using Include="System.Globalization" />
     <Using Include="System.Reflection" />
   </ItemGroup>
 
