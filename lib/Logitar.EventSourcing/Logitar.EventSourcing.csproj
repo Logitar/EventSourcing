@@ -14,4 +14,8 @@
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Logitar" Version="7.0.0" />
+  </ItemGroup>
+
 </Project>
