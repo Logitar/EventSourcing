@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -7,7 +7,7 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>Logitar.EventSourcing</RootNamespace>
+    <RootNamespace>Logitar.EventSourcing.PostgreSQL</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -19,9 +19,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus" Version="35.6.1" />
+    <None Remove="appsettings.json" />
+    <None Remove="Init.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Init.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -34,13 +46,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Logitar.EventSourcing\Logitar.EventSourcing.csproj" />
+    <ProjectReference Include="..\..\src\Logitar.EventSourcing.PostgreSQL\Logitar.EventSourcing.PostgreSQL.csproj" />
+    <ProjectReference Include="..\Logitar.EventSourcing.Relational.IntegrationTests\Logitar.EventSourcing.Relational.IntegrationTests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="System.Diagnostics.CodeAnalysis" />
-    <Using Include="System.Globalization" />
-    <Using Include="System.Reflection" />
+    <Using Include="System.Data.Common" />
+    <Using Include="System.Text" />
   </ItemGroup>
 
 </Project>
