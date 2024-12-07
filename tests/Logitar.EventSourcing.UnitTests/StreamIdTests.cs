@@ -3,11 +3,11 @@
 namespace Logitar.EventSourcing;
 
 [Trait(Traits.Category, Categories.Unit)]
-public class AggregateIdTests
+public class StreamIdTests
 {
   private readonly Faker _faker = new();
 
-  private readonly AggregateId _id = AggregateId.NewId();
+  private readonly StreamId _id = StreamId.NewId();
 
   [Theory(DisplayName = "Ctor: it constructs the correct Guid identifier.")]
   [InlineData("00000000-0000-0000-0000-000000000000")]
@@ -15,7 +15,7 @@ public class AggregateIdTests
   public void Ctor_it_constructs_the_correct_Guid_identifier(string value)
   {
     Guid guid = Guid.Parse(value);
-    AggregateId id = new(guid);
+    StreamId id = new(guid);
     string idValue = Convert.ToBase64String(guid.ToByteArray()).ToUriSafeBase64();
     Assert.Equal(idValue, id.Value);
   }
@@ -25,7 +25,7 @@ public class AggregateIdTests
   [InlineData("  123456  ")]
   public void Ctor_it_constructs_the_correct_string_identifier(string value)
   {
-    AggregateId id = new(value);
+    StreamId id = new(value);
     Assert.Equal(value.Trim(), id.Value);
   }
 
@@ -35,7 +35,7 @@ public class AggregateIdTests
   [InlineData("  ")]
   public void Ctor_it_throws_ArgumentException_when_value_is_null_or_white_space(string? value)
   {
-    var exception = Assert.Throws<ArgumentException>(() => new AggregateId(value!));
+    var exception = Assert.Throws<ArgumentException>(() => new StreamId(value!));
     Assert.Equal("value", exception.ParamName);
   }
 
@@ -44,35 +44,35 @@ public class AggregateIdTests
   public void Ctor_it_throws_ArgumentOutOfRangeException_when_value_is_too_long(int length)
   {
     string value = _faker.Random.String(length, minChar: 'A', maxChar: 'Z');
-    var exception = Assert.Throws<ArgumentOutOfRangeException>(() => new AggregateId(value));
+    var exception = Assert.Throws<ArgumentOutOfRangeException>(() => new StreamId(value));
     Assert.Equal("value", exception.ParamName);
   }
 
   [Fact(DisplayName = "EqualOperator: it returns false when they are different.")]
   public void EqualOperator_it_returns_false_when_they_are_different()
   {
-    AggregateId id = AggregateId.NewId();
-    AggregateId other = new(id.Value[1..]);
+    StreamId id = StreamId.NewId();
+    StreamId other = new(id.Value[1..]);
     Assert.False(id == other);
   }
 
   [Fact(DisplayName = "EqualOperator: it returns true when they are equal.")]
   public void EqualOperator_it_returns_true_when_they_are_equal()
   {
-    AggregateId id = AggregateId.NewId();
-    AggregateId other = new(id.ToGuid());
+    StreamId id = StreamId.NewId();
+    StreamId other = new(id.ToGuid());
     Assert.True(id == other);
   }
 
-  [Fact(DisplayName = "Equals: it returns false when other is a different AggregateId.")]
-  public void Equals_it_returns_false_when_other_is_a_different_AggregateId()
+  [Fact(DisplayName = "Equals: it returns false when other is a different StreamId.")]
+  public void Equals_it_returns_false_when_other_is_a_different_StreamId()
   {
-    AggregateId other = new(_id.Value[1..]);
+    StreamId other = new(_id.Value[1..]);
     Assert.False(_id.Equals(other));
   }
 
-  [Fact(DisplayName = "Equals: it returns false when other is not an AggregateId.")]
-  public void Equals_it_returns_false_when_other_is_not_an_AggregateId()
+  [Fact(DisplayName = "Equals: it returns false when other is not an StreamId.")]
+  public void Equals_it_returns_false_when_other_is_not_an_StreamId()
   {
     Assert.False(_id.Equals(_id.Value));
   }
@@ -86,7 +86,7 @@ public class AggregateIdTests
   [Fact(DisplayName = "Equals: it returns true when other is equal.")]
   public void Equals_it_returns_false_when_other_is_equal()
   {
-    AggregateId other = new(_id.Value);
+    StreamId other = new(_id.Value);
     Assert.True(_id.Equals(other));
   }
 
@@ -99,22 +99,22 @@ public class AggregateIdTests
   [Fact(DisplayName = "NewId: it is constructed using a Guid.")]
   public void NewId_it_is_constructed_using_a_Guid()
   {
-    _ = AggregateId.NewId().ToGuid();
+    _ = StreamId.NewId().ToGuid();
   }
 
   [Fact(DisplayName = "NotEqualOperator: it returns false when they are equal.")]
   public void NotEqualOperator_it_returns_false_when_they_are_equal()
   {
-    AggregateId id = AggregateId.NewId();
-    AggregateId other = new(id.ToGuid());
+    StreamId id = StreamId.NewId();
+    StreamId other = new(id.ToGuid());
     Assert.False(id != other);
   }
 
   [Fact(DisplayName = "NotEqualOperator: it returns true when they are different.")]
   public void NotEqualOperator_it_returns_true_when_they_are_different()
   {
-    AggregateId id = AggregateId.NewId();
-    AggregateId other = new(id.Value[1..]);
+    StreamId id = StreamId.NewId();
+    StreamId other = new(id.Value[1..]);
     Assert.True(id != other);
   }
 
@@ -134,6 +134,6 @@ public class AggregateIdTests
   [Fact(DisplayName = "Value: it should never be null.")]
   public void Value_it_should_never_be_null()
   {
-    Assert.NotNull(new AggregateId().Value);
+    Assert.NotNull(new StreamId().Value);
   }
 }
