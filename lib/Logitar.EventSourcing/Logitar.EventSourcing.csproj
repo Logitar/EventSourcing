@@ -39,6 +39,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="System" />
+    <Using Include="System.Collections.Generic" />
+    <Using Include="System.Diagnostics.CodeAnalysis" />
+    <Using Include="System.Threading" />
+    <Using Include="System.Threading.Tasks" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="LICENSE">
       <PackagePath>\</PackagePath>
       <Pack>True</Pack>

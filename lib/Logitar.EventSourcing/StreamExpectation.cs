@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-
-namespace Logitar.EventSourcing;
+﻿namespace Logitar.EventSourcing;
 
 /// <summary>
 /// Defines an expectation of the state of a stream of events. Enforce when committing changes in an event store to handle concurrency.
