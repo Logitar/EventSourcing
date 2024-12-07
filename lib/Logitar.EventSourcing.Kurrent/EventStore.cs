@@ -3,7 +3,7 @@
 namespace Logitar.EventSourcing.Kurrent;
 
 /// <summary>
-/// TODO(fpion): document
+/// Implements a store of events using EventStoreDB/Kurrent.
 /// </summary>
 public sealed class EventStore : IEventStore
 {
