@@ -43,6 +43,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="System.Text" />
+    <Using Include="System.Text.Json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="LICENSE">
       <PackagePath>\</PackagePath>
       <Pack>True</Pack>
