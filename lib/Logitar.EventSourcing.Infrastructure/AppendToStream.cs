@@ -23,7 +23,7 @@ public sealed record AppendToStream
   /// <summary>
   /// Gets the events to append.
   /// </summary>
-  public IEnumerable<object> Events { get; }
+  public IEnumerable<IEvent> Events { get; }
 
   /// <summary>
   /// Initializes a new instance of the <see cref="AppendToStream"/> class.
@@ -32,7 +32,7 @@ public sealed record AppendToStream
   /// <param name="type">The stream type.</param>
   /// <param name="expectation">The stream expectation.</param>
   /// <param name="events">The events to append.</param>
-  public AppendToStream(StreamId id, Type? type, StreamExpectation expectation, IEnumerable<object> events)
+  public AppendToStream(StreamId id, Type? type, StreamExpectation expectation, IEnumerable<IEvent> events)
   {
     Id = id;
     Type = type;

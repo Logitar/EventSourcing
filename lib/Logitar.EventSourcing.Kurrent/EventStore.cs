@@ -14,6 +14,10 @@ public sealed class EventStore : IEventStore // TODO(fpion): unit & integration 
   private readonly List<AppendToStream> _operations = [];
 
   /// <summary>
+  /// The event bus.
+  /// </summary>
+  private readonly IEventBus? _bus;
+  /// <summary>
   /// The EventStoreDB/Kurrent client.
   /// </summary>
   private readonly EventStoreClient _client;
@@ -25,10 +29,12 @@ public sealed class EventStore : IEventStore // TODO(fpion): unit & integration 
   /// <summary>
   /// Initializes a new instance of the <see cref="EventStore"/> class.
   /// </summary>
+  /// <param name="bus">The event bus.</param>
   /// <param name="client">The EventStoreDB/Kurrent client.</param>
   /// <param name="converter">The event converter.</param>
-  public EventStore(EventStoreClient client, IEventConverter converter)
+  public EventStore(IEventBus? bus, EventStoreClient client, IEventConverter converter)
   {
+    _bus = bus;
     _client = client;
     _converter = converter;
   }
@@ -42,7 +48,7 @@ public sealed class EventStore : IEventStore // TODO(fpion): unit & integration 
   /// <param name="events">The events to append.</param>
   /// <returns>The stream identifier. A new identifier will be randomly generated if none is provided.</returns>
   /// <exception cref="ArgumentException">The stream identifier was null, empty or only white-space.</exception>
-  public StreamId Append(StreamId? streamId, Type? type, StreamExpectation expectation, IEnumerable<object> events)
+  public StreamId Append(StreamId? streamId, Type? type, StreamExpectation expectation, IEnumerable<IEvent> events)
   {
     if (streamId.HasValue)
     {
@@ -97,7 +103,16 @@ public sealed class EventStore : IEventStore // TODO(fpion): unit & integration 
       }
     }
 
-    // TODO(fpion): IEventBus
+    if (_bus != null)
+    {
+      foreach (AppendToStream operation in _operations)
+      {
+        foreach (IEvent @event in operation.Events)
+        {
+          await _bus.PublishAsync(@event, cancellationToken);
+        }
+      }
+    }
 
     _operations.Clear(); // TODO(fpion): how to retry?
   }

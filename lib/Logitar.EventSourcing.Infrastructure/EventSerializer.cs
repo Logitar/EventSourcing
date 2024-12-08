@@ -34,7 +34,7 @@ public class EventSerializer : IEventSerializer // TODO(fpion): unit tests
   /// </summary>
   /// <param name="event">The event to serialize.</param>
   /// <returns>The serialized string representation of the event.</returns>
-  public virtual string Serialize(object @event) => JsonSerializer.Serialize(@event, @event.GetType(), SerializerOptions);
+  public virtual string Serialize(IEvent @event) => JsonSerializer.Serialize(@event, @event.GetType(), SerializerOptions);
 
   /// <summary>
   /// Registers the default and specified JSON converters.

@@ -28,7 +28,7 @@ public class EventConverter : IEventConverter // TODO(fpion): unit tests
   /// <param name="event">The event to convert.</param>
   /// <param name="streamType">The type of the event stream.</param>
   /// <returns>The converted event.</returns>
-  public virtual EventData ToEventData(object @event, Type? streamType)
+  public virtual EventData ToEventData(IEvent @event, Type? streamType)
   {
     Uuid eventId = GetEventId(@event);
     string type = GetEventType(@event);
@@ -43,7 +43,7 @@ public class EventConverter : IEventConverter // TODO(fpion): unit tests
   /// </summary>
   /// <param name="event">The event.</param>
   /// <returns>The event identifier.</returns>
-  protected virtual Uuid GetEventId(object @event)
+  protected virtual Uuid GetEventId(IEvent @event)
   {
     if (@event is IIdentifiableEvent identifiable)
     {
@@ -64,14 +64,14 @@ public class EventConverter : IEventConverter // TODO(fpion): unit tests
   /// </summary>
   /// <param name="event">The event.</param>
   /// <returns>The event type.</returns>
-  protected virtual string GetEventType(object @event) => @event.GetType().Name;
+  protected virtual string GetEventType(IEvent @event) => @event.GetType().Name;
 
   /// <summary>
   /// Returns the event data as a contiguous region of memory.
   /// </summary>
   /// <param name="event">The event.</param>
   /// <returns>The event data.</returns>
-  protected virtual ReadOnlyMemory<byte> GetEventData(object @event)
+  protected virtual ReadOnlyMemory<byte> GetEventData(IEvent @event)
   {
     string serialized = _serializer.Serialize(@event);
     return Encoding.UTF8.GetBytes(serialized);
@@ -83,7 +83,7 @@ public class EventConverter : IEventConverter // TODO(fpion): unit tests
   /// <param name="event">The event.</param>
   /// <param name="streamType">The type of the event stream.</param>
   /// <returns>The event metadata.</returns>
-  protected virtual ReadOnlyMemory<byte>? GetEventMetadata(object @event, Type? streamType)
+  protected virtual ReadOnlyMemory<byte>? GetEventMetadata(IEvent @event, Type? streamType)
   {
     string eventType = @event.GetType().GetNamespaceQualifiedName();
     string? eventId = @event is IIdentifiableEvent identifiable ? identifiable.Id.Value : null;
