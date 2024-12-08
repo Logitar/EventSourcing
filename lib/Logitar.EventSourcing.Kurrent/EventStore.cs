@@ -6,7 +6,7 @@ namespace Logitar.EventSourcing.Kurrent;
 /// <summary>
 /// Implements a store of events using EventStoreDB/Kurrent.
 /// </summary>
-public sealed class EventStore : IEventStore
+public sealed class EventStore : IEventStore // TODO(fpion): unit & integration tests
 {
   /// <summary>
   /// The uncommitted operations.
@@ -16,7 +16,7 @@ public sealed class EventStore : IEventStore
   /// <summary>
   /// The EventStoreDB/Kurrent client.
   /// </summary>
-  private readonly EventStoreClient _client;
+  private readonly EventStoreClient _client; // TODO(fpion): configure in dependency injection
   /// <summary>
   /// The event converter.
   /// </summary>

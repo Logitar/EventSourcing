@@ -6,12 +6,12 @@ namespace Logitar.EventSourcing.Kurrent;
 /// <summary>
 /// Implements a converter for event classes.
 /// </summary>
-public class EventConverter : IEventConverter
+public class EventConverter : IEventConverter // TODO(fpion): unit tests
 {
   /// <summary>
   /// The event serializer.
   /// </summary>
-  private readonly IEventSerializer _serializer;
+  private readonly IEventSerializer _serializer; // TODO(fpion): configure in dependency injection
 
   /// <summary>
   /// Initializes a new instance of the <see cref="EventConverter"/> class.
