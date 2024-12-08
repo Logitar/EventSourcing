@@ -3,7 +3,7 @@
 /// <summary>
 /// Implements a serializer for events.
 /// </summary>
-public class EventSerializer : IEventSerializer
+public class EventSerializer : IEventSerializer // TODO(fpion): unit tests
 {
   /// <summary>
   /// Gets or sets the serializer options.

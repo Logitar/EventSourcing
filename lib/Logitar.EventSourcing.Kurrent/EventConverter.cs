@@ -11,7 +11,7 @@ public class EventConverter : IEventConverter // TODO(fpion): unit tests
   /// <summary>
   /// The event serializer.
   /// </summary>
-  private readonly IEventSerializer _serializer; // TODO(fpion): configure in dependency injection
+  private readonly IEventSerializer _serializer;
 
   /// <summary>
   /// Initializes a new instance of the <see cref="EventConverter"/> class.
