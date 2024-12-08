@@ -39,6 +39,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="System.Text.Json" />
+    <Using Include="System.Text.Json.Serialization" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <None Update="LICENSE">
       <PackagePath>\</PackagePath>
       <Pack>True</Pack>

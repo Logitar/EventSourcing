@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a serializer for events.
 /// </summary>
-public interface IEventSerializer // TODO(fpion): implement
+public interface IEventSerializer
 {
   /// <summary>
   /// Serializes the specified event.
