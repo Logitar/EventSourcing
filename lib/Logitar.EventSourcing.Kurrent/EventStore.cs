@@ -79,7 +79,7 @@ public sealed class EventStore : IEventStore
 
     foreach (AppendToStream operation in _operations)
     {
-      IEnumerable<EventData> events = operation.Events.Select(_converter.ToEventData);
+      IEnumerable<EventData> events = operation.Events.Select(@event => _converter.ToEventData(@event, operation.Type));
       if (operation.Expectation.Kind == StreamExpectation.StreamExpectationKind.ShouldBeAtVersion)
       {
         long revision = operation.Expectation.Version - operation.Events.Count() - 1;

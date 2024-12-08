@@ -26,13 +26,14 @@ public class EventConverter : IEventConverter
   /// Converts the specified event to an instance of the <see cref="EventData"/> class.
   /// </summary>
   /// <param name="event">The event to convert.</param>
+  /// <param name="streamType">The type of the event stream.</param>
   /// <returns>The converted event.</returns>
-  public virtual EventData ToEventData(object @event)
+  public virtual EventData ToEventData(object @event, Type? streamType)
   {
     Uuid eventId = GetEventId(@event);
     string type = GetEventType(@event);
     ReadOnlyMemory<byte> data = GetEventData(@event);
-    ReadOnlyMemory<byte>? metadata = GetEventMetadata(@event);
+    ReadOnlyMemory<byte>? metadata = GetEventMetadata(@event, streamType);
 
     return new EventData(eventId, type, data, metadata);
   }
@@ -80,18 +81,34 @@ public class EventConverter : IEventConverter
   /// Returns the event metadata as a contiguous region of memory.
   /// </summary>
   /// <param name="event">The event.</param>
+  /// <param name="streamType">The type of the event stream.</param>
   /// <returns>The event metadata.</returns>
-  protected virtual ReadOnlyMemory<byte>? GetEventMetadata(object @event)
+  protected virtual ReadOnlyMemory<byte>? GetEventMetadata(object @event, Type? streamType)
   {
-    string? streamType = null; // TODO(fpion): implement
     string eventType = @event.GetType().GetNamespaceQualifiedName();
+    string? eventId = @event is IIdentifiableEvent identifiable ? identifiable.Id.Value : null;
+
+    string? streamTypeName = streamType?.GetNamespaceQualifiedName();
     long version = default; // TODO(fpion): implement
 
-    string? actorId = null; // TODO(fpion): implement
-    DateTime occurredOn = default; // TODO(fpion): implement
-    bool? isDeleted = null; // TODO(fpion): implement
+    string? actorId = @event is IActorEvent actor ? actor.ActorId?.Value : null;
+    DateTime? occurredOn = @event is ITemporalEvent temporal ? temporal.OccurredOn : null;
 
-    EventMetadata metadata = new(streamType, eventType, version, actorId, occurredOn, isDeleted);
+    bool? isDeleted = null;
+    if (@event is IDeleteControlEvent deleteControl)
+    {
+      isDeleted = deleteControl.IsDeleted;
+    }
+    else if (@event is IDeleteEvent && @event is not IUndeleteEvent)
+    {
+      isDeleted = true;
+    }
+    else if (@event is IUndeleteEvent && @event is not IDeleteEvent)
+    {
+      isDeleted = false;
+    }
+
+    EventMetadata metadata = new(eventType, eventId, streamTypeName, version, actorId, occurredOn, isDeleted);
 
     string json = JsonSerializer.Serialize(metadata);
     return Encoding.UTF8.GetBytes(json);
