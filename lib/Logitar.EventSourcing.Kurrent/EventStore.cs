@@ -16,7 +16,7 @@ public sealed class EventStore : IEventStore // TODO(fpion): unit & integration 
   /// <summary>
   /// The EventStoreDB/Kurrent client.
   /// </summary>
-  private readonly EventStoreClient _client; // TODO(fpion): configure in dependency injection
+  private readonly EventStoreClient _client;
   /// <summary>
   /// The event converter.
   /// </summary>

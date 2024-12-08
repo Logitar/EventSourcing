@@ -6,10 +6,6 @@
 public readonly struct ActorId
 {
   /// <summary>
-  /// The default value of the identifier.
-  /// </summary>
-  public const string DefaultValue = "SYSTEM"; // TODO(fpion): nullable or default value?
-  /// <summary>
   /// The maximum length of the identifier value.
   /// </summary>
   public const int MaximumLength = byte.MaxValue;
@@ -21,7 +17,7 @@ public readonly struct ActorId
   /// <summary>
   /// Gets the value of the identifier.
   /// </summary>
-  public string Value => _value ?? DefaultValue;
+  public string Value => _value ?? string.Empty;
 
   /// <summary>
   /// Initializes a new instance of the <see cref="ActorId"/> struct.
