@@ -89,7 +89,7 @@ public class EventConverter : IEventConverter // TODO(fpion): unit tests
     string? eventId = @event is IIdentifiableEvent identifiable ? identifiable.Id.Value : null;
 
     string? streamTypeName = streamType?.GetNamespaceQualifiedName();
-    long version = default; // TODO(fpion): implement
+    long? version = @event is IVersionedEvent versioned ? versioned.Version : null;
 
     string? actorId = @event is IActorEvent actor ? actor.ActorId?.Value : null;
     DateTime? occurredOn = @event is ITemporalEvent temporal ? temporal.OccurredOn : null;
