@@ -122,6 +122,6 @@ public sealed class EventStore : IEventStore // TODO(fpion): unit & integration 
       }
     }
 
-    _operations.Clear(); // TODO(fpion): how to retry?
+    ClearChanges();
   }
 }
