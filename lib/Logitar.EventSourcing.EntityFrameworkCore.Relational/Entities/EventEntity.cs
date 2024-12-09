@@ -1,6 +1,6 @@
 ﻿namespace Logitar.EventSourcing.EntityFrameworkCore.Relational.Entities;
 
-public sealed class EventEntity
+public class EventEntity
 {
   public long EventId { get; private set; }
   public string Id { get; private set; } = string.Empty;

@@ -23,6 +23,27 @@ public class EventConverter : IEventConverter
     SerializerOptions.Converters.Add(new TypeConverter());
   }
 
+  public virtual Type? GetStreamType(EventRecord record)
+  {
+    EventMetadata? metadata = GetEventMetadata<EventMetadata>(record);
+    return metadata?.StreamType;
+  }
+
+  public virtual Event ToEvent(EventRecord record)
+  {
+    EventMetadata? metadata = GetEventMetadata<EventMetadata>(record);
+
+    EventId id = GetEventId(record, metadata);
+    long version = GetVersion(record, metadata);
+    DateTime occurredOn = GetOccurredOn(record, metadata);
+    Type type = GetEventType(record, metadata);
+    IEvent data = GetEventData(record, type, metadata);
+    ActorId? actorId = GetActorId(record, metadata);
+    bool? isDeleted = GetIsDeleted(record, metadata);
+
+    return new Event(id, version, occurredOn, type, data, actorId, isDeleted);
+  }
+
   public virtual EventData ToEventData(IEvent @event, Type? streamType)
   {
     Uuid eventId = GetEventId(@event);
@@ -50,12 +71,25 @@ public class EventConverter : IEventConverter
     return Uuid.NewUuid();
   }
 
+  protected virtual EventId GetEventId(EventRecord record, EventMetadata? metadata) => metadata?.EventId ?? new EventId(record.EventId.ToGuid());
+
   protected virtual string GetEventType(IEvent @event) => @event.GetType().Name;
+
+  protected virtual Type GetEventType(EventRecord record, EventMetadata? metadata)
+  {
+    return metadata?.EventType ?? Type.GetType(record.EventType) ?? throw new NotImplementedException();
+  }
 
   protected virtual ReadOnlyMemory<byte> GetEventData(IEvent @event)
   {
     string json = Serializer.Serialize(@event);
     return Encoding.UTF8.GetBytes(json);
+  }
+
+  protected virtual IEvent GetEventData(EventRecord record, Type type, EventMetadata? metadata)
+  {
+    string json = Encoding.UTF8.GetString(record.Data.ToArray());
+    return Serializer.Deserialize(type, json);
   }
 
   protected virtual ReadOnlyMemory<byte> GetEventMetadata(IEvent @event, Type? streamType)
@@ -85,5 +119,19 @@ public class EventConverter : IEventConverter
     return Encoding.UTF8.GetBytes(json);
   }
 
+  protected virtual T? GetEventMetadata<T>(EventRecord record)
+  {
+    string json = Encoding.UTF8.GetString(record.Metadata.ToArray());
+    return JsonSerializer.Deserialize<T>(json, SerializerOptions);
+  }
+
   protected virtual string GetContentType(IEvent @event) => MediaTypeNames.Application.Json;
+
+  protected virtual long GetVersion(EventRecord record, EventMetadata? metadata) => metadata?.Version ?? (record.EventNumber.ToInt64() + 1);
+
+  protected virtual DateTime GetOccurredOn(EventRecord record, EventMetadata? metadata) => metadata?.OccurredOn ?? record.Created;
+
+  protected virtual ActorId? GetActorId(EventRecord record, EventMetadata? metadata) => metadata?.ActorId;
+
+  protected virtual bool? GetIsDeleted(EventRecord record, EventMetadata? metadata) => metadata?.IsDeleted;
 }

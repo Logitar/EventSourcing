@@ -15,6 +15,13 @@ public class EntityFrameworkCoreStore : EventStore
     Converter = converter;
   }
 
+  public override Task<Stream?> FetchAsync(StreamId streamId, FetchOptions? options, CancellationToken cancellationToken)
+  {
+    options ??= options ?? new FetchOptions();
+
+    throw new NotImplementedException();
+  }
+
   public override async Task SaveChangesAsync(CancellationToken cancellationToken)
   {
     Queue<IEvent> events = [];

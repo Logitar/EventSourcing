@@ -7,5 +7,7 @@ public interface IEventStore
   bool HasChanges { get; }
   void ClearChanges();
 
+  Task<Stream?> FetchAsync(StreamId streamId, FetchOptions? options = null, CancellationToken cancellationToken = default);
+
   Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }

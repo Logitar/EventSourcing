@@ -37,6 +37,8 @@ public abstract class EventStore : IEventStore
     Changes.Clear();
   }
 
+  public abstract Task<Stream?> FetchAsync(StreamId streamId, FetchOptions? options, CancellationToken cancellationToken);
+
   public abstract Task SaveChangesAsync(CancellationToken cancellationToken);
 
   protected virtual AppendToStream DequeueChange() => Changes.Dequeue();

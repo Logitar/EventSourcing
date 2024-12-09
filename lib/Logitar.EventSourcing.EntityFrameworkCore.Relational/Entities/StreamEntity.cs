@@ -1,6 +1,6 @@
 ﻿namespace Logitar.EventSourcing.EntityFrameworkCore.Relational.Entities;
 
-public sealed class StreamEntity
+public class StreamEntity
 {
   public long StreamId { get; private set; }
   public string Id { get; private set; } = string.Empty;
