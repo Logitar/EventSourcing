@@ -65,6 +65,14 @@ public abstract class EventStore : IEventStore // TODO(fpion): unit tests
   }
 
   /// <summary>
+  /// Fetches a stream of events from the event store.
+  /// </summary>
+  /// <param name="streamId">The stream identifier.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The found stream, or null.</returns>
+  public abstract Task<Stream?> FetchAsync(StreamId streamId, CancellationToken cancellationToken);
+
+  /// <summary>
   /// Save the changes to the event store.
   /// </summary>
   /// <param name="cancellationToken">The cancellation token.</param>
