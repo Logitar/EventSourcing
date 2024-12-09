@@ -1,6 +1,5 @@
 ﻿using EventStore.Client;
 using Logitar.EventSourcing.Infrastructure;
-using System.Text.Json;
 
 namespace Logitar.EventSourcing.Kurrent;
 

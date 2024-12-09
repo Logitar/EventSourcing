@@ -1,7 +1,4 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace Logitar.EventSourcing.Kurrent;
+﻿namespace Logitar.EventSourcing.Kurrent;
 
 public class TypeConverter : JsonConverter<Type>
 {

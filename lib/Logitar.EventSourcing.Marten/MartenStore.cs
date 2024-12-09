@@ -3,11 +3,11 @@ using Marten;
 
 namespace Logitar.EventSourcing.Marten;
 
-public class MartenEventStore : EventStore
+public class MartenStore : EventStore
 {
   protected IDocumentStore DocumentStore { get; }
 
-  public MartenEventStore(IEnumerable<IEventBus> buses, IDocumentStore documentStore) : base(buses)
+  public MartenStore(IEnumerable<IEventBus> buses, IDocumentStore documentStore) : base(buses)
   {
     DocumentStore = documentStore;
   }

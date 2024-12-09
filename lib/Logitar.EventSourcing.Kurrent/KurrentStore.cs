@@ -3,12 +3,12 @@ using Logitar.EventSourcing.Infrastructure;
 
 namespace Logitar.EventSourcing.Kurrent;
 
-public class KurrentEventStore : Infrastructure.EventStore
+public class KurrentStore : Infrastructure.EventStore
 {
   protected EventStoreClient Client { get; }
   protected IEventConverter Converter { get; }
 
-  public KurrentEventStore(IEnumerable<IEventBus> buses, EventStoreClient client, IEventConverter converter) : base(buses)
+  public KurrentStore(IEnumerable<IEventBus> buses, EventStoreClient client, IEventConverter converter) : base(buses)
   {
     Client = client;
     Converter = converter;
