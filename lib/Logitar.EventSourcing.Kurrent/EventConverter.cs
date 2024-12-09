@@ -52,7 +52,7 @@ public class EventConverter : IEventConverter // TODO(fpion): unit tests
     Uuid eventId = GetEventId(@event);
     string type = GetEventType(@event);
     ReadOnlyMemory<byte> data = GetEventData(@event);
-    ReadOnlyMemory<byte>? metadata = GetEventMetadata(@event, streamType);
+    ReadOnlyMemory<byte> metadata = GetEventMetadata(@event, streamType);
 
     return new EventData(eventId, type, data, metadata);
   }
@@ -102,7 +102,7 @@ public class EventConverter : IEventConverter // TODO(fpion): unit tests
   /// <param name="event">The event.</param>
   /// <param name="streamType">The type of the event stream.</param>
   /// <returns>The event metadata.</returns>
-  protected virtual ReadOnlyMemory<byte>? GetEventMetadata(IEvent @event, Type? streamType)
+  protected virtual ReadOnlyMemory<byte> GetEventMetadata(IEvent @event, Type? streamType)
   {
     string eventType = @event.GetType().GetNamespaceQualifiedName();
     string? eventId = @event is IIdentifiableEvent identifiable ? identifiable.Id.Value : null;
