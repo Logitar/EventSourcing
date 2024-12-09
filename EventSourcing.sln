@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Kurre
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Infrastructure", "lib\Logitar.EventSourcing.Infrastructure\Logitar.EventSourcing.Infrastructure.csproj", "{CF374484-94F2-4DE6-A9D0-2BE72B1AEBC4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Marten", "lib\Logitar.EventSourcing.Marten\Logitar.EventSourcing.Marten.csproj", "{D6895D3F-2DA7-442C-A315-FFF935456580}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{CF374484-94F2-4DE6-A9D0-2BE72B1AEBC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF374484-94F2-4DE6-A9D0-2BE72B1AEBC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF374484-94F2-4DE6-A9D0-2BE72B1AEBC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6895D3F-2DA7-442C-A315-FFF935456580}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6895D3F-2DA7-442C-A315-FFF935456580}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6895D3F-2DA7-442C-A315-FFF935456580}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6895D3F-2DA7-442C-A315-FFF935456580}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
