@@ -14,7 +14,12 @@ public interface IEventStore
   /// <param name="expectation">An expectation of the stream state.</param>
   /// <param name="events">The events to append.</param>
   /// <returns>The stream identifier. A new identifier will be randomly generated if none is provided.</returns>
-  StreamId Append(StreamId? streamId, Type? type, StreamExpectation expectation, IEnumerable<object> events);
+  StreamId Append(StreamId? streamId, Type? type, StreamExpectation expectation, IEnumerable<IEvent> events);
+
+  /// <summary>
+  /// Clears the changes tracked by the event store.
+  /// </summary>
+  void ClearChanges();
 
   /// <summary>
   /// Save the changes to the event store.
