@@ -14,9 +14,9 @@ public sealed class EventStore : IEventStore // TODO(fpion): unit & integration 
   private readonly List<AppendToStream> _operations = [];
 
   /// <summary>
-  /// The event bus.
+  /// The event buses.
   /// </summary>
-  private readonly IEventBus? _bus;
+  private readonly IEnumerable<IEventBus> _buses;
   /// <summary>
   /// The EventStoreDB/Kurrent client.
   /// </summary>
@@ -29,12 +29,12 @@ public sealed class EventStore : IEventStore // TODO(fpion): unit & integration 
   /// <summary>
   /// Initializes a new instance of the <see cref="EventStore"/> class.
   /// </summary>
-  /// <param name="bus">The event bus.</param>
+  /// <param name="buses">The event buses.</param>
   /// <param name="client">The EventStoreDB/Kurrent client.</param>
   /// <param name="converter">The event converter.</param>
-  public EventStore(IEventBus? bus, EventStoreClient client, IEventConverter converter)
+  public EventStore(IEnumerable<IEventBus> buses, EventStoreClient client, IEventConverter converter)
   {
-    _bus = bus;
+    _buses = buses;
     _client = client;
     _converter = converter;
   }
@@ -103,13 +103,13 @@ public sealed class EventStore : IEventStore // TODO(fpion): unit & integration 
       }
     }
 
-    if (_bus != null)
+    foreach (AppendToStream operation in _operations)
     {
-      foreach (AppendToStream operation in _operations)
+      foreach (IEvent @event in operation.Events)
       {
-        foreach (IEvent @event in operation.Events)
+        foreach (IEventBus bus in _buses)
         {
-          await _bus.PublishAsync(@event, cancellationToken);
+          await bus.PublishAsync(@event, cancellationToken);
         }
       }
     }
