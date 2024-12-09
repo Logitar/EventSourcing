@@ -11,7 +11,7 @@ public abstract class EventStore : IEventStore // TODO(fpion): unit tests
   protected Queue<AppendToStream> Changes { get; } = [];
 
   /// <summary>
-  /// The event buses.
+  /// Gets the event buses.
   /// </summary>
   protected IEnumerable<IEventBus> Buses { get; }
 
@@ -72,16 +72,20 @@ public abstract class EventStore : IEventStore // TODO(fpion): unit tests
   public abstract Task SaveChangesAsync(CancellationToken cancellationToken);
 
   /// <summary>
-  /// Publishes the specified event to the event buses.
+  /// Publishes the specified events to the event buses.
   /// </summary>
-  /// <param name="event">The event to publish.</param>
+  /// <param name="events">The events to publish.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The asynchronous operation.</returns>
-  protected virtual async Task PublishAsync(IEvent @event, CancellationToken cancellationToken)
+  protected virtual async Task PublishAsync(Queue<IEvent> events, CancellationToken cancellationToken)
   {
-    foreach (IEventBus bus in Buses)
+    while (events.Count > 0)
     {
-      await bus.PublishAsync(@event, cancellationToken);
+      var @event = events.Dequeue();
+      foreach (IEventBus bus in Buses)
+      {
+        await bus.PublishAsync(@event, cancellationToken);
+      }
     }
   }
 }

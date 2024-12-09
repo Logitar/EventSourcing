@@ -9,11 +9,11 @@ namespace Logitar.EventSourcing.Kurrent;
 public class KurrentEventStore : Infrastructure.EventStore // TODO(fpion): unit & integration tests
 {
   /// <summary>
-  /// The EventStoreDB/Kurrent client.
+  /// Gets the EventStoreDB/Kurrent client.
   /// </summary>
   protected EventStoreClient Client { get; }
   /// <summary>
-  /// The event converter.
+  /// Gets the event converter.
   /// </summary>
   protected IEventConverter Converter { get; }
 
@@ -65,10 +65,6 @@ public class KurrentEventStore : Infrastructure.EventStore // TODO(fpion): unit 
       }
     }
 
-    while (events.Count > 0)
-    {
-      IEvent @event = events.Dequeue();
-      await PublishAsync(@event, cancellationToken);
-    }
+    await PublishAsync(events, cancellationToken);
   }
 }
