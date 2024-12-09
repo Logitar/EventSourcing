@@ -72,6 +72,14 @@ public sealed class EventStore : IEventStore // TODO(fpion): unit & integration 
   }
 
   /// <summary>
+  /// Clears the changes tracked by the event store.
+  /// </summary>
+  public void ClearChanges()
+  {
+    _operations.Clear();
+  }
+
+  /// <summary>
   /// Save the changes to the event store.
   /// </summary>
   /// <param name="cancellationToken">The cancellation token.</param>

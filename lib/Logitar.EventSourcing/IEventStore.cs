@@ -17,6 +17,11 @@ public interface IEventStore
   StreamId Append(StreamId? streamId, Type? type, StreamExpectation expectation, IEnumerable<IEvent> events);
 
   /// <summary>
+  /// Clears the changes tracked by the event store.
+  /// </summary>
+  void ClearChanges();
+
+  /// <summary>
   /// Save the changes to the event store.
   /// </summary>
   /// <param name="cancellationToken">The cancellation token.</param>
