@@ -3,7 +3,7 @@
 /// <summary>
 /// TODO(fpion): document
 /// </summary>
-public class Event
+public class Event // TODO(fpion): unit tests
 {
   /// <summary>
   /// Gets the identifier of the event.

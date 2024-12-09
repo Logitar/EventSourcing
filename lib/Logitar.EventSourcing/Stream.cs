@@ -5,7 +5,7 @@ namespace Logitar.EventSourcing;
 /// <summary>
 /// Represents a stream of events.
 /// </summary>
-public class Stream
+public class Stream // TODO(fpion): unit tests
 {
   /// <summary>
   /// Gets the identifier of the stream.
