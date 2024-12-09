@@ -8,6 +8,13 @@ namespace Logitar.EventSourcing.Kurrent;
 public interface IEventConverter
 {
   /// <summary>
+  /// Converts the specified event record to an instance of the <see cref="Event"/> class.
+  /// </summary>
+  /// <param name="record">The event to convert.</param>
+  /// <returns>The converted event.</returns>
+  Event ToEvent(EventRecord record);
+
+  /// <summary>
   /// Converts the specified event to an instance of the <see cref="EventData"/> class.
   /// </summary>
   /// <param name="event">The event to convert.</param>

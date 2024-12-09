@@ -30,6 +30,59 @@ public class KurrentEventStore : Infrastructure.EventStore // TODO(fpion): unit 
   }
 
   /// <summary>
+  /// Fetches a stream of events from the event store.
+  /// </summary>
+  /// <param name="streamId">The stream identifier.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The found stream, or null.</returns>
+  public override async Task<Stream?> FetchAsync(StreamId streamId, CancellationToken cancellationToken)
+  {
+    // TODO(fpion): streamId guard(s)
+
+    /*
+     * EventStreamId: string
+     * EventId: Uuid
+     * EventNumber: StreamPosition
+     * EventType: string
+     * Data: byte[]
+     * Metadata: byte[]
+     * Created: DateTime
+     * Position: Position
+     * ContentType: string
+     */
+    // TODO(fpion): OccurredBefore, OccurredAfter, FromVersion, ToVersion, AggregateType, IsDeleted := undefined, null, true, false, ActorId
+
+    EventStoreClient.ReadStreamResult result = Client.ReadStreamAsync(
+      Direction.Forwards,
+      streamId.Value,
+      revision: StreamPosition.Start, // TODO(fpion): FromVersion
+      maxCount: long.MaxValue, // TODO(fpion): ToVersion - FromVersion + 1
+      cancellationToken: cancellationToken);
+
+    if (await result.ReadState == ReadState.StreamNotFound)
+    {
+      return null;
+    }
+
+    List<Event> events = [];
+    await foreach (ResolvedEvent resolved in result)
+    {
+      EventRecord @event = resolved.Event;
+      events.Add(Converter.ToEvent(@event));
+    }
+
+    Type? type = null; // TODO(fpion): implement
+    long version = 0; // TODO(fpion): implement
+    ActorId? createdBy = null; // TODO(fpion): implement
+    DateTime? createdOn = null; // TODO(fpion): implement
+    ActorId? updatedBy = null; // TODO(fpion): implement
+    DateTime? updatedOn = null; // TODO(fpion): implement
+    bool isDeleted = false; // TODO(fpion): implement
+
+    return new Stream(streamId, type, version, createdBy, createdOn, updatedBy, updatedOn, isDeleted, events);
+  }
+
+  /// <summary>
   /// Save the changes to the event store.
   /// </summary>
   /// <param name="cancellationToken">The cancellation token.</param>

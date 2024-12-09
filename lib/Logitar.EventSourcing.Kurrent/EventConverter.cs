@@ -23,6 +23,25 @@ public class EventConverter : IEventConverter // TODO(fpion): unit tests
   }
 
   /// <summary>
+  /// Converts the specified event record to an instance of the <see cref="Event"/> class.
+  /// </summary>
+  /// <param name="record">The event to convert.</param>
+  /// <returns>The converted event.</returns>
+  public Event ToEvent(EventRecord record)
+  {
+    // EventStreamId: string
+    // EventId: Uuid
+    // EventNumber: StreamPosition
+    // EventType: string
+    // Data: ReadOnlyMemory<byte>
+    // Metadata: ReadOnlyMemory<byte>
+    // Created: DateTime
+    // Position: Position
+    // ContentType: string
+    throw new NotImplementedException();
+  }
+
+  /// <summary>
   /// Converts the specified event to an instance of the <see cref="EventData"/> class.
   /// </summary>
   /// <param name="event">The event to convert.</param>
@@ -95,9 +114,9 @@ public class EventConverter : IEventConverter // TODO(fpion): unit tests
     DateTime? occurredOn = @event is ITemporalEvent temporal ? temporal.OccurredOn : null;
 
     bool? isDeleted = null;
-    if (@event is IDeleteControlEvent deleteControl)
+    if (@event is IDeleteControlEvent deleteControl && deleteControl.IsDeleted.HasValue)
     {
-      isDeleted = deleteControl.IsDeleted;
+      isDeleted = deleteControl.IsDeleted.Value;
     }
     else if (@event is IDeleteEvent && @event is not IUndeleteEvent)
     {
