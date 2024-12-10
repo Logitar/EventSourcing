@@ -11,10 +11,9 @@ public class Event : IActorEvent, IDeleteControlEvent, IIdentifiableEvent, ITemp
 
   public bool? IsDeleted { get; }
 
-  public Type Type { get; }
   public IEvent Data { get; }
 
-  public Event(EventId id, long version, DateTime occurredOn, Type type, IEvent data, ActorId? actorId = null, bool? isDeleted = null)
+  public Event(EventId id, long version, DateTime occurredOn, IEvent data, ActorId? actorId = null, bool? isDeleted = null)
   {
     Id = id;
 
@@ -25,11 +24,10 @@ public class Event : IActorEvent, IDeleteControlEvent, IIdentifiableEvent, ITemp
 
     IsDeleted = isDeleted;
 
-    Type = type;
     Data = data;
   }
 
   public override bool Equals(object obj) => obj is Event @event && @event.Id == Id;
   public override int GetHashCode() => Id.GetHashCode();
-  public override string ToString() => $"{Type} | {GetType()} (Id={Id})";
+  public override string ToString() => $"{Data.GetType()} | {GetType()} (Id={Id})";
 }

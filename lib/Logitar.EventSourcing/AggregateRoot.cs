@@ -31,7 +31,7 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
     {
       if (string.IsNullOrWhiteSpace(id.Value.Value))
       {
-        throw new NotImplementedException();
+        throw new ArgumentException("The identifier value is required.", nameof(id));
       }
 
       Id = id.Value;
@@ -90,11 +90,11 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
   {
     if (@event is IStreamEvent stream && stream.StreamId != Id)
     {
-      throw new NotImplementedException();
+      throw new StreamMismatchException(this, stream);
     }
     if (@event is IVersionedEvent versioned && versioned.Version != (Version + 1))
     {
-      throw new NotImplementedException();
+      throw new UnexpectedEventVersionException(this, versioned);
     }
 
     Version++;
@@ -115,6 +115,14 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
     {
       IsDeleted = control.IsDeleted.Value;
     }
+    else if (@event is IDeleteEvent && @event is not IUndeleteEvent)
+    {
+      IsDeleted = true;
+    }
+    else if (@event is IUndeleteEvent && @event is not IDeleteEvent)
+    {
+      IsDeleted = false;
+    }
 
     Dispatch(@event);
   }
@@ -124,7 +132,7 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
     apply?.Invoke(this, [@event]);
   }
 
-  public override bool Equals(object obj) => obj is AggregateRoot aggregate && aggregate.GetType().Equals(GetType()) && aggregate.Id == Id;
-  public override int GetHashCode() => HashCode.Combine(GetType(), Id);
+  public override bool Equals(object obj) => obj is AggregateRoot aggregate && aggregate.Id == Id;
+  public override int GetHashCode() => Id.GetHashCode();
   public override string ToString() => $"{GetType()} (Id={Id})";
 }

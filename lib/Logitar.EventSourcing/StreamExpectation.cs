@@ -26,7 +26,7 @@ public readonly struct StreamExpectation
   {
     if (kind == StreamExpectationKind.ShouldBeAtVersion)
     {
-      throw new NotImplementedException();
+      throw new ArgumentOutOfRangeException(nameof(kind), "When expecting the stream to be at a specific version, use the constructor specifying a version.");
     }
 
     Kind = kind;
@@ -36,7 +36,7 @@ public readonly struct StreamExpectation
   {
     if (version < 1)
     {
-      throw new NotImplementedException();
+      throw new ArgumentOutOfRangeException(nameof(version), "The version should be greater than 0.");
     }
 
     Kind = StreamExpectationKind.ShouldBeAtVersion;

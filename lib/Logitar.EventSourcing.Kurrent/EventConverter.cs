@@ -41,7 +41,7 @@ public class EventConverter : IEventConverter
     ActorId? actorId = GetActorId(record, metadata);
     bool? isDeleted = GetIsDeleted(record, metadata);
 
-    return new Event(id, version, occurredOn, type, data, actorId, isDeleted);
+    return new Event(id, version, occurredOn, data, actorId, isDeleted);
   }
 
   public virtual EventData ToEventData(IEvent @event, Type? streamType)

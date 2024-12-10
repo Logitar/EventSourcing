@@ -25,11 +25,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Entit
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8FDA0BC2-7DB8-45B5-A1C6-3B931280ED0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Tests", "tests\Logitar.EventSourcing.Tests\Logitar.EventSourcing.Tests.csproj", "{EFF3E7FB-DAD9-41F5-9EBA-E9D23B08DF81}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.IntegrationTests", "tests\Logitar.EventSourcing.IntegrationTests\Logitar.EventSourcing.IntegrationTests.csproj", "{DC93870A-5C79-49BF-ACDC-B8E16098439A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.MartenDB", "lib\Logitar.EventSourcing.MartenDB\Logitar.EventSourcing.MartenDB.csproj", "{20D78DB7-525A-4C9B-86A9-709D98974648}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.UnitTests", "tests\Logitar.EventSourcing.UnitTests\Logitar.EventSourcing.UnitTests.csproj", "{781C5D47-77F1-44E8-BCD7-46F37CA16D92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,10 +53,6 @@ Global
 		{285ECE7E-8DFD-4AB5-8B77-54DDBDFD6A43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{285ECE7E-8DFD-4AB5-8B77-54DDBDFD6A43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{285ECE7E-8DFD-4AB5-8B77-54DDBDFD6A43}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EFF3E7FB-DAD9-41F5-9EBA-E9D23B08DF81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EFF3E7FB-DAD9-41F5-9EBA-E9D23B08DF81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EFF3E7FB-DAD9-41F5-9EBA-E9D23B08DF81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EFF3E7FB-DAD9-41F5-9EBA-E9D23B08DF81}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DC93870A-5C79-49BF-ACDC-B8E16098439A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DC93870A-5C79-49BF-ACDC-B8E16098439A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC93870A-5C79-49BF-ACDC-B8E16098439A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -65,13 +61,17 @@ Global
 		{20D78DB7-525A-4C9B-86A9-709D98974648}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20D78DB7-525A-4C9B-86A9-709D98974648}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20D78DB7-525A-4C9B-86A9-709D98974648}.Release|Any CPU.Build.0 = Release|Any CPU
+		{781C5D47-77F1-44E8-BCD7-46F37CA16D92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{781C5D47-77F1-44E8-BCD7-46F37CA16D92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{781C5D47-77F1-44E8-BCD7-46F37CA16D92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{781C5D47-77F1-44E8-BCD7-46F37CA16D92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{EFF3E7FB-DAD9-41F5-9EBA-E9D23B08DF81} = {8FDA0BC2-7DB8-45B5-A1C6-3B931280ED0C}
 		{DC93870A-5C79-49BF-ACDC-B8E16098439A} = {8FDA0BC2-7DB8-45B5-A1C6-3B931280ED0C}
+		{781C5D47-77F1-44E8-BCD7-46F37CA16D92} = {8FDA0BC2-7DB8-45B5-A1C6-3B931280ED0C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B0AA9E53-02AD-4000-8ED5-53AFF5D1B32D}
