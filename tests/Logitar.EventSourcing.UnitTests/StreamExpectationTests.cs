@@ -37,7 +37,7 @@ public class StreamExpectationTests
   public void Given_ShouldBeAtVersion_When_ctor_Then_ArgumentOutOfRangeException()
   {
     var exception = Assert.Throws<ArgumentOutOfRangeException>(() => new StreamExpectation(StreamExpectation.StreamExpectationKind.ShouldBeAtVersion));
-    Assert.StartsWith("When expecting the stream to be at a specific version, use the constructor specifying a version.", exception.Message);
+    Assert.StartsWith("When expecting the expectation to be at a specific version, use the constructor specifying a version.", exception.Message);
     Assert.Equal("kind", exception.ParamName);
   }
 

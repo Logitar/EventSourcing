@@ -3,7 +3,7 @@
 /// <summary>
 /// Implements a repository that allows retrieving and storing aggregates in an event store.
 /// </summary>
-public class Repository : IRepository // TODO(fpion): unit tests
+public class Repository : IRepository
 {
   /// <summary>
   /// Gets the event store.
@@ -155,10 +155,14 @@ public class Repository : IRepository // TODO(fpion): unit tests
   /// <returns>The asynchronous operation.</returns>
   public virtual async Task SaveAsync(IEnumerable<IAggregate> aggregates, CancellationToken cancellationToken)
   {
+    int changes = 0;
+
     foreach (IAggregate aggregate in aggregates)
     {
       if (aggregate.HasChanges)
       {
+        changes++;
+
         long? version = GetVersion(aggregate);
         StreamExpectation expectation = version.HasValue ? StreamExpectation.ShouldBeAtVersion(version.Value) : StreamExpectation.None;
         EventStore.Append(aggregate.Id, aggregate.GetType(), expectation, aggregate.Changes);
@@ -167,7 +171,10 @@ public class Repository : IRepository // TODO(fpion): unit tests
       }
     }
 
-    await EventStore.SaveChangesAsync(cancellationToken);
+    if (changes > 0)
+    {
+      await EventStore.SaveChangesAsync(cancellationToken);
+    }
   }
 
   /// <summary>

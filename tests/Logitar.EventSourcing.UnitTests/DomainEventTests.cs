@@ -6,7 +6,7 @@ public class DomainEventTests
   [Fact(DisplayName = "ctor: it should construct the domain event correctly.")]
   public void Given_DomainEvent_When_ctor_Then_ConstructedCorrectly()
   {
-    DomainEvent @event = new();
+    UserSignedIn @event = new();
 
     Assert.False(string.IsNullOrWhiteSpace(@event.Id.Value));
     Assert.True(string.IsNullOrWhiteSpace(@event.StreamId.Value));

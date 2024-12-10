@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a domain event belonging to a stream and that can be applied to it.
 /// </summary>
-public record DomainEvent : IActorEvent, IDeleteControlEvent, IIdentifiableEvent, IStreamEvent, ITemporalEvent, IVersionedEvent
+public abstract record DomainEvent : IActorEvent, IDeleteControlEvent, IIdentifiableEvent, IStreamEvent, ITemporalEvent, IVersionedEvent
 {
   /// <summary>
   /// Gets or sets the identifier of the event.
