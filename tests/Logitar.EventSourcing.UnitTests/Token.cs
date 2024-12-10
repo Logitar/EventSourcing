@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace Logitar.EventSourcing;
+﻿namespace Logitar.EventSourcing;
 
 internal sealed class Token : IAggregate
 {
