@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Logitar.EventSourcing;
 
-public abstract class IntegrationTests
+public abstract class KurrentIntegrationTests
 {
   protected IConfiguration Configuration { get; }
   protected IServiceProvider ServiceProvider { get; }
@@ -15,7 +15,7 @@ public abstract class IntegrationTests
   protected IEventSerializer EventSerializer { get; }
   protected EventStoreClient EventStoreClient { get; }
 
-  protected IntegrationTests()
+  protected KurrentIntegrationTests()
   {
     Configuration = new ConfigurationBuilder()
       .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
@@ -25,8 +25,8 @@ public abstract class IntegrationTests
     services.AddSingleton(Configuration);
     services.AddSingleton<IEventBus>(EventBus);
 
-    string connectionString = Configuration.GetValue<string>("ESDBCONNSTR_IntegrationTests")
-      ?? throw new InvalidOperationException("The configuration 'ESDBCONNSTR_IntegrationTests' is missing.");
+    string connectionString = Configuration.GetConnectionString("EventStoreDB")
+      ?? throw new InvalidOperationException("The connection string 'EventStoreDB' is required.");
     services.AddLogitarEventSourcingWithKurrent(connectionString);
 
     ServiceProvider = services.BuildServiceProvider();

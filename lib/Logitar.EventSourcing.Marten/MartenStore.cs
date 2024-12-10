@@ -1,7 +1,7 @@
 ﻿using Logitar.EventSourcing.Infrastructure;
 using Marten;
 
-namespace Logitar.EventSourcing.Marten_; // TODO(fpion): issue
+namespace Logitar.EventSourcing.Marten_; // TODO(fpion): namespace issue
 
 public class MartenStore : EventStore
 {

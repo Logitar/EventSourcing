@@ -39,7 +39,10 @@ services:
       POSTGRES_PASSWORD: cptBg3hZ9qC6a5Vb
     ports:
       - 5435:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   eventstore-volume-data:
   eventstore-volume-logs:
+  postgres_data:
