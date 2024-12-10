@@ -4,7 +4,7 @@ using Marten.Events;
 using Marten.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Logitar.EventSourcing.Marten_; // TODO(fpion): namespace issue
+namespace Logitar.EventSourcing.MartenDB;
 
 [Trait(Traits.Category, Categories.Integration)]
 public class MartenStoreTests : MartenIntegrationTests

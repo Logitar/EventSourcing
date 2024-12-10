@@ -35,7 +35,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\lib\Logitar.EventSourcing.Kurrent\Logitar.EventSourcing.Kurrent.csproj" />
-    <ProjectReference Include="..\..\lib\Logitar.EventSourcing.Marten\Logitar.EventSourcing.Marten.csproj" />
+    <ProjectReference Include="..\..\lib\Logitar.EventSourcing.MartenDB\Logitar.EventSourcing.MartenDB.csproj" />
     <ProjectReference Include="..\Logitar.EventSourcing.Tests\Logitar.EventSourcing.Tests.csproj" />
   </ItemGroup>
 

@@ -1,10 +1,9 @@
 ﻿using EventStore.Client;
 using Logitar.EventSourcing.Infrastructure;
-using Logitar.EventSourcing.Kurrent;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Logitar.EventSourcing;
+namespace Logitar.EventSourcing.Kurrent;
 
 public abstract class KurrentIntegrationTests
 {
