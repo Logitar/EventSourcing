@@ -9,19 +9,19 @@ public class Repository : IRepository
     EventStore = eventStore;
   }
 
-  public virtual async Task<T?> LoadAsync<T>(StreamId id, CancellationToken cancellationToken) where T : class, IAggregate
+  public virtual async Task<T?> LoadAsync<T>(StreamId id, CancellationToken cancellationToken) where T : class, IAggregate, new()
   {
     return await LoadAsync<T>(id, version: null, isDeleted: null, cancellationToken);
   }
-  public virtual async Task<T?> LoadAsync<T>(StreamId id, long? version, CancellationToken cancellationToken) where T : class, IAggregate
+  public virtual async Task<T?> LoadAsync<T>(StreamId id, long? version, CancellationToken cancellationToken) where T : class, IAggregate, new()
   {
     return await LoadAsync<T>(id, version, isDeleted: null, cancellationToken);
   }
-  public virtual async Task<T?> LoadAsync<T>(StreamId id, bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate
+  public virtual async Task<T?> LoadAsync<T>(StreamId id, bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate, new()
   {
     return await LoadAsync<T>(id, version: null, isDeleted, cancellationToken);
   }
-  public virtual async Task<T?> LoadAsync<T>(StreamId id, long? version, bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate
+  public virtual async Task<T?> LoadAsync<T>(StreamId id, long? version, bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate, new()
   {
     FetchOptions options = new();
     if (version.HasValue)
@@ -38,20 +38,20 @@ public class Repository : IRepository
     return null;
   }
 
-  public virtual async Task<IReadOnlyCollection<T>> LoadAsync<T>(CancellationToken cancellationToken) where T : class, IAggregate
+  public virtual async Task<IReadOnlyCollection<T>> LoadAsync<T>(CancellationToken cancellationToken) where T : class, IAggregate, new()
   {
     return await LoadAsync<T>(isDeleted: null, cancellationToken);
   }
-  public virtual Task<IReadOnlyCollection<T>> LoadAsync<T>(bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate
+  public virtual Task<IReadOnlyCollection<T>> LoadAsync<T>(bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate, new()
   {
     throw new NotImplementedException();
   }
 
-  public virtual async Task<IReadOnlyCollection<T>> LoadAsync<T>(IEnumerable<StreamId> ids, CancellationToken cancellationToken) where T : class, IAggregate
+  public virtual async Task<IReadOnlyCollection<T>> LoadAsync<T>(IEnumerable<StreamId> ids, CancellationToken cancellationToken) where T : class, IAggregate, new()
   {
     return await LoadAsync<T>(ids, isDeleted: null, cancellationToken);
   }
-  public virtual async Task<IReadOnlyCollection<T>> LoadAsync<T>(IEnumerable<StreamId> ids, bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate
+  public virtual async Task<IReadOnlyCollection<T>> LoadAsync<T>(IEnumerable<StreamId> ids, bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate, new()
   {
     List<T> aggregates = new(capacity: ids.Count());
     foreach (StreamId id in ids)
@@ -90,9 +90,13 @@ public class Repository : IRepository
 
   protected virtual long? GetVersion(IAggregate aggregate) => aggregate is IVersionedAggregate versioned ? versioned.Version : null;
 
-  protected virtual T LoadAggregate<T>(Stream stream) where T : AggregateRoot, new()
+  protected virtual T LoadAggregate<T>(Stream stream) where T : IAggregate, new()
   {
+    T aggregate = new();
+
     IEnumerable<IEvent> changes = stream.Events.Select(@event => @event.Data);
-    return AggregateRoot.LoadFromChanges<T>(stream.Id, changes);
+    aggregate.LoadFromChanges(stream.Id, changes);
+
+    return aggregate;
   }
 }

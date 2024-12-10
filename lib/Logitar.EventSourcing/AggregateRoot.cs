@@ -1,7 +1,4 @@
-﻿
-using System.Reflection;
-
-namespace Logitar.EventSourcing;
+﻿namespace Logitar.EventSourcing;
 
 public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
 {
@@ -24,7 +21,11 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
     _changes.Clear();
   }
 
-  protected AggregateRoot(StreamId? id = null)
+  protected AggregateRoot() : this(id: null)
+  {
+  }
+
+  protected AggregateRoot(StreamId? id)
   {
     if (id.HasValue)
     {
@@ -41,19 +42,14 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
     }
   }
 
-  public static T LoadFromChanges<T>(StreamId id, IEnumerable<IEvent> changes) where T : AggregateRoot, new()
+  public virtual void LoadFromChanges(StreamId id, IEnumerable<IEvent> changes)
   {
-    T aggregate = new()
-    {
-      Id = id
-    };
+    Id = id;
 
     foreach (IEvent change in changes)
     {
-      aggregate.Apply(change);
+      Apply(change);
     }
-
-    return aggregate;
   }
 
   protected virtual void Raise(IEvent @event)
@@ -92,16 +88,16 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
 
   protected virtual void Apply(IEvent @event)
   {
-    Dispatch(@event);
+    if (@event is IStreamEvent stream && stream.StreamId != Id)
+    {
+      throw new NotImplementedException();
+    }
+    if (@event is IVersionedEvent versioned && versioned.Version != (Version + 1))
+    {
+      throw new NotImplementedException();
+    }
 
-    if (@event is IVersionedAggregate versioned)
-    {
-      Version = versioned.Version;
-    }
-    else
-    {
-      Version++;
-    }
+    Version++;
 
     ActorId? actorId = @event is IActorEvent actor ? actor.ActorId : null;
     DateTime occurredOn = @event is ITemporalEvent temporal ? temporal.OccurredOn : DateTime.Now;
@@ -119,6 +115,8 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
     {
       IsDeleted = control.IsDeleted.Value;
     }
+
+    Dispatch(@event);
   }
   protected virtual void Dispatch(IEvent @event)
   {

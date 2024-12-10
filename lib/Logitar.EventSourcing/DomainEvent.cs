@@ -1,6 +1,6 @@
 ﻿namespace Logitar.EventSourcing;
 
-public record DomainEvent : IActorEvent, IDeleteControlEvent, IIdentifiableEvent, ITemporalEvent, IVersionedEvent
+public record DomainEvent : IActorEvent, IDeleteControlEvent, IIdentifiableEvent, IStreamEvent, ITemporalEvent, IVersionedEvent
 {
   public EventId Id { get; set; } = EventId.NewId();
 

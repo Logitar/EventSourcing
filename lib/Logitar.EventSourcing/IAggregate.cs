@@ -7,4 +7,6 @@ public interface IAggregate
   bool HasChanges { get; }
   IReadOnlyCollection<IEvent> Changes { get; }
   void ClearChanges();
+
+  void LoadFromChanges(StreamId id, IEnumerable<IEvent> changes);
 }

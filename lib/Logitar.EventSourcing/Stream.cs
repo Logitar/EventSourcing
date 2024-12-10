@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Logitar.EventSourcing;
+﻿namespace Logitar.EventSourcing;
 
 public class Stream
 {
