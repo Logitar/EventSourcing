@@ -23,7 +23,7 @@ public class EventSerializer : IEventSerializer
       ?? throw new NotImplementedException();
   }
 
-  public virtual string Serialize(IEvent @event) => JsonSerializer.Serialize(@event, SerializerOptions);
+  public virtual string Serialize(IEvent @event) => JsonSerializer.Serialize(@event, @event.GetType(), SerializerOptions);
 
   protected virtual void RegisterConverters()
   {

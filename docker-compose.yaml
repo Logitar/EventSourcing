@@ -1,14 +1,25 @@
 name: event_sourcing
 services:
-  event_sourcing_mongo:
-    image: mongo
-    container_name: Logitar.EventSourcing_mongo
+  event_sourcing_kurrent:
+    image: docker.eventstore.com/eventstore-preview/eventstoredb-ee:24.10.0-preview1-x64-8.0-bookworm-slim
+    container_name: Logitar.EventSourcing_kurrent
     restart: unless-stopped
     environment:
-      MONGO_INITDB_ROOT_USERNAME: demo
-      MONGO_INITDB_ROOT_PASSWORD: AwHE5MRKBeY9CsJu
+      - EVENTSTORE_CLUSTER_SIZE=1
+      - EVENTSTORE_RUN_PROJECTIONS=All
+      - EVENTSTORE_START_STANDARD_PROJECTIONS=true
+      - EVENTSTORE_NODE_PORT=2113
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
     ports:
-      - 27015:27017
+      - 2115:2113
+    volumes:
+      - type: volume
+        source: eventstore-volume-data
+        target: /var/lib/eventstore
+      - type: volume
+        source: eventstore-volume-logs
+        target: /var/log/eventstore
 
   event_sourcing_mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -28,3 +39,7 @@ services:
       POSTGRES_PASSWORD: cptBg3hZ9qC6a5Vb
     ports:
       - 5435:5432
+
+volumes:
+  eventstore-volume-data:
+  eventstore-volume-logs:
