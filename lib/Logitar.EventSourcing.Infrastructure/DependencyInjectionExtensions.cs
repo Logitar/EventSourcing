@@ -6,6 +6,8 @@ public static class DependencyInjectionExtensions
 {
   public static IServiceCollection AddLogitarEventSourcingInfrastructure(this IServiceCollection services)
   {
-    return services.AddSingleton<IEventSerializer, EventSerializer>();
+    return services
+      .AddSingleton<IEventSerializer, EventSerializer>()
+      .AddScoped<IRepository, Repository>();
   }
 }
