@@ -51,8 +51,11 @@ public abstract class EventStore : IEventStore
       streamId = StreamId.NewId();
     }
 
-    AppendToStream change = new(streamId.Value, streamType, streamExpectation, events);
-    Changes.Enqueue(change);
+    if (events.Any())
+    {
+      AppendToStream change = new(streamId.Value, streamType, streamExpectation, events);
+      Changes.Enqueue(change);
+    }
 
     return streamId.Value;
   }

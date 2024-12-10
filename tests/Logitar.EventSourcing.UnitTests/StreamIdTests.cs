@@ -11,7 +11,7 @@ public class StreamIdTests
 
   [Theory(DisplayName = "Ctor: it constructs the correct Guid identifier.")]
   [InlineData("00000000-0000-0000-0000-000000000000")]
-  [InlineData("1d8b0011-4b74-49a5-8d84-cef41b34b5ce")]
+  [InlineData("47a6c4e5-08d9-4eb6-8d31-f82b16ba0562")]
   public void Ctor_it_constructs_the_correct_Guid_identifier(string value)
   {
     Guid guid = Guid.Parse(value);
