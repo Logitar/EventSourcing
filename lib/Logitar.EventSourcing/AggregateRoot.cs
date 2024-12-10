@@ -1,31 +1,68 @@
 ﻿namespace Logitar.EventSourcing;
 
+/// <summary>
+/// Represents a domain aggregate, which should be a tangible concept in a domain model.
+/// </summary>
 public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
 {
+  /// <summary>
+  /// Gets or sets the identifier of the aggregate.
+  /// </summary>
   public StreamId Id { get; protected set; }
+  /// <summary>
+  /// Gets or sets the version of the aggregate.
+  /// </summary>
   public long Version { get; protected set; }
 
+  /// <summary>
+  /// Gets or sets the identifier of the actor who created the aggregate.
+  /// </summary>
   public ActorId? CreatedBy { get; protected set; }
+  /// <summary>
+  /// Gets or sets the date and time when the aggregate was created.
+  /// </summary>
   public DateTime CreatedOn { get; protected set; }
 
+  /// <summary>
+  /// Gets or sets the identifier of the actor who updated the aggregate lastly.
+  /// </summary>
   public ActorId? UpdatedBy { get; protected set; }
+  /// <summary>
+  /// Gets or sets the date and time when the aggregate was updated lastly.
+  /// </summary>
   public DateTime UpdatedOn { get; protected set; }
 
+  /// <summary>
+  /// Gets or sets a value indicating whether or not the aggregate is deleted.
+  /// </summary>
   public bool IsDeleted { get; protected set; }
 
+  /// <summary>
+  /// The uncommitted changes of the aggregate.
+  /// </summary>
   private readonly List<IEvent> _changes = [];
+  /// <summary>
+  /// Gets a value indicating whether or not the aggregate has uncommitted changes.
+  /// </summary>
   public bool HasChanges => _changes.Count > 0;
+  /// <summary>
+  /// Gets the uncommitted changes of the aggregate.
+  /// </summary>
   public IReadOnlyCollection<IEvent> Changes => _changes.AsReadOnly();
+  /// <summary>
+  /// Clears the uncommitted changes of the aggregate.
+  /// </summary>
   public void ClearChanges()
   {
     _changes.Clear();
   }
 
-  protected AggregateRoot() : this(id: null)
-  {
-  }
-
-  protected AggregateRoot(StreamId? id)
+  /// <summary>
+  /// Initializes a new instance of the <see cref="AggregateRoot"/> class.
+  /// </summary>
+  /// <param name="id">The identifier of the aggregate.</param>
+  /// <exception cref="ArgumentException">The identifier value is missing.</exception>
+  protected AggregateRoot(StreamId? id = null)
   {
     if (id.HasValue)
     {
@@ -42,6 +79,11 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
     }
   }
 
+  /// <summary>
+  /// Loads an aggregate from its changes and assign its identifier.
+  /// </summary>
+  /// <param name="id">The identifier of the aggregate.</param>
+  /// <param name="changes">The changes of the aggregate.</param>
   public virtual void LoadFromChanges(StreamId id, IEnumerable<IEvent> changes)
   {
     Id = id;
@@ -52,21 +94,41 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
     }
   }
 
-  protected virtual void Raise(IEvent @event)
+  /// <summary>
+  /// Raises the specified uncommited change to the current aggregate. The change will be associated to this aggregate, then applied to this aggregate before being added to the list of uncommited changes.
+  /// </summary>
+  /// <param name="change">The uncommited change.</param>
+  protected virtual void Raise(IEvent change)
   {
-    Raise(@event, actorId: null, occurredOn: null);
+    Raise(change, actorId: null, occurredOn: null);
   }
-  protected virtual void Raise(IEvent @event, ActorId? actorId)
+  /// <summary>
+  /// Raises the specified uncommited change to the current aggregate. The change will be associated to this aggregate, then applied to this aggregate before being added to the list of uncommited changes.
+  /// </summary>
+  /// <param name="change">The uncommited change.</param>
+  /// <param name="actorId">The identifier of the actor who triggered the event.</param>
+  protected virtual void Raise(IEvent change, ActorId? actorId)
   {
-    Raise(@event, actorId, occurredOn: null);
+    Raise(change, actorId, occurredOn: null);
   }
-  protected virtual void Raise(IEvent @event, DateTime? occurredOn)
+  /// <summary>
+  /// Raises the specified uncommited change to the current aggregate. The change will be associated to this aggregate, then applied to this aggregate before being added to the list of uncommited changes.
+  /// </summary>
+  /// <param name="change">The uncommited change.</param>
+  /// <param name="occurredOn">The date and time when the event occurred.</param>
+  protected virtual void Raise(IEvent change, DateTime? occurredOn)
   {
-    Raise(@event, actorId: null, occurredOn);
+    Raise(change, actorId: null, occurredOn);
   }
-  protected virtual void Raise(IEvent @event, ActorId? actorId, DateTime? occurredOn)
+  /// <summary>
+  /// Raises the specified uncommited change to the current aggregate. The change will be associated to this aggregate, then applied to this aggregate before being added to the list of uncommited changes.
+  /// </summary>
+  /// <param name="change">The uncommited change.</param>
+  /// <param name="actorId">The identifier of the actor who triggered the event.</param>
+  /// <param name="occurredOn">The date and time when the event occurred.</param>
+  protected virtual void Raise(IEvent change, ActorId? actorId, DateTime? occurredOn)
   {
-    if (@event is DomainEvent domainEvent)
+    if (change is DomainEvent domainEvent)
     {
       domainEvent.StreamId = Id;
       domainEvent.Version = Version + 1;
@@ -81,26 +143,32 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
       }
     }
 
-    Apply(@event);
+    Apply(change);
 
-    _changes.Add(@event);
+    _changes.Add(change);
   }
 
-  protected virtual void Apply(IEvent @event)
+  /// <summary>
+  /// Applies the specified change in the current aggregate, updating metadata, dispatching it to subclasses and adding it to uncommitted changes.
+  /// </summary>
+  /// <param name="change">The change to apply.</param>
+  /// <exception cref="StreamMismatchException">The change does not belong to the current aggregate.</exception>
+  /// <exception cref="UnexpectedEventVersionException">The change version is not subsequent to the aggregate version.</exception>
+  protected virtual void Apply(IEvent change)
   {
-    if (@event is IStreamEvent stream && stream.StreamId != Id)
+    if (change is IStreamEvent stream && stream.StreamId != Id)
     {
       throw new StreamMismatchException(this, stream);
     }
-    if (@event is IVersionedEvent versioned && versioned.Version != (Version + 1))
+    if (change is IVersionedEvent versioned && versioned.Version != (Version + 1))
     {
       throw new UnexpectedEventVersionException(this, versioned);
     }
 
     Version++;
 
-    ActorId? actorId = @event is IActorEvent actor ? actor.ActorId : null;
-    DateTime occurredOn = @event is ITemporalEvent temporal ? temporal.OccurredOn : DateTime.Now;
+    ActorId? actorId = change is IActorEvent actor ? actor.ActorId : null;
+    DateTime occurredOn = change is ITemporalEvent temporal ? temporal.OccurredOn : DateTime.Now;
 
     if (Version <= 1)
     {
@@ -111,28 +179,45 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
     UpdatedBy = actorId;
     UpdatedOn = occurredOn;
 
-    if (@event is IDeleteControlEvent control && control.IsDeleted.HasValue)
+    if (change is IDeleteControlEvent control && control.IsDeleted.HasValue)
     {
       IsDeleted = control.IsDeleted.Value;
     }
-    else if (@event is IDeleteEvent && @event is not IUndeleteEvent)
+    else if (change is IDeleteEvent && change is not IUndeleteEvent)
     {
       IsDeleted = true;
     }
-    else if (@event is IUndeleteEvent && @event is not IDeleteEvent)
+    else if (change is IUndeleteEvent && change is not IDeleteEvent)
     {
       IsDeleted = false;
     }
 
-    Dispatch(@event);
+    Dispatch(change);
   }
-  protected virtual void Dispatch(IEvent @event)
+  /// <summary>
+  /// Dispatches the specified change to be applied through the current aggregate. This method can be overriden to provide a more efficient way of applying changes, such as using <see href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/patterns">type pattern matching</see> instead of reflection.
+  /// </summary>
+  /// <param name="change">The change to apply.</param>
+  protected virtual void Dispatch(IEvent change)
   {
-    MethodInfo? apply = GetType().GetMethod("Handle", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, [@event.GetType()], modifiers: []);
-    apply?.Invoke(this, [@event]);
+    MethodInfo? apply = GetType().GetMethod("Handle", BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, [change.GetType()], modifiers: []);
+    apply?.Invoke(this, [change]);
   }
 
+  /// <summary>
+  /// Returns a value indicating whether or not the specified object is equal to the aggregate.
+  /// </summary>
+  /// <param name="obj">The object to be compared to.</param>
+  /// <returns>True if the object is equal to the aggregate.</returns>
   public override bool Equals(object obj) => obj is AggregateRoot aggregate && aggregate.Id == Id;
+  /// <summary>
+  /// Returns the hash code of the current aggregate.
+  /// </summary>
+  /// <returns>The hash code.</returns>
   public override int GetHashCode() => Id.GetHashCode();
+  /// <summary>
+  /// Returns a string representation of the aggregate.
+  /// </summary>
+  /// <returns>The string representation.</returns>
   public override string ToString() => $"{GetType()} (Id={Id})";
 }
