@@ -13,4 +13,23 @@ public record FetchOptions
   /// Gets or sets the ending event version (inclusive).
   /// </summary>
   public long ToVersion { get; set; }
+
+  /// <summary>
+  /// Gets or sets the actor filter.
+  /// </summary>
+  public ActorFilter? Actor { get; set; }
+
+  /// <summary>
+  /// Gets or sets the starting event date and time (inclusive).
+  /// </summary>
+  public DateTime? OccurredFrom { get; set; }
+  /// <summary>
+  /// Gets or sets the starting event date and time (inclusive).
+  /// </summary>
+  public DateTime? OccurredTo { get; set; }
+
+  /// <summary>
+  /// Gets or sets the stream deletion status filter.
+  /// </summary>
+  public bool? IsDeleted { get; set; }
 }

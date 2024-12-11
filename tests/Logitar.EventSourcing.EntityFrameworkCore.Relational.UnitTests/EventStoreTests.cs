@@ -30,6 +30,146 @@ public class EventStoreTests
     _store = new EventStore([_bus.Object], _context, _converter);
   }
 
+  [Theory(DisplayName = "FetchAsync: it should apply the specified actor filter.")]
+  [InlineData(false)]
+  [InlineData(true)]
+  public async Task Given_ActorFilter_When_FetchAsync_Then_FilterApplied(bool isNull)
+  {
+    UserCreated created = new(_faker.Person.UserName)
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1,
+      OccurredOn = DateTime.Now.AddMonths(-1)
+    };
+    UserPasswordCreated password = new(Convert.ToBase64String(Encoding.UTF8.GetBytes("P@s$W0rD")))
+    {
+      StreamId = StreamId.NewId(),
+      Version = 2,
+      ActorId = new ActorId(created.StreamId.ToGuid()),
+      OccurredOn = DateTime.Now.AddDays(-1)
+    };
+    UserSignedIn signedIn = new()
+    {
+      StreamId = StreamId.NewId(),
+      Version = 3,
+      ActorId = new ActorId(created.StreamId.ToGuid()),
+      OccurredOn = DateTime.Now.AddHours(-1)
+    };
+    UserDeleted deleted = new()
+    {
+      StreamId = StreamId.NewId(),
+      Version = 4
+    };
+
+    StreamEntity entity = new(created.StreamId, typeof(User));
+    entity.Append(_converter.ToEventEntity(created, entity));
+    entity.Append(_converter.ToEventEntity(password, entity));
+    entity.Append(_converter.ToEventEntity(signedIn, entity));
+    entity.Append(_converter.ToEventEntity(deleted, entity));
+    _context.Streams.Add(entity);
+    _context.SaveChanges();
+
+    Stream? stream = await _store.FetchAsync(created.StreamId, new FetchOptions
+    {
+      Actor = new ActorFilter(isNull ? null : password.ActorId)
+    }, _cancellationToken);
+
+    Assert.NotNull(stream);
+    Assert.Equal(created.StreamId, stream.Id);
+    Assert.Equal(typeof(User), stream.Type);
+    Assert.Null(stream.CreatedBy);
+    Assert.True(stream.UpdatedOn.HasValue);
+    Assert.Equal(isNull, stream.IsDeleted);
+
+    if (isNull)
+    {
+      Assert.Equal(4, stream.Version);
+      Assert.True(stream.CreatedOn.HasValue);
+      Assert.Equal(created.OccurredOn.AsUniversalTime(), stream.CreatedOn.Value, TimeSpan.FromSeconds(1));
+      Assert.Null(stream.UpdatedBy);
+      Assert.Equal(deleted.OccurredOn.AsUniversalTime(), stream.UpdatedOn.Value, TimeSpan.FromSeconds(1));
+
+      Assert.Equal(2, stream.Events.Count);
+      Assert.Contains(stream.Events, e => e.Id == created.Id && e.Version == created.Version && e.ActorId == created.ActorId
+        && e.OccurredOn == created.OccurredOn.AsUniversalTime() && e.IsDeleted == created.IsDeleted == e.Data.Equals(created));
+      Assert.Contains(stream.Events, e => e.Id == deleted.Id && e.Version == deleted.Version && e.ActorId == deleted.ActorId
+        && e.OccurredOn == deleted.OccurredOn.AsUniversalTime() && e.IsDeleted == true == e.Data.Equals(deleted));
+    }
+    else
+    {
+      Assert.Equal(3, stream.Version);
+      Assert.Null(stream.CreatedOn);
+      Assert.Equal(signedIn.ActorId, stream.UpdatedBy);
+      Assert.Equal(signedIn.OccurredOn.AsUniversalTime(), stream.UpdatedOn.Value, TimeSpan.FromSeconds(1));
+
+      Assert.Equal(2, stream.Events.Count);
+      Assert.Contains(stream.Events, e => e.Id == password.Id && e.Version == password.Version && e.ActorId == password.ActorId
+        && e.OccurredOn == password.OccurredOn.AsUniversalTime() && e.IsDeleted == password.IsDeleted == e.Data.Equals(password));
+      Assert.Contains(stream.Events, e => e.Id == signedIn.Id && e.Version == signedIn.Version && e.ActorId == signedIn.ActorId
+        && e.OccurredOn == signedIn.OccurredOn.AsUniversalTime() && e.IsDeleted == signedIn.IsDeleted == e.Data.Equals(signedIn));
+    }
+  }
+
+  [Fact(DisplayName = "FetchAsync: it should apply the specified date and time filters.")]
+  public async Task Given_DateTimeFilters_When_FetchAsync_Then_FiltersApplied()
+  {
+    UserCreated created = new(_faker.Person.UserName)
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1,
+      OccurredOn = DateTime.Now.AddMonths(-1)
+    };
+    UserPasswordCreated password = new(Convert.ToBase64String(Encoding.UTF8.GetBytes("P@s$W0rD")))
+    {
+      StreamId = StreamId.NewId(),
+      Version = 2,
+      ActorId = new ActorId(created.StreamId.ToGuid()),
+      OccurredOn = DateTime.Now.AddDays(-1)
+    };
+    UserSignedIn signedIn = new()
+    {
+      StreamId = StreamId.NewId(),
+      Version = 3,
+      ActorId = new ActorId(created.StreamId.ToGuid()),
+      OccurredOn = DateTime.Now.AddHours(-1)
+    };
+    UserDeleted deleted = new()
+    {
+      StreamId = StreamId.NewId(),
+      Version = 4
+    };
+
+    StreamEntity entity = new(created.StreamId, typeof(User));
+    entity.Append(_converter.ToEventEntity(created, entity));
+    entity.Append(_converter.ToEventEntity(password, entity));
+    entity.Append(_converter.ToEventEntity(signedIn, entity));
+    entity.Append(_converter.ToEventEntity(deleted, entity));
+    _context.Streams.Add(entity);
+    _context.SaveChanges();
+
+    Stream? stream = await _store.FetchAsync(created.StreamId, new FetchOptions
+    {
+      OccurredFrom = DateTime.Now.AddDays(-7),
+      OccurredTo = DateTime.Now.AddMinutes(-15)
+    }, _cancellationToken);
+
+    Assert.NotNull(stream);
+    Assert.Equal(created.StreamId, stream.Id);
+    Assert.Equal(typeof(User), stream.Type);
+    Assert.Equal(3, stream.Version);
+    Assert.Null(stream.CreatedBy);
+    Assert.Null(stream.CreatedOn);
+    Assert.Equal(signedIn.ActorId, stream.UpdatedBy);
+    Assert.Equal(signedIn.OccurredOn.AsUniversalTime(), stream.UpdatedOn);
+    Assert.False(stream.IsDeleted);
+
+    Assert.Equal(2, stream.Events.Count);
+    Assert.Contains(stream.Events, e => e.Id == password.Id && e.Version == password.Version && e.ActorId == password.ActorId
+      && e.OccurredOn == password.OccurredOn.AsUniversalTime() && e.IsDeleted == password.IsDeleted == e.Data.Equals(password));
+    Assert.Contains(stream.Events, e => e.Id == signedIn.Id && e.Version == signedIn.Version && e.ActorId == signedIn.ActorId
+      && e.OccurredOn == signedIn.OccurredOn.AsUniversalTime() && e.IsDeleted == signedIn.IsDeleted == e.Data.Equals(signedIn));
+  }
+
   [Fact(DisplayName = "FetchAsync: it should apply the specified version filters.")]
   public async Task Given_VersionFilters_When_FetchAsync_Then_FiltersApplied()
   {
@@ -87,10 +227,70 @@ public class EventStoreTests
       && e.OccurredOn == signedIn.OccurredOn.AsUniversalTime() && e.IsDeleted == signedIn.IsDeleted == e.Data.Equals(signedIn));
   }
 
-  [Fact(DisplayName = "FetchAsync: it should return null when no stream was found.")]
-  public async Task Given_NoStream_When_FetchAsync_Then_Null()
+  [Fact(DisplayName = "FetchAsync: it should return a deleted stream.")]
+  public async Task Given_DeletedStreamFound_When_FetchAsync_Then_Returned()
   {
-    Stream? stream = await _store.FetchAsync(StreamId.NewId(), options: null, _cancellationToken);
+    User user = new(_faker.Person.UserName);
+    UserCreated? created = Assert.Single(user.Changes) as UserCreated;
+    Assert.NotNull(created);
+
+    user.Delete();
+    UserDeleted? deleted = Assert.Single(user.Changes.Skip(1)) as UserDeleted;
+    Assert.NotNull(deleted);
+
+    StreamEntity entity = new(user.Id, user.GetType());
+    foreach (IEvent change in user.Changes)
+    {
+      entity.Append(_converter.ToEventEntity(change, entity));
+    }
+    _context.Streams.Add(entity);
+    _context.SaveChanges();
+
+    Stream? stream = await _store.FetchAsync(user.Id, new FetchOptions
+    {
+      IsDeleted = true
+    }, _cancellationToken);
+
+    Assert.NotNull(stream);
+    Assert.Equal(user.Id, stream.Id);
+    Assert.Equal(user.GetType(), stream.Type);
+    Assert.Equal(user.Version, stream.Version);
+    Assert.Equal(user.CreatedBy, stream.CreatedBy);
+    Assert.Equal(user.CreatedOn.AsUniversalTime(), stream.CreatedOn);
+    Assert.Equal(user.UpdatedBy, stream.UpdatedBy);
+    Assert.Equal(user.UpdatedOn.AsUniversalTime(), stream.UpdatedOn);
+    Assert.Equal(user.IsDeleted, stream.IsDeleted);
+
+    Assert.Equal(2, stream.Events.Count);
+    Assert.Contains(stream.Events, e => e.Id == created.Id && e.Version == created.Version && e.ActorId == created.ActorId
+      && e.OccurredOn == created.OccurredOn.AsUniversalTime() && e.IsDeleted == created.IsDeleted && e.Data.Equals(created));
+    Assert.Contains(stream.Events, e => e.Id == deleted.Id && e.Version == deleted.Version && e.ActorId == deleted.ActorId
+      && e.OccurredOn == deleted.OccurredOn.AsUniversalTime() && e.IsDeleted == true && e.Data.Equals(deleted));
+  }
+
+  [Theory(DisplayName = "FetchAsync: it should return null when no stream was found.")]
+  [InlineData(false)]
+  [InlineData(true)]
+  public async Task Given_NoStream_When_FetchAsync_Then_Null(bool isDeleted)
+  {
+    if (isDeleted)
+    {
+      User user = new(_faker.Person.UserName);
+      user.Delete();
+
+      StreamEntity entity = new(user.Id, user.GetType());
+      foreach (IEvent change in user.Changes)
+      {
+        entity.Append(_converter.ToEventEntity(change, entity));
+      }
+      _context.Streams.Add(entity);
+      _context.SaveChanges();
+    }
+
+    Stream? stream = await _store.FetchAsync(StreamId.NewId(), new FetchOptions
+    {
+      IsDeleted = isDeleted ? false : null
+    }, _cancellationToken);
     Assert.Null(stream);
   }
 

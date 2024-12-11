@@ -51,6 +51,25 @@ public class EventStore : Infrastructure.EventStore
     {
       query = query.Where(x => x.Version <= options.ToVersion);
     }
+    if (options.Actor != null)
+    {
+      string? actorId = options.Actor.ActorId?.Value;
+      query = query.Where(x => x.ActorId == actorId);
+    }
+    if (options.OccurredFrom.HasValue)
+    {
+      DateTime occurredFrom = options.OccurredFrom.Value.AsUniversalTime();
+      query = query.Where(x => x.OccurredOn >= occurredFrom);
+    }
+    if (options.OccurredTo.HasValue)
+    {
+      DateTime occurredTo = options.OccurredTo.Value.AsUniversalTime();
+      query = query.Where(x => x.OccurredOn <= occurredTo);
+    }
+    if (options.IsDeleted.HasValue)
+    {
+      query = query.Where(x => x.Stream!.IsDeleted == options.IsDeleted.Value);
+    }
 
     EventEntity[] entities = await query.OrderBy(x => x.Version).ToArrayAsync(cancellationToken);
     if (entities.Length <= 0)

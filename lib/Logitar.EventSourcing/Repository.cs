@@ -70,6 +70,10 @@ public class Repository : IRepository
     {
       options.ToVersion = version.Value;
     }
+    if (isDeleted.HasValue)
+    {
+      options.IsDeleted = isDeleted.Value;
+    }
 
     Stream? stream = await EventStore.FetchAsync(id, options, cancellationToken);
     if (stream != null && (!isDeleted.HasValue || isDeleted.Value == stream.IsDeleted))
