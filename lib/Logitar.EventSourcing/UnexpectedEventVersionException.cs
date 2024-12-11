@@ -8,7 +8,7 @@ public class UnexpectedEventVersionException : Exception
   /// <summary>
   /// The detailed error message.
   /// </summary>
-  private const string ErrorMessage = "The version of the specified version was not expected.";
+  private const string ErrorMessage = "The version of the specified event was not expected.";
 
   /// <summary>
   /// Gets or sets the identifier of the aggregate.
