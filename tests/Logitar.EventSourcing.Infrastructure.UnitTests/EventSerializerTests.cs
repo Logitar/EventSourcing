@@ -1,6 +1,4 @@
 ﻿using Bogus;
-using System.Globalization;
-using System.Text.Json;
 
 namespace Logitar.EventSourcing.Infrastructure;
 

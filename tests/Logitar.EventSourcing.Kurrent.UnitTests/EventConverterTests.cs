@@ -1,9 +1,6 @@
 ﻿using Bogus;
 using EventStore.Client;
 using Logitar.EventSourcing.Infrastructure;
-using System.Net.Mime;
-using System.Text;
-using System.Text.Json;
 
 namespace Logitar.EventSourcing.Kurrent;
 

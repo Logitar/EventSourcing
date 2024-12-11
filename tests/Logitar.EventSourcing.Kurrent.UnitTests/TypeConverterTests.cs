@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Logitar.EventSourcing.Kurrent;
+﻿namespace Logitar.EventSourcing.Kurrent;
 
 [Trait(Traits.Category, Categories.Unit)]
 public class TypeConverterTests

@@ -4,6 +4,26 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Logitar.EventSourcing.EntityFrameworkCore.Relational</Title>
+    <Authors>Francis Pion</Authors>
+    <Product>Logitar.NET</Product>
+    <Description>Provides an abstraction of a relational event store to be used with the Event Sourcing architecture pattern and Entity Framework Core.</Description>
+    <Copyright>© 2024 Logitar All Rights Reserved.</Copyright>
+    <PackageIcon>logitar.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/Logitar/EventSourcing</RepositoryUrl>
+    <AssemblyVersion>7.0.0.0</AssemblyVersion>
+    <FileVersion>$(AssemblyVersion)</FileVersion>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <Version>7.0.0</Version>
+    <NeutralLanguage>en-CA</NeutralLanguage>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <PackageReleaseNotes>Rewrote framework with a focus on event streams instead of aggregates.</PackageReleaseNotes>
+    <PackageTags>logitar net framework event sourcing entityframeworkcore relational</PackageTags>
+    <PackageProjectUrl>https://github.com/Logitar/EventSourcing/tree/main/lib/Logitar.EventSourcing.EntityFrameworkCore.Relational</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -15,6 +35,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Logitar.Data" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.0" />
   </ItemGroup>
 
@@ -23,7 +44,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="System.Reflection" />
+    <None Update="LICENSE">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
+    <None Update="logitar.png">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
+    <None Update="README.md">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Logitar.EventSourcing.Infrastructure;
+﻿namespace Logitar.EventSourcing.Infrastructure;
 
 [Trait(Traits.Category, Categories.Unit)]
 public class StreamIdConverterTests
