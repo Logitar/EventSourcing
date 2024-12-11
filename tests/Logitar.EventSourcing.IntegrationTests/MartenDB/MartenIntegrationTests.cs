@@ -36,7 +36,7 @@ public abstract class MartenIntegrationTests
       options.UseSystemTextJsonForSerialization();
       options.AutoCreateSchemaObjects = AutoCreate.All;
     });
-    services.AddScoped<IEventStore, MartenStore>();
+    //services.AddScoped<IEventStore, MartenStore>();
     #endregion
 
     ServiceProvider = services.BuildServiceProvider();
