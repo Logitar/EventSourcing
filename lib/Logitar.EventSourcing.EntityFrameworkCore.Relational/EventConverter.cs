@@ -22,12 +22,25 @@ public class EventConverter : IEventConverter
   }
 
   /// <summary>
+  /// Converts the specified event database entity to an event.
+  /// </summary>
+  /// <param name="event">The event entity to convert.</param>
+  /// <returns>The resulting event.</returns>
+  public virtual Event ToEvent(EventEntity @event)
+  {
+    IEvent data = GetEventData(@event);
+    ActorId? actorId = @event.ActorId == null ? null : new(@event.ActorId);
+
+    return new Event(new EventId(@event.Id), @event.Version, @event.OccurredOn.AsUniversalTime(), data, actorId, @event.IsDeleted);
+  }
+
+  /// <summary>
   /// Converts the specified event to the corresponding database entity.
   /// </summary>
   /// <param name="event">The event to convert.</param>
   /// <param name="stream">The stream in which the event belongs.</param>
   /// <returns>The resulting event entity.</returns>
-  public EventEntity ToEventEntity(IEvent @event, StreamEntity stream)
+  public virtual EventEntity ToEventEntity(IEvent @event, StreamEntity stream)
   {
     EventId id = GetEventId(@event);
     DateTime occurredOn = GetOccurredOn(@event);
@@ -61,6 +74,12 @@ public class EventConverter : IEventConverter
   /// <returns>The event type represented as a string.</returns>
   protected virtual string GetEventType(IEvent @event) => @event.GetType().Name;
 
+  /// <summary>
+  /// Returns the data of the specified event.
+  /// </summary>
+  /// <param name="event">The event entity.</param>
+  /// <returns>The event.</returns>
+  protected virtual IEvent GetEventData(EventEntity @event) => Serializer.Deserialize(@event.GetDataType(), @event.Data);
   /// <summary>
   /// Returns the event data as a string.
   /// </summary>

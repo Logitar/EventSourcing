@@ -36,13 +36,33 @@ public class EventStore : Infrastructure.EventStore
   /// <param name="options">The fetch options.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The retrieved stream, or null if it was not found.</returns>
-  public override Task<Stream?> FetchAsync(StreamId streamId, FetchOptions? options, CancellationToken cancellationToken)
+  public override async Task<Stream?> FetchAsync(StreamId streamId, FetchOptions? options, CancellationToken cancellationToken)
   {
+    IQueryable<EventEntity> query = Context.Events.AsNoTracking()
+      .Include(x => x.Stream)
+      .Where(x => x.Stream!.Id == streamId.Value);
+
     options ??= new FetchOptions();
+    if (options.FromVersion > 0)
+    {
+      query = query.Where(x => x.Version >= options.FromVersion);
+    }
+    if (options.ToVersion > 0)
+    {
+      query = query.Where(x => x.Version <= options.ToVersion);
+    }
 
-    Stream? stream = null; // TODO(fpion): implement
+    EventEntity[] entities = await query.OrderBy(x => x.Version).ToArrayAsync(cancellationToken);
+    if (entities.Length <= 0)
+    {
+      return null;
+    }
+    StreamEntity stream = entities.First().Stream ?? throw new InvalidOperationException("The event stream entity is required.");
 
-    return Task.FromResult(stream);
+    Type? type = stream.GetStreamType();
+    IEnumerable<Event> events = entities.Select(Converter.ToEvent);
+
+    return new Stream(streamId, type, events);
   }
 
   /// <summary>

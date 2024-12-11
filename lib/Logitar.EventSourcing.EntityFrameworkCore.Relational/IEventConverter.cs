@@ -6,6 +6,13 @@
 public interface IEventConverter
 {
   /// <summary>
+  /// Converts the specified event database entity to an event.
+  /// </summary>
+  /// <param name="event">The event entity to convert.</param>
+  /// <returns>The resulting event.</returns>
+  Event ToEvent(EventEntity @event);
+
+  /// <summary>
   /// Converts the specified event to the corresponding database entity.
   /// </summary>
   /// <param name="event">The event to convert.</param>

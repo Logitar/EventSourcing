@@ -16,6 +16,10 @@ public class EventContext : DbContext
   }
 
   /// <summary>
+  /// Gets the data set of events.
+  /// </summary>
+  public DbSet<EventEntity> Events => Set<EventEntity>();
+  /// <summary>
   /// Gets the data set of event streams.
   /// </summary>
   public DbSet<StreamEntity> Streams => Set<StreamEntity>();

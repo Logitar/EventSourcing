@@ -91,6 +91,12 @@ public class EventEntity
   }
 
   /// <summary>
+  /// Returns the type of the event data.
+  /// </summary>
+  /// <returns>The event data type.</returns>
+  public Type GetDataType() => Type.GetType(NamespacedType) ?? throw new EventTypeNotFoundException(this);
+
+  /// <summary>
   /// Returns a value indicating whether or not the specified object is equal to the event.
   /// </summary>
   /// <param name="obj">The object to be compared to.</param>

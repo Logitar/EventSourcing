@@ -108,6 +108,20 @@ public class StreamEntity
   }
 
   /// <summary>
+  /// Returns the type of this stream.
+  /// </summary>
+  /// <returns>The stream type, or null if none.</returns>
+  public Type? GetStreamType()
+  {
+    if (Type == null)
+    {
+      return null;
+    }
+
+    return System.Type.GetType(Type) ?? throw new StreamTypeNotFoundException(this);
+  }
+
+  /// <summary>
   /// Returns a value indicating whether or not the specified object is equal to the stream.
   /// </summary>
   /// <param name="obj">The object to be compared to.</param>
