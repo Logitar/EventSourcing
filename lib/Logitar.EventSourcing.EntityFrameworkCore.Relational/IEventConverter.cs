@@ -9,6 +9,7 @@ public interface IEventConverter
   /// Converts the specified event to the corresponding database entity.
   /// </summary>
   /// <param name="event">The event to convert.</param>
+  /// <param name="stream">The stream in which the event belongs.</param>
   /// <returns>The resulting event entity.</returns>
-  EventEntity ToEventEntity(IEvent @event);
+  EventEntity ToEventEntity(IEvent @event, StreamEntity stream);
 }

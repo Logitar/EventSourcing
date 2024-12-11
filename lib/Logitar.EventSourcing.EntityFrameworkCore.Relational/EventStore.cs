@@ -79,7 +79,7 @@ public class EventStore : Infrastructure.EventStore
       {
         events.Enqueue(@event);
 
-        EventEntity entity = Converter.ToEventEntity(@event);
+        EventEntity entity = Converter.ToEventEntity(@event, stream);
         stream.Append(entity);
       }
     }

@@ -65,7 +65,7 @@ public class EventEntity
   /// <param name="data">The event data.</param>
   /// <param name="actorId">The identifier of the actor who raised the event.</param>
   /// <param name="isDeleted">A value indicating if this event deletes, undeletes or leaves unchanged the stream deletion status.</param>
-  public EventEntity(EventId id, StreamEntity stream, DateTime occurredOn, string typeName, string namespacedType, string data, string? actorId = null, bool? isDeleted = null)
+  public EventEntity(EventId id, StreamEntity stream, DateTime occurredOn, string typeName, string namespacedType, string data, ActorId? actorId = null, bool? isDeleted = null)
   {
     Id = id.Value;
 
@@ -73,7 +73,7 @@ public class EventEntity
     StreamId = stream.StreamId;
     Version = stream.Version + 1;
 
-    ActorId = actorId;
+    ActorId = actorId?.Value;
     OccurredOn = occurredOn.AsUniversalTime();
 
     IsDeleted = isDeleted;
