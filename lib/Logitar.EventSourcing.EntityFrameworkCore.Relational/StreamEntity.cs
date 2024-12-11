@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents the database entity for event streams.
 /// </summary>
-public class StreamEntity
+public sealed class StreamEntity
 {
   /// <summary>
   /// Gets or sets the primary identifier (clustered key) of the stream.

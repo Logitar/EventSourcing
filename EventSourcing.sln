@@ -41,6 +41,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Entit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.EntityFrameworkCore.SqlServer", "lib\Logitar.EventSourcing.EntityFrameworkCore.SqlServer\Logitar.EventSourcing.EntityFrameworkCore.SqlServer.csproj", "{352A5C22-24DE-4227-A0F3-F144EE95C724}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{EA3FAAAD-FCF6-49E7-AE0D-F0C87F482490}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Database", "tools\Logitar.EventSourcing.Database\Logitar.EventSourcing.Database.csproj", "{C4F40BA4-1640-4B90-9B83-25757A82BE80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +99,10 @@ Global
 		{352A5C22-24DE-4227-A0F3-F144EE95C724}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{352A5C22-24DE-4227-A0F3-F144EE95C724}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{352A5C22-24DE-4227-A0F3-F144EE95C724}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4F40BA4-1640-4B90-9B83-25757A82BE80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4F40BA4-1640-4B90-9B83-25757A82BE80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4F40BA4-1640-4B90-9B83-25757A82BE80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4F40BA4-1640-4B90-9B83-25757A82BE80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -105,6 +113,7 @@ Global
 		{061727E2-0A98-4359-B745-630D26494777} = {8FDA0BC2-7DB8-45B5-A1C6-3B931280ED0C}
 		{92514B68-3D8D-4378-B377-6725B6B06ECB} = {8FDA0BC2-7DB8-45B5-A1C6-3B931280ED0C}
 		{5152101E-BC2F-467A-9525-2464DFC07A88} = {8FDA0BC2-7DB8-45B5-A1C6-3B931280ED0C}
+		{C4F40BA4-1640-4B90-9B83-25757A82BE80} = {EA3FAAAD-FCF6-49E7-AE0D-F0C87F482490}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B0AA9E53-02AD-4000-8ED5-53AFF5D1B32D}

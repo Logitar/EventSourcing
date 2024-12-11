@@ -5,7 +5,7 @@ namespace Logitar.EventSourcing.EntityFrameworkCore.Relational;
 /// <summary>
 /// Represents the database context for events.
 /// </summary>
-public class EventContext : DbContext
+public sealed class EventContext : DbContext
 {
   /// <summary>
   /// Initializes a new instance of the <see cref="EventContext"/> class.

@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents the database entity for events.
 /// </summary>
-public class EventEntity
+public sealed class EventEntity
 {
   /// <summary>
   /// Gets or sets the primary identifier (clustered key) of the event.
