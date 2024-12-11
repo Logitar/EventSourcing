@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Entit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL", "lib\Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL\Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.csproj", "{3459120C-9097-4FA6-A3CE-DDD35D4F9D22}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.EntityFrameworkCore.SqlServer", "lib\Logitar.EventSourcing.EntityFrameworkCore.SqlServer\Logitar.EventSourcing.EntityFrameworkCore.SqlServer.csproj", "{352A5C22-24DE-4227-A0F3-F144EE95C724}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +91,10 @@ Global
 		{3459120C-9097-4FA6-A3CE-DDD35D4F9D22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3459120C-9097-4FA6-A3CE-DDD35D4F9D22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3459120C-9097-4FA6-A3CE-DDD35D4F9D22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{352A5C22-24DE-4227-A0F3-F144EE95C724}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{352A5C22-24DE-4227-A0F3-F144EE95C724}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{352A5C22-24DE-4227-A0F3-F144EE95C724}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{352A5C22-24DE-4227-A0F3-F144EE95C724}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
