@@ -34,6 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\lib\Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL\Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.csproj" />
+    <ProjectReference Include="..\..\lib\Logitar.EventSourcing.EntityFrameworkCore.SqlServer\Logitar.EventSourcing.EntityFrameworkCore.SqlServer.csproj" />
     <ProjectReference Include="..\..\lib\Logitar.EventSourcing.Kurrent\Logitar.EventSourcing.Kurrent.csproj" />
     <ProjectReference Include="..\..\lib\Logitar.EventSourcing.MartenDB\Logitar.EventSourcing.MartenDB.csproj" />
     <ProjectReference Include="..\Logitar.EventSourcing.UnitTests\Logitar.EventSourcing.UnitTests.csproj" />

@@ -70,7 +70,7 @@ CREATE INDEX [IX_Streams_UpdatedOn] ON [EventSourcing].[Streams] ([UpdatedOn]);
 CREATE INDEX [IX_Streams_Version] ON [EventSourcing].[Streams] ([Version]);
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20241211211432_CreateStreamAndEventTables', N'9.0.0');
+VALUES (N'20241211220411_CreateStreamAndEventTables', N'9.0.0');
 
 COMMIT;
 GO

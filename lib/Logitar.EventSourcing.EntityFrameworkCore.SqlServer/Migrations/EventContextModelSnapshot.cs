@@ -82,7 +82,7 @@ namespace Logitar.EventSourcing.EntityFrameworkCore.SqlServer.Migrations
                     b.HasIndex("StreamId", "Version")
                         .IsUnique();
 
-                    b.ToTable("Events", (string)null);
+                    b.ToTable("Events", "EventSourcing");
                 });
 
             modelBuilder.Entity("Logitar.EventSourcing.EntityFrameworkCore.Relational.StreamEntity", b =>
@@ -141,7 +141,7 @@ namespace Logitar.EventSourcing.EntityFrameworkCore.SqlServer.Migrations
 
                     b.HasIndex("Version");
 
-                    b.ToTable("Streams", (string)null);
+                    b.ToTable("Streams", "EventSourcing");
                 });
 
             modelBuilder.Entity("Logitar.EventSourcing.EntityFrameworkCore.Relational.EventEntity", b =>

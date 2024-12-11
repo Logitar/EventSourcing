@@ -65,6 +65,19 @@ public record UserDisabled : IIdentifiableEvent, IStreamEvent, IVersionedEvent, 
   public ActorId? ActorId { get; }
   public DateTime OccurredOn { get; }
 
+  [JsonConstructor]
+  public UserDisabled(EventId id, StreamId streamId, long version, ActorId? actorId, DateTime occurredOn)
+    : this(streamId, version, id, actorId, occurredOn)
+  {
+    Id = id;
+
+    StreamId = streamId;
+    Version = version;
+
+    ActorId = actorId;
+    OccurredOn = occurredOn;
+  }
+
   public UserDisabled(StreamId streamId, long version, EventId? id = null, ActorId? actorId = null, DateTime? occurredOn = null)
   {
     Id = id ?? EventId.NewId();
