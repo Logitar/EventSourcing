@@ -44,6 +44,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="System.Reflection" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="LICENSE">
       <PackagePath>\</PackagePath>
       <Pack>True</Pack>
