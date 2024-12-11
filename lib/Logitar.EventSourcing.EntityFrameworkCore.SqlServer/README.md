@@ -13,7 +13,7 @@ This project is setup to use migrations. You must execute the following commands
 Execute the following command to create a new migration. Do not forget to specify a migration name!
 
 ```sh
-dotnet ef migrations add <YOUR_MIGRATION_NAME> --context EventContext --project src/Logitar.EventSourcing.EntityFrameworkCore.SqlServer --startup-project tools/Logitar.EventSourcing.Database
+dotnet ef migrations add <YOUR_MIGRATION_NAME> --context EventContext --project lib/Logitar.EventSourcing.EntityFrameworkCore.SqlServer --startup-project tools/Logitar.EventSourcing.Database
 ```
 
 ### Generate a script
@@ -21,5 +21,5 @@ dotnet ef migrations add <YOUR_MIGRATION_NAME> --context EventContext --project 
 Execute the following command to generate a new script. Do not forget to specify a source migration name!
 
 ```sh
-dotnet ef migrations script <FROM_MIGRATION_NAME> --context EventContext --project src/Logitar.EventSourcing.EntityFrameworkCore.SqlServer --startup-project tools/Logitar.EventSourcing.Database
+dotnet ef migrations script <FROM_MIGRATION_NAME> --context EventContext --project lib/Logitar.EventSourcing.EntityFrameworkCore.SqlServer --startup-project tools/Logitar.EventSourcing.Database
 ```

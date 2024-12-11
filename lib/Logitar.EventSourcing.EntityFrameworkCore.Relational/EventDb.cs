@@ -8,6 +8,11 @@ namespace Logitar.EventSourcing.EntityFrameworkCore.Relational;
 public static class EventDb
 {
   /// <summary>
+  /// The event sourcing database schema.
+  /// </summary>
+  public const string Schema = "EventSourcing";
+
+  /// <summary>
   /// Represents the Events table.
   /// </summary>
   public static class Events
@@ -15,7 +20,7 @@ public static class EventDb
     /// <summary>
     /// Gets the events table.
     /// </summary>
-    public static readonly TableId Table = new(nameof(EventContext.Events));
+    public static readonly TableId Table = new(Schema, nameof(EventContext.Events), alias: null);
 
     /// <summary>
     /// Gets the ActorId column of the Events table.
@@ -67,7 +72,7 @@ public static class EventDb
     /// <summary>
     /// Gets the streams table.
     /// </summary>
-    public static readonly TableId Table = new(nameof(EventContext.Streams));
+    public static readonly TableId Table = new(Schema, nameof(EventContext.Streams), alias: null);
 
     /// <summary>
     /// Gets the CreatedBy column of the Streams table.

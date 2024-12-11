@@ -11,8 +11,12 @@ namespace Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "EventSourcing");
+
             migrationBuilder.CreateTable(
                 name: "Streams",
+                schema: "EventSourcing",
                 columns: table => new
                 {
                     StreamId = table.Column<long>(type: "bigint", nullable: false)
@@ -33,6 +37,7 @@ namespace Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Events",
+                schema: "EventSourcing",
                 columns: table => new
                 {
                     EventId = table.Column<long>(type: "bigint", nullable: false)
@@ -53,6 +58,7 @@ namespace Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.Migrations
                     table.ForeignKey(
                         name: "FK_Events_Streams_StreamId",
                         column: x => x.StreamId,
+                        principalSchema: "EventSourcing",
                         principalTable: "Streams",
                         principalColumn: "StreamId",
                         onDelete: ReferentialAction.Cascade);
@@ -60,79 +66,94 @@ namespace Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_ActorId",
+                schema: "EventSourcing",
                 table: "Events",
                 column: "ActorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_Id",
+                schema: "EventSourcing",
                 table: "Events",
                 column: "Id",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_IsDeleted",
+                schema: "EventSourcing",
                 table: "Events",
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_OccurredOn",
+                schema: "EventSourcing",
                 table: "Events",
                 column: "OccurredOn");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_StreamId_Version",
+                schema: "EventSourcing",
                 table: "Events",
                 columns: new[] { "StreamId", "Version" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_TypeName",
+                schema: "EventSourcing",
                 table: "Events",
                 column: "TypeName");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_Version",
+                schema: "EventSourcing",
                 table: "Events",
                 column: "Version");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Streams_CreatedBy",
+                schema: "EventSourcing",
                 table: "Streams",
                 column: "CreatedBy");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Streams_CreatedOn",
+                schema: "EventSourcing",
                 table: "Streams",
                 column: "CreatedOn");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Streams_Id",
+                schema: "EventSourcing",
                 table: "Streams",
                 column: "Id",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Streams_IsDeleted",
+                schema: "EventSourcing",
                 table: "Streams",
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Streams_Type",
+                schema: "EventSourcing",
                 table: "Streams",
                 column: "Type");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Streams_UpdatedBy",
+                schema: "EventSourcing",
                 table: "Streams",
                 column: "UpdatedBy");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Streams_UpdatedOn",
+                schema: "EventSourcing",
                 table: "Streams",
                 column: "UpdatedOn");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Streams_Version",
+                schema: "EventSourcing",
                 table: "Streams",
                 column: "Version");
         }
@@ -141,10 +162,12 @@ namespace Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Events");
+                name: "Events",
+                schema: "EventSourcing");
 
             migrationBuilder.DropTable(
-                name: "Streams");
+                name: "Streams",
+                schema: "EventSourcing");
         }
     }
 }
