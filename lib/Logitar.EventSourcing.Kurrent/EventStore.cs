@@ -6,7 +6,7 @@ namespace Logitar.EventSourcing.Kurrent;
 /// <summary>
 /// Represents an event store in which events can be appended or retrieved from EventStoreDB/Kurrent.
 /// </summary>
-public class KurrentStore : Infrastructure.EventStore
+public class EventStore : Infrastructure.EventStore
 {
   /// <summary>
   /// Gets the client to EventStoreDB/Kurrent.
@@ -18,12 +18,12 @@ public class KurrentStore : Infrastructure.EventStore
   protected IEventConverter Converter { get; }
 
   /// <summary>
-  /// Initializes a new instance of the <see cref="KurrentStore"/> class.
+  /// Initializes a new instance of the <see cref="EventStore"/> class.
   /// </summary>
   /// <param name="buses">The event buses.</param>
   /// <param name="client">The client to EventStoreDB/Kurrent.</param>
   /// <param name="converter">The event converter.</param>
-  public KurrentStore(IEnumerable<IEventBus> buses, EventStoreClient client, IEventConverter converter) : base(buses)
+  public EventStore(IEnumerable<IEventBus> buses, EventStoreClient client, IEventConverter converter) : base(buses)
   {
     Client = client;
     Converter = converter;

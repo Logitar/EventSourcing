@@ -23,6 +23,6 @@ public static class DependencyInjectionExtensions
       .AddLogitarEventSourcingInfrastructure()
       .AddSingleton<IEventConverter, EventConverter>()
       .AddScoped(_ => new EventStoreClient(settings))
-      .AddScoped<IEventStore, KurrentStore>();
+      .AddScoped<IEventStore, EventStore>();
   }
 }

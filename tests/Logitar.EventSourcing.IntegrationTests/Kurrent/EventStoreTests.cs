@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Logitar.EventSourcing.Kurrent;
 
 [Trait(Traits.Category, Categories.Integration)]
-public class KurrentStoreTests : KurrentIntegrationTests
+public class EventStoreTests : KurrentIntegrationTests
 {
   private readonly CancellationToken _cancellationToken = default;
   private readonly Faker _faker = new();
@@ -14,7 +14,7 @@ public class KurrentStoreTests : KurrentIntegrationTests
 
   private readonly IEventStore _store;
 
-  public KurrentStoreTests() : base()
+  public EventStoreTests() : base()
   {
     _serializerOptions.Converters.Add(new ActorIdConverter());
     _serializerOptions.Converters.Add(new EventIdConverter());
