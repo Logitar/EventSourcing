@@ -102,19 +102,19 @@ public class EventStore : Infrastructure.EventStore
         long anticipatedVersion = appendToStream.Expectation.Version - appendToStream.Events.Count();
         if ((stream?.Version ?? 0) != anticipatedVersion)
         {
-          throw new NotImplementedException(); // TODO(fpion): implement and document
+          throw new InvalidOperationException($"The stream 'Id={appendToStream.Id}' was expected to be at version {anticipatedVersion}, but was found at version {stream?.Version ?? 0}.");
         }
         break;
       case StreamExpectation.StreamExpectationKind.ShouldExist:
         if (stream == null)
         {
-          throw new NotImplementedException(); // TODO(fpion): implement and document
+          throw new InvalidOperationException($"The stream 'Id={appendToStream.Id}' was expected to exist, but does not exist.");
         }
         break;
       case StreamExpectation.StreamExpectationKind.ShouldNotExist:
         if (stream != null)
         {
-          throw new NotImplementedException(); // TODO(fpion): implement and document
+          throw new InvalidOperationException($"The stream 'Id={appendToStream.Id}' was not expected to exist, but was found at version {stream.Version}.");
         }
         break;
     }
