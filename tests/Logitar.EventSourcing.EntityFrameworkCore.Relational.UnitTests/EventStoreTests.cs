@@ -2,7 +2,6 @@
 using Logitar.EventSourcing.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using System.Text;
 
 namespace Logitar.EventSourcing.EntityFrameworkCore.Relational;
 
