@@ -77,6 +77,8 @@ public record UserDisabled : IIdentifiableEvent, IStreamEvent, IVersionedEvent, 
   }
 }
 
+public record UserEnabled : IEvent;
+
 public record UserPasswordCreated(string PasswordHash) : DomainEvent;
 
 public record UserSignedIn : DomainEvent;

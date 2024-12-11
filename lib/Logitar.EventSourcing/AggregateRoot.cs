@@ -106,7 +106,7 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
   /// Raises the specified uncommited change to the current aggregate. The change will be associated to this aggregate, then applied to this aggregate before being added to the list of uncommited changes.
   /// </summary>
   /// <param name="change">The uncommited change.</param>
-  /// <param name="actorId">The identifier of the actor who triggered the event.</param>
+  /// <param name="actorId">The identifier of the actor who raised the event.</param>
   protected virtual void Raise(IEvent change, ActorId? actorId)
   {
     Raise(change, actorId, occurredOn: null);
@@ -124,7 +124,7 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
   /// Raises the specified uncommited change to the current aggregate. The change will be associated to this aggregate, then applied to this aggregate before being added to the list of uncommited changes.
   /// </summary>
   /// <param name="change">The uncommited change.</param>
-  /// <param name="actorId">The identifier of the actor who triggered the event.</param>
+  /// <param name="actorId">The identifier of the actor who raised the event.</param>
   /// <param name="occurredOn">The date and time when the event occurred.</param>
   protected virtual void Raise(IEvent change, ActorId? actorId, DateTime? occurredOn)
   {

@@ -4,6 +4,26 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Logitar.EventSourcing.Kurrent</Title>
+    <Authors>Francis Pion</Authors>
+    <Product>Logitar.NET</Product>
+    <Description>TODO</Description>
+    <Copyright>© 2024 Logitar All Rights Reserved.</Copyright>
+    <PackageIcon>logitar.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/Logitar/EventSourcing</RepositoryUrl>
+    <AssemblyVersion>7.0.0.0</AssemblyVersion>
+    <FileVersion>$(AssemblyVersion)</FileVersion>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <Version>7.0.0</Version>
+    <NeutralLanguage>en-CA</NeutralLanguage>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <PackageReleaseNotes>Rewrote framework with a focus on event streams instead of aggregates.</PackageReleaseNotes>
+    <PackageTags>logitar net framework event sourcing eventstoredb kurrent</PackageTags>
+    <PackageProjectUrl>https://github.com/Logitar/EventSourcing/tree/main/lib/Logitar.EventSourcing.Kurrent</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,6 +47,21 @@
     <Using Include="System.Text" />
     <Using Include="System.Text.Json" />
     <Using Include="System.Text.Json.Serialization" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="LICENSE">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
+    <None Update="logitar.png">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
+    <None Update="README.md">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
   </ItemGroup>
 
 </Project>

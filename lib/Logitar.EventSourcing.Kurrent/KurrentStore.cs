@@ -3,17 +3,39 @@ using Logitar.EventSourcing.Infrastructure;
 
 namespace Logitar.EventSourcing.Kurrent;
 
+/// <summary>
+/// Represents an event store in which events can be appended or retrieved from EventStoreDB/Kurrent.
+/// </summary>
 public class KurrentStore : Infrastructure.EventStore
 {
+  /// <summary>
+  /// Gets the client to EventStoreDB/Kurrent.
+  /// </summary>
   protected EventStoreClient Client { get; }
+  /// <summary>
+  /// Gets the event converter.
+  /// </summary>
   protected IEventConverter Converter { get; }
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="KurrentStore"/> class.
+  /// </summary>
+  /// <param name="buses">The event buses.</param>
+  /// <param name="client">The client to EventStoreDB/Kurrent.</param>
+  /// <param name="converter">The event converter.</param>
   public KurrentStore(IEnumerable<IEventBus> buses, EventStoreClient client, IEventConverter converter) : base(buses)
   {
     Client = client;
     Converter = converter;
   }
 
+  /// <summary>
+  /// Fetches an event stream from the store.
+  /// </summary>
+  /// <param name="streamId">The identifier of the stream.</param>
+  /// <param name="options">The fetch options.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The retrieved stream, or null if it was not found.</returns>
   public override async Task<Stream?> FetchAsync(StreamId streamId, FetchOptions? options, CancellationToken cancellationToken)
   {
     options ??= new FetchOptions();
@@ -51,6 +73,11 @@ public class KurrentStore : Infrastructure.EventStore
     return new Stream(streamId, streamType, events);
   }
 
+  /// <summary>
+  /// Saves the unsaved changes in the event store.
+  /// </summary>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The asynchronous operation.</returns>
   public override async Task SaveChangesAsync(CancellationToken cancellationToken)
   {
     Queue<IEvent> events = [];

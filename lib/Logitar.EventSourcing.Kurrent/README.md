@@ -1,0 +1,3 @@
+# Logitar.EventSourcing.Kurrent
+
+TODO
