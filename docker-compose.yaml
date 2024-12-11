@@ -25,11 +25,16 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: Logitar.EventSourcing_mssql
     restart: unless-stopped
+    user: root
     environment:
       ACCEPT_EULA: 'Y'
       SA_PASSWORD: mWGEgJcrV5dzRyqb
     ports:
       - 1435:1433
+    volumes:
+      - mssql_backup:/var/opt/mssql/backup
+      - mssql_data:/var/opt/mssql/data
+      - mssql_log:/var/opt/mssql/log
 
   event_sourcing_postgres:
     image: postgres
@@ -45,4 +50,7 @@ services:
 volumes:
   eventstore-volume-data:
   eventstore-volume-logs:
+  mssql_backup:
+  mssql_data:
+  mssql_log:
   postgres_data:
