@@ -21,9 +21,9 @@ public class StreamMismatchException : Exception
   /// <summary>
   /// Gets or sets the stream identifier of the event.
   /// </summary>
-  public string EventStreamId
+  public string? EventStreamId
   {
-    get => (string)Data[nameof(EventStreamId)]!;
+    get => (string?)Data[nameof(EventStreamId)];
     private set => Data[nameof(EventStreamId)] = value;
   }
   /// <summary>
@@ -42,13 +42,8 @@ public class StreamMismatchException : Exception
   /// <param name="event">The event belonging to another stream.</param>
   public StreamMismatchException(StreamEntity stream, EventEntity @event) : base(BuildMessage(stream, @event))
   {
-    if (@event.Stream == null)
-    {
-      throw new ArgumentException($"The {nameof(@event.Stream)} is required.", nameof(@event));
-    }
-
     StreamId = stream.Id;
-    EventStreamId = @event.Stream.Id;
+    EventStreamId = @event.Stream?.Id;
     EventId = @event.Id;
   }
 
@@ -60,7 +55,7 @@ public class StreamMismatchException : Exception
   /// <returns>The exception message.</returns>
   private static string BuildMessage(StreamEntity stream, EventEntity @event) => new ErrorMessageBuilder(ErrorMessage)
     .AddData(nameof(StreamId), stream.Id)
-    .AddData(nameof(EventStreamId), @event.Stream?.Id)
+    .AddData(nameof(EventStreamId), @event.Stream?.Id, "<null>")
     .AddData(nameof(EventId), @event.Id)
     .Build();
 }
