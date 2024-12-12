@@ -24,6 +24,9 @@ public class EventStoreTests : KurrentIntegrationTests
     _store = ServiceProvider.GetRequiredService<IEventStore>();
   }
 
+  // TODO(fpion): FetchManyTests
+  // TODO(fpion): FetchSingleTests
+
   [Fact(DisplayName = "SaveChangesAsync: it should convert the appended events correctly.")]
   public async Task Given_AppendedEvents_When_SaveChangesAsync_Then_EventsAreConvertedCorrectly()
   {

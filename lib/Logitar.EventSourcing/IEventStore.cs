@@ -25,6 +25,13 @@ public interface IEventStore
   void ClearChanges();
 
   /// <summary>
+  /// Fetches many event streams from the store.
+  /// </summary>
+  /// <param name="options">The fetch options.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The retrieved streams, or an empty collection if none was found.</returns>
+  Task<IReadOnlyCollection<Stream>> FetchAsync(FetchStreamsOptions? options = null, CancellationToken cancellationToken = default);
+  /// <summary>
   /// Fetches an event stream from the store.
   /// </summary>
   /// <param name="streamId">The identifier of the stream.</param>

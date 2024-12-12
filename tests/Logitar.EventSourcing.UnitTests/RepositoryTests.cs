@@ -36,6 +36,50 @@ public class RepositoryTests
     Assert.Equal(user, Assert.Single(users));
   }
 
+  [Theory(DisplayName = "LoadAsync: it should return all aggregates of the same type, enforcing the deletion filter.")]
+  [InlineData(null)]
+  [InlineData(false)]
+  [InlineData(true)]
+  public async Task Given_AllAggregatesSameType_When_LoadAsync_Then_NotSupportedException(bool? isDeleted)
+  {
+    Stream stream = new(StreamId.NewId());
+
+    User user1 = new(_faker.Person.UserName);
+    Stream userStream1 = new(user1.Id, user1.GetType(), user1.Changes.Select(ToEvent));
+    User user2 = new(_faker.Internet.UserName());
+    Stream userStream2 = new(user2.Id, user2.GetType(), user2.Changes.Select(ToEvent));
+
+    User deleted = new(_faker.Internet.UserName());
+    deleted.Delete();
+    Stream deletedStream = new(deleted.Id, deleted.GetType(), deleted.Changes.Select(ToEvent));
+
+    Token token = Token.Generate();
+    Stream tokenStream = new(token.Id, token.GetType(), token.Changes.Select(ToEvent));
+
+    _eventStore.Setup(x => x.FetchAsync(It.IsAny<FetchStreamsOptions>(), _cancellationToken))
+      .ReturnsAsync([stream, userStream1, userStream2, deletedStream, tokenStream]);
+
+    IReadOnlyCollection<User> users = await _repository.LoadAsync<User>(isDeleted, _cancellationToken);
+
+    switch (isDeleted)
+    {
+      case false:
+        Assert.Equal(2, users.Count);
+        Assert.Contains(user1, users);
+        Assert.Contains(user2, users);
+        break;
+      case true:
+        Assert.Equal(deleted, Assert.Single(users));
+        break;
+      default:
+        Assert.Equal(3, users.Count);
+        Assert.Contains(user1, users);
+        Assert.Contains(user2, users);
+        Assert.Contains(deleted, users);
+        break;
+    }
+  }
+
   [Fact(DisplayName = "LoadAsync: it should return empty when no aggregate was found.")]
   public async Task Given_NoAggregateFound_When_LoadAsync_Then_Empty()
   {
@@ -44,7 +88,7 @@ public class RepositoryTests
   }
 
   [Fact(DisplayName = "LoadAsync: it should return null when the aggregate does not exist.")]
-  public async Task Given_DoesNotExisting_When_LoadAsync_Then_NullReturned()
+  public async Task Given_DoesNotExist_When_LoadAsync_Then_NullReturned()
   {
     Assert.Null(await _repository.LoadAsync<User>(StreamId.NewId(), _cancellationToken));
   }
@@ -121,22 +165,6 @@ public class RepositoryTests
     Assert.Equal(stream.Id, user.Id);
   }
 
-  [Theory(DisplayName = "LoadAsync: it should throw NotSupportedException when loading all aggregates of the same type.")]
-  [InlineData(null)]
-  [InlineData(false)]
-  [InlineData(true)]
-  public async Task Given_AllAggregatesSameType_When_LoadAsync_Then_NotSupportedException(bool? isDeleted)
-  {
-    var exception = await Assert.ThrowsAsync<NotSupportedException>(async () => await _repository.LoadAsync<User>(isDeleted, _cancellationToken));
-    Assert.Equal("Loading all aggregates of the specified type is not supported by the current repository.", exception.Message);
-
-    if (isDeleted == null)
-    {
-      exception = await Assert.ThrowsAsync<NotSupportedException>(async () => await _repository.LoadAsync<User>(_cancellationToken));
-      Assert.Equal("Loading all aggregates of the specified type is not supported by the current repository.", exception.Message);
-    }
-  }
-
   [Fact(DisplayName = "SaveAsync: it should append, clear then save the changes of an aggregate.")]
   public async Task Given_AnAggregate_When_SaveAsync_Then_ChangesAreAppendedClearedAndSaved()
   {
@@ -200,21 +228,25 @@ public class RepositoryTests
 
   private static Event ToEvent(IEvent @event)
   {
-    DomainEvent domainEvent = (DomainEvent)@event;
+    EventId id = @event is IIdentifiableEvent identifiable ? identifiable.Id : EventId.NewId();
+    long version = @event is IVersionedEvent versioned ? versioned.Version : 0;
+    DateTime occurredOn = @event is ITemporalEvent temporal ? temporal.OccurredOn : DateTime.Now;
+    ActorId? actorId = @event is IActorEvent actor ? actor.ActorId : null;
 
-    bool? isDeleted = domainEvent.IsDeleted;
-    if (isDeleted == null)
+    bool? isDeleted = null;
+    if (@event is IDeleteControlEvent control && control.IsDeleted.HasValue)
     {
-      if (@event is IDeleteEvent && @event is not IUndeleteEvent)
-      {
-        isDeleted = true;
-      }
-      else if (@event is IUndeleteEvent && @event is not IDeleteEvent)
-      {
-        isDeleted = false;
-      }
+      isDeleted = control.IsDeleted.Value;
+    }
+    else if (@event is IDeleteEvent && @event is not IUndeleteEvent)
+    {
+      isDeleted = true;
+    }
+    else if (@event is IUndeleteEvent && @event is not IDeleteEvent)
+    {
+      isDeleted = false;
     }
 
-    return new Event(domainEvent.Id, domainEvent.Version, domainEvent.OccurredOn, domainEvent, domainEvent.ActorId, isDeleted);
+    return new Event(id, version, occurredOn, @event, actorId, isDeleted);
   }
 }

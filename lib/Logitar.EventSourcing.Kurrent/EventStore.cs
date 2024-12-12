@@ -30,6 +30,58 @@ public class EventStore : Infrastructure.EventStore
   }
 
   /// <summary>
+  /// Fetches many event streams from the store.
+  /// </summary>
+  /// <param name="options">The fetch options.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The retrieved streams, or an empty collection if none was found.</returns>
+  public override async Task<IReadOnlyCollection<Stream>> FetchAsync(FetchStreamsOptions? options, CancellationToken cancellationToken)
+  {
+    Dictionary<StreamId, List<Event>> events = [];
+    Dictionary<StreamId, List<Type>> types = [];
+
+    EventStoreClient.ReadAllStreamResult result = Client.ReadAllAsync(Direction.Forwards, Position.Start, cancellationToken: cancellationToken);
+    await foreach (ResolvedEvent resolvedEvent in result)
+    {
+      EventRecord record = resolvedEvent.Event;
+      StreamId streamId = new(record.EventStreamId);
+
+      Event @event = Converter.ToEvent(record);
+      if (!events.TryGetValue(streamId, out List<Event>? streamEvents))
+      {
+        streamEvents = [];
+        events[streamId] = streamEvents;
+      }
+      streamEvents.Add(@event);
+
+      Type? type = Converter.GetStreamType(record);
+      if (type != null)
+      {
+        if (!types.TryGetValue(streamId, out List<Type>? streamTypes))
+        {
+          streamTypes = [];
+          types[streamId] = streamTypes;
+        }
+        streamTypes.Add(type);
+      }
+    }
+
+    List<Stream> streams = new(capacity: events.Count);
+    foreach (KeyValuePair<StreamId, List<Event>> streamEvents in events)
+    {
+      Type? type = null;
+      if (types.TryGetValue(streamEvents.Key, out List<Type>? streamTypes) && streamTypes.Count == 1)
+      {
+        type = streamTypes.Single();
+      }
+
+      Stream stream = new(streamEvents.Key, type, streamEvents.Value);
+      streams.Add(stream);
+    }
+
+    return streams.AsReadOnly();
+  }
+  /// <summary>
   /// Fetches an event stream from the store.
   /// </summary>
   /// <param name="streamId">The identifier of the stream.</param>

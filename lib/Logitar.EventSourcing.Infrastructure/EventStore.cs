@@ -68,6 +68,14 @@ public abstract class EventStore : IEventStore
     Changes.Clear();
   }
 
+
+  /// <summary>
+  /// Fetches many event streams from the store.
+  /// </summary>
+  /// <param name="options">The fetch options.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The retrieved streams, or an empty collection if none was found.</returns>
+  public abstract Task<IReadOnlyCollection<Stream>> FetchAsync(FetchStreamsOptions? options, CancellationToken cancellationToken);
   /// <summary>
   /// Fetches an event stream from the store.
   /// </summary>

@@ -101,9 +101,20 @@ public class Repository : IRepository
   /// <param name="isDeleted">A value indicating whether or not deleted aggregates will be returned.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The list of loaded aggregates.</returns>
-  public virtual Task<IReadOnlyCollection<T>> LoadAsync<T>(bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate, new()
+  public virtual async Task<IReadOnlyCollection<T>> LoadAsync<T>(bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate, new()
   {
-    throw new NotSupportedException("Loading all aggregates of the specified type is not supported by the current repository.");
+    IReadOnlyCollection<Stream> streams = await EventStore.FetchAsync(new FetchStreamsOptions(), cancellationToken);
+    List<T> aggregates = new(capacity: streams.Count);
+    foreach (Stream stream in streams)
+    {
+      if (stream.Type != null && stream.Type.Equals(typeof(T)) && (!isDeleted.HasValue || isDeleted.Value == stream.IsDeleted))
+      {
+        T aggregate = LoadAggregate<T>(stream);
+        aggregates.Add(aggregate);
+      }
+    }
+
+    return aggregates.AsReadOnly();
   }
 
   /// <summary>
