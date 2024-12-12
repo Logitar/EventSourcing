@@ -15,7 +15,7 @@ internal class ProductRepository : Repository, IProductRepository
   }
   public async Task<Product?> LoadAsync(ProductId id, long? version, CancellationToken cancellationToken)
   {
-    return await LoadAsync<Product>(id.StreamId, version, cancellationToken);
+    return await LoadAsync<Product>(id.StreamId, version, isDeleted: false, cancellationToken);
   }
 
   public async Task SaveAsync(Product product, CancellationToken cancellationToken)

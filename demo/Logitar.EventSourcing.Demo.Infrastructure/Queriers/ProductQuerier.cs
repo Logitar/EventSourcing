@@ -60,13 +60,16 @@ internal class ProductQuerier : IProductQuerier
   public async Task<SearchResults<ProductModel>> SearchAsync(SearchProductsPayload payload, CancellationToken cancellationToken)
   {
     IQueryBuilder builder = _sqlHelper.QueryFrom(DemoDb.Products.Table).SelectAll(DemoDb.Products.Table)
-      .ApplyIdFilter(payload, DemoDb.Products.Id)
-      .Where(DemoDb.Products.Price, Operators.IsGreaterThanOrEqualTo(payload.PriceFrom));
+      .ApplyIdFilter(payload, DemoDb.Products.Id);
     _sqlHelper.ApplyTextSearch(builder, payload.Search, DemoDb.Products.Sku, DemoDb.Products.DisplayName);
 
-    if (payload.PriceUnder > 0)
+    if (payload.PriceFrom.HasValue)
     {
-      builder.Where(DemoDb.Products.Price, Operators.IsLessThan(payload.PriceUnder));
+      builder.Where(DemoDb.Products.Price, Operators.IsGreaterThanOrEqualTo(payload.PriceFrom.Value));
+    }
+    if (payload.PriceUnder.HasValue)
+    {
+      builder.Where(DemoDb.Products.Price, Operators.IsLessThan(payload.PriceUnder.Value));
     }
 
     IQueryable<ProductEntity> query = _products.FromQuery(builder).AsNoTracking();

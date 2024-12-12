@@ -2,6 +2,7 @@
 using Logitar.EventSourcing.Demo.Application.Products;
 using Logitar.EventSourcing.Demo.Infrastructure.Queriers;
 using Logitar.EventSourcing.Demo.Infrastructure.Repositories;
+using Logitar.EventSourcing.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Logitar.EventSourcing.Demo.Infrastructure;
@@ -13,6 +14,7 @@ public static class DependencyInjectionExtensions
     return services
       .AddLogitarEventSourcingDemoApplication()
       .AddMediatR(config => config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()))
+      .AddScoped<IEventBus, EventBus>()
       .AddScoped<IProductQuerier, ProductQuerier>()
       .AddScoped<IProductRepository, ProductRepository>();
   }

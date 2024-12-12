@@ -8,10 +8,10 @@ namespace Logitar.EventSourcing.Demo.Models.Product;
 public record SearchProductsParameters : SearchParameters
 {
   [FromQuery(Name = "price_from")]
-  public decimal PriceFrom { get; set; }
+  public decimal? PriceFrom { get; set; }
 
   [FromQuery(Name = "price_under")]
-  public decimal PriceUnder { get; set; }
+  public decimal? PriceUnder { get; set; }
 
   public SearchProductsPayload ToPayload()
   {
