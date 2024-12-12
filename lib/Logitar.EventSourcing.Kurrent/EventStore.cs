@@ -37,10 +37,27 @@ public class EventStore : Infrastructure.EventStore
   /// <returns>The retrieved streams, or an empty collection if none was found.</returns>
   public override async Task<IReadOnlyCollection<Stream>> FetchAsync(FetchManyOptions? options, CancellationToken cancellationToken)
   {
+    List<Stream> streams;
+
     options ??= new FetchManyOptions();
+    HashSet<Type?> filteredTypes = new(options.StreamTypes);
+    if (options.StreamIds.Count > 0)
+    {
+      streams = new List<Stream>(capacity: options.StreamIds.Count);
+      foreach (StreamId streamId in options.StreamIds)
+      {
+        Stream? stream = await FetchAsync(streamId, options, cancellationToken);
+        if (stream != null && (filteredTypes.Count == 0 || filteredTypes.Contains(stream.Type)))
+        {
+          streams.Add(stream);
+        }
+      }
+
+      return streams.AsReadOnly();
+    }
+
     DateTime? occurredFrom = options.OccurredFrom?.AsUniversalTime();
     DateTime? occurredTo = options.OccurredTo?.AsUniversalTime();
-    HashSet<Type?> filteredTypes = new(options.StreamTypes);
 
     Dictionary<StreamId, List<Event>> events = [];
     Dictionary<StreamId, List<Type>> types = [];
@@ -96,7 +113,7 @@ public class EventStore : Infrastructure.EventStore
       }
     }
 
-    List<Stream> streams = new(capacity: events.Count);
+    streams = new(capacity: events.Count);
     foreach (KeyValuePair<StreamId, List<Event>> streamEvents in events)
     {
       Type? type = null;
