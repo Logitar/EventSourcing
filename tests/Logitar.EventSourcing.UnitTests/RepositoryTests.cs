@@ -36,10 +36,10 @@ public class RepositoryTests
   }
 
   [Fact(DisplayName = "LoadAsync: it should return empty when no aggregate was found.")]
-  public async Task Given_NoAggregateFound_When_LoadAsync_Then_Empty()
+  public Task Given_NoAggregateFound_When_LoadAsync_Then_Empty()
   {
-    IReadOnlyCollection<User> users = await _repository.LoadAsync<User>([StreamId.NewId(), StreamId.NewId()], _cancellationToken);
-    Assert.Empty(users);
+    Assert.Fail("TODO(fpion): implement");
+    return Task.CompletedTask;
   }
 
   [Fact(DisplayName = "LoadAsync: it should return null when the aggregate does not exist.")]

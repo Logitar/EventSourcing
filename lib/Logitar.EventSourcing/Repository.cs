@@ -98,18 +98,14 @@ public class Repository : IRepository
   /// <returns>The list of loaded aggregates.</returns>
   public virtual async Task<IReadOnlyCollection<T>> LoadAsync<T>(bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate, new()
   {
-    IReadOnlyCollection<Stream> streams = await EventStore.FetchAsync(new FetchManyOptions(), cancellationToken);
-    List<T> aggregates = new(capacity: streams.Count);
-    foreach (Stream stream in streams)
+    FetchManyOptions options = new()
     {
-      if (stream.Type != null && stream.Type.Equals(typeof(T)) && (!isDeleted.HasValue || isDeleted.Value == stream.IsDeleted))
-      {
-        T aggregate = LoadAggregate<T>(stream);
-        aggregates.Add(aggregate);
-      }
-    }
+      IsDeleted = isDeleted
+    };
+    options.StreamTypes.Add(typeof(T));
 
-    return aggregates.AsReadOnly();
+    IReadOnlyCollection<Stream> streams = await EventStore.FetchAsync(options, cancellationToken);
+    return streams.Select(LoadAggregate<T>).ToList().AsReadOnly();
   }
 
   /// <summary>
@@ -131,19 +127,9 @@ public class Repository : IRepository
   /// <param name="isDeleted">A value indicating whether or not deleted aggregates will be returned.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The list of loaded aggregates.</returns>
-  public virtual async Task<IReadOnlyCollection<T>> LoadAsync<T>(IEnumerable<StreamId> ids, bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate, new()
+  public virtual Task<IReadOnlyCollection<T>> LoadAsync<T>(IEnumerable<StreamId> ids, bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate, new()
   {
-    List<T> aggregates = new(capacity: ids.Count());
-    foreach (StreamId id in ids)
-    {
-      T? aggregate = await LoadAsync<T>(id, isDeleted, cancellationToken);
-      if (aggregate != null)
-      {
-        aggregates.Add(aggregate);
-      }
-    }
-
-    return aggregates.AsReadOnly();
+    throw new NotImplementedException(); // TODO(fpion): implement
   }
 
   /// <summary>
