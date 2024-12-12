@@ -37,6 +37,11 @@ public class EventStore : Infrastructure.EventStore
   /// <returns>The retrieved streams, or an empty collection if none was found.</returns>
   public override async Task<IReadOnlyCollection<Stream>> FetchAsync(FetchManyOptions? options, CancellationToken cancellationToken)
   {
+    options ??= new FetchManyOptions();
+    DateTime? occurredFrom = options.OccurredFrom?.AsUniversalTime();
+    DateTime? occurredTo = options.OccurredTo?.AsUniversalTime();
+    HashSet<Type?> filteredTypes = new(options.StreamTypes);
+
     Dictionary<StreamId, List<Event>> events = [];
     Dictionary<StreamId, List<Type>> types = [];
 
@@ -44,9 +49,34 @@ public class EventStore : Infrastructure.EventStore
     await foreach (ResolvedEvent resolvedEvent in result)
     {
       EventRecord record = resolvedEvent.Event;
+      Event @event = Converter.ToEvent(record);
+
+      if (options.FromVersion > 0 && options.FromVersion > @event.Version)
+      {
+        continue;
+      }
+      if (options.ToVersion > 0 && options.ToVersion < @event.Version)
+      {
+        continue;
+      }
+
+      if (options.Actor != null && @event.ActorId != options.Actor.ActorId)
+      {
+        continue;
+      }
+
+      DateTime occurredOn = @event.OccurredOn.AsUniversalTime();
+      if (occurredFrom != null && occurredFrom > occurredOn)
+      {
+        continue;
+      }
+      if (occurredTo != null && occurredTo < occurredOn)
+      {
+        continue;
+      }
+
       StreamId streamId = new(record.EventStreamId);
 
-      Event @event = Converter.ToEvent(record);
       if (!events.TryGetValue(streamId, out List<Event>? streamEvents))
       {
         streamEvents = [];
@@ -76,6 +106,15 @@ public class EventStore : Infrastructure.EventStore
       }
 
       Stream stream = new(streamEvents.Key, type, streamEvents.Value);
+      if (filteredTypes.Count > 0 && !filteredTypes.Contains(stream.Type))
+      {
+        continue;
+      }
+      if (options.IsDeleted.HasValue && options.IsDeleted.Value != stream.IsDeleted)
+      {
+        continue;
+      }
+
       streams.Add(stream);
     }
 
