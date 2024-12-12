@@ -174,7 +174,7 @@ public class Repository : IRepository
 
         long? version = GetVersion(aggregate);
         StreamExpectation expectation = version.HasValue ? StreamExpectation.ShouldBeAtVersion(version.Value) : StreamExpectation.None;
-        EventStore.Append(aggregate.Id, aggregate.GetType(), expectation, aggregate.Changes);
+        EventStore.Append(aggregate.Id, aggregate.GetType(), expectation, [.. aggregate.Changes]);
 
         aggregate.ClearChanges();
       }

@@ -15,11 +15,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Logitar.EventSourcing.Infrastructure\Logitar.EventSourcing.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\lib\Logitar.EventSourcing.EntityFrameworkCore.Relational\Logitar.EventSourcing.EntityFrameworkCore.Relational.csproj" />
+    <ProjectReference Include="..\Logitar.EventSourcing.Demo.Application\Logitar.EventSourcing.Demo.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Marten" Version="7.33.3" />
+    <Using Include="System.Reflection" />
   </ItemGroup>
 
 </Project>
