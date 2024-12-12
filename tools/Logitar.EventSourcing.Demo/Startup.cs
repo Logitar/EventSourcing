@@ -1,18 +1,16 @@
 ﻿using Logitar.EventSourcing.Demo.Application;
-using Logitar.EventSourcing.Demo.Application.Products;
 using Logitar.EventSourcing.Demo.Authentication;
 using Logitar.EventSourcing.Demo.Constants;
 using Logitar.EventSourcing.Demo.Filters;
 using Logitar.EventSourcing.Demo.Infrastructure;
-using Logitar.EventSourcing.Demo.Infrastructure.Queriers;
-using Logitar.EventSourcing.Demo.Infrastructure.Repositories;
+using Logitar.EventSourcing.Demo.Infrastructure.PostgreSQL;
+using Logitar.EventSourcing.Demo.Infrastructure.SqlServer;
 using Logitar.EventSourcing.Demo.Settings;
 using Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL;
 using Logitar.EventSourcing.EntityFrameworkCore.SqlServer;
 using Logitar.EventSourcing.Kurrent;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 
 namespace Logitar.EventSourcing.Demo;
 
@@ -51,10 +49,7 @@ internal class Startup : StartupBase
     services.AddSingleton(_basicAuthenticationSettings);
 
     services.AddHttpContextAccessor();
-    services.AddMediatR(config => config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
     services.AddSingleton<IApplicationContext, HttpApplicationContext>();
-    services.AddScoped<IProductRepository, ProductRepository>();
-    services.AddScoped<IProductQuerier, ProductQuerier>();
 
     string connectionString;
     DatabaseProvider databaseProvider = _configuration.GetValue<DatabaseProvider?>("DatabaseProvider")
@@ -64,9 +59,7 @@ internal class Startup : StartupBase
       case DatabaseProvider.PostgreSQL:
         connectionString = _configuration.GetValue<string>("POSTGRESQLCONNSTR_Demo")
           ?? throw new InvalidOperationException("The configuration key 'POSTGRESQLCONNSTR_Demo' is required.");
-        services.AddDbContext<DemoContext>(options => options.UseNpgsql(connectionString,
-          b => b.MigrationsAssembly("Logitar.EventSourcing.Demo")));
-        services.AddSingleton<ISqlHelper, PostgresHelper>();
+        services.AddLogitarEventSourcingDemoInfrastructureWithPostgreSQL(connectionString);
         if (!_useKurrentEventStore)
         {
           services.AddLogitarEventSourcingWithEntityFrameworkCorePostgreSQL(connectionString);
@@ -75,9 +68,7 @@ internal class Startup : StartupBase
       case DatabaseProvider.SqlServer:
         connectionString = _configuration.GetValue<string>("SQLCONNSTR_Demo")
           ?? throw new InvalidOperationException("The configuration key 'SQLCONNSTR_Demo' is required.");
-        services.AddDbContext<DemoContext>(options => options.UseSqlServer(connectionString,
-          b => b.MigrationsAssembly("Logitar.EventSourcing.Demo")));
-        services.AddSingleton<ISqlHelper, SqlServerHelper>();
+        services.AddLogitarEventSourcingDemoInfrastructureWithSqlServer(connectionString);
         if (!_useKurrentEventStore)
         {
           services.AddLogitarEventSourcingWithEntityFrameworkCoreSqlServer(connectionString);
