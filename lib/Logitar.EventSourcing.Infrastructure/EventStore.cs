@@ -83,7 +83,7 @@ public abstract class EventStore : IEventStore
   /// <param name="options">The fetch options.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The retrieved stream, or null if it was not found.</returns>
-  public abstract Task<Stream?> FetchAsync(StreamId streamId, FetchStreamOptions? options, CancellationToken cancellationToken);
+  public abstract Task<Stream?> FetchAsync(StreamId streamId, FetchOptions? options, CancellationToken cancellationToken);
 
   /// <summary>
   /// Saves the unsaved changes in the event store.

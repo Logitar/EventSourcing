@@ -65,7 +65,7 @@ public class Repository : IRepository
   /// <returns>The loaded aggregate.</returns>
   public virtual async Task<T?> LoadAsync<T>(StreamId id, long? version, bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate, new()
   {
-    FetchStreamOptions options = new();
+    FetchOptions options = new();
     if (version.HasValue)
     {
       options.ToVersion = version.Value;

@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents options for fetching a stream of events.
 /// </summary>
-public record FetchStreamOptions
+public record FetchOptions
 {
   /// <summary>
   /// Gets or sets the starting event version (inclusive).
