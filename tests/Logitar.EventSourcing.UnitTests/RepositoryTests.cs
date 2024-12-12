@@ -19,65 +19,20 @@ public class RepositoryTests
   }
 
   [Fact(DisplayName = "LoadAsync: it should only return the matching aggregates.")]
-  public async Task Given_IdsAndDeletionFlag_When_LoadAsync_Then_OnlyReturnsMatchingAggregates()
+  public Task Given_IdsAndDeletionFlag_When_LoadAsync_Then_OnlyReturnsMatchingAggregates()
   {
-    User user = new(_faker.Person.UserName);
-
-    User deleted = new(_faker.Internet.UserName());
-    deleted.Delete();
-
-    Stream userStream = new(user.Id, typeof(User), user.Changes.Select(ToEvent));
-    _eventStore.Setup(x => x.FetchAsync(user.Id, It.IsAny<FetchStreamOptions>(), _cancellationToken)).ReturnsAsync(userStream);
-
-    Stream deletedStream = new(deleted.Id, typeof(User), deleted.Changes.Select(ToEvent));
-    _eventStore.Setup(x => x.FetchAsync(deleted.Id, It.IsAny<FetchStreamOptions>(), _cancellationToken)).ReturnsAsync(deletedStream);
-
-    IReadOnlyCollection<User> users = await _repository.LoadAsync<User>([user.Id, deleted.Id, StreamId.NewId()], isDeleted: false, _cancellationToken);
-    Assert.Equal(user, Assert.Single(users));
+    Assert.Fail("TODO(fpion): implement");
+    return Task.CompletedTask;
   }
 
   [Theory(DisplayName = "LoadAsync: it should return all aggregates of the same type, enforcing the deletion filter.")]
   [InlineData(null)]
   [InlineData(false)]
   [InlineData(true)]
-  public async Task Given_AllAggregatesSameType_When_LoadAsync_Then_NotSupportedException(bool? isDeleted)
+  public Task Given_AllAggregatesSameType_When_LoadAsync_Then_AggregatesAreReturned(bool? _)
   {
-    Stream stream = new(StreamId.NewId());
-
-    User user1 = new(_faker.Person.UserName);
-    Stream userStream1 = new(user1.Id, user1.GetType(), user1.Changes.Select(ToEvent));
-    User user2 = new(_faker.Internet.UserName());
-    Stream userStream2 = new(user2.Id, user2.GetType(), user2.Changes.Select(ToEvent));
-
-    User deleted = new(_faker.Internet.UserName());
-    deleted.Delete();
-    Stream deletedStream = new(deleted.Id, deleted.GetType(), deleted.Changes.Select(ToEvent));
-
-    Token token = Token.Generate();
-    Stream tokenStream = new(token.Id, token.GetType(), token.Changes.Select(ToEvent));
-
-    _eventStore.Setup(x => x.FetchAsync(It.IsAny<FetchStreamsOptions>(), _cancellationToken))
-      .ReturnsAsync([stream, userStream1, userStream2, deletedStream, tokenStream]);
-
-    IReadOnlyCollection<User> users = await _repository.LoadAsync<User>(isDeleted, _cancellationToken);
-
-    switch (isDeleted)
-    {
-      case false:
-        Assert.Equal(2, users.Count);
-        Assert.Contains(user1, users);
-        Assert.Contains(user2, users);
-        break;
-      case true:
-        Assert.Equal(deleted, Assert.Single(users));
-        break;
-      default:
-        Assert.Equal(3, users.Count);
-        Assert.Contains(user1, users);
-        Assert.Contains(user2, users);
-        Assert.Contains(deleted, users);
-        break;
-    }
+    Assert.Fail("TODO(fpion): implement");
+    return Task.CompletedTask;
   }
 
   [Fact(DisplayName = "LoadAsync: it should return empty when no aggregate was found.")]
@@ -91,22 +46,6 @@ public class RepositoryTests
   public async Task Given_DoesNotExist_When_LoadAsync_Then_NullReturned()
   {
     Assert.Null(await _repository.LoadAsync<User>(StreamId.NewId(), _cancellationToken));
-  }
-
-  [Theory(DisplayName = "LoadAsync: it should return null when the deletion flag was not matched.")]
-  [InlineData(false)]
-  [InlineData(true)]
-  public async Task Given_DeletionFlagNotMatching_When_LoadAsync_Then_NullReturned(bool isDeleted)
-  {
-    Event[] events =
-    [
-      new Event(EventId.NewId(), version: 1, occurredOn: DateTime.Now, new UserCreated(_faker.Person.UserName)),
-      new Event(EventId.NewId(), version: 2, occurredOn: DateTime.Now, new UserSignedIn(), actorId: null, !isDeleted)
-    ];
-    Stream stream = new(StreamId.NewId(), typeof(User), events);
-    _eventStore.Setup(x => x.FetchAsync(stream.Id, It.IsAny<FetchStreamOptions>(), _cancellationToken)).ReturnsAsync(stream);
-
-    Assert.Null(await _repository.LoadAsync<User>(stream.Id, isDeleted, _cancellationToken));
   }
 
   [Fact(DisplayName = "LoadAsync: it should return the aggregate up to the specified version.")]
@@ -129,7 +68,7 @@ public class RepositoryTests
     Assert.Equal(version, user.Version);
   }
 
-  [Fact(DisplayName = "LoadAsync: it should return the aggregate it was found.")]
+  [Fact(DisplayName = "LoadAsync: it should return the aggregate found.")]
   public async Task Given_AggregateFound_When_LoadAsync_Then_AggregateReturned()
   {
     StreamId userId = StreamId.NewId();
@@ -158,9 +97,9 @@ public class RepositoryTests
       Version = 1
     };
     Stream stream = new(userId, typeof(User), [new Event(created.Id, created.Version, created.OccurredOn, created, created.ActorId, isDeleted)]);
-    _eventStore.Setup(x => x.FetchAsync(stream.Id, It.IsAny<FetchStreamOptions>(), _cancellationToken)).ReturnsAsync(stream);
+    _eventStore.Setup(x => x.FetchAsync(stream.Id, It.Is<FetchStreamOptions>(y => y.IsDeleted == isDeleted), _cancellationToken)).ReturnsAsync(stream);
 
-    User? user = await _repository.LoadAsync<User>(stream.Id, _cancellationToken);
+    User? user = await _repository.LoadAsync<User>(stream.Id, isDeleted, _cancellationToken);
     Assert.NotNull(user);
     Assert.Equal(stream.Id, user.Id);
   }

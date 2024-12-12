@@ -106,23 +106,43 @@ public class EventStore : Infrastructure.EventStore
       return null;
     }
 
-    List<Type> streamTypes = [];
+    DateTime? occurredFrom = options.OccurredFrom?.AsUniversalTime();
+    DateTime? occurredTo = options.OccurredTo?.AsUniversalTime();
+
     List<Event> events = [];
+    List<Type> types = [];
     await foreach (ResolvedEvent resolvedEvent in result)
     {
       EventRecord record = resolvedEvent.Event;
       Event @event = Converter.ToEvent(record);
+
+      if (options.Actor != null && @event.ActorId != options.Actor.ActorId)
+      {
+        continue;
+      }
+
+      DateTime occurredOn = @event.OccurredOn.AsUniversalTime();
+      if (occurredFrom != null && occurredFrom > occurredOn)
+      {
+        continue;
+      }
+      if (occurredTo != null && occurredTo < occurredOn)
+      {
+        continue;
+      }
+
       events.Add(@event);
 
       Type? type = Converter.GetStreamType(record);
       if (type != null)
       {
-        streamTypes.Add(type);
+        types.Add(type);
       }
     }
-    Type? streamType = streamTypes.Count == 1 ? streamTypes.Single() : null;
+    Type? streamType = types.Count == 1 ? types.Single() : null;
 
-    return new Stream(streamId, streamType, events);
+    Stream stream = new(streamId, streamType, events);
+    return (options.IsDeleted.HasValue && options.IsDeleted.Value != stream.IsDeleted) ? null : stream;
   }
 
   /// <summary>

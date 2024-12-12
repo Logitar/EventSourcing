@@ -76,12 +76,7 @@ public class Repository : IRepository
     }
 
     Stream? stream = await EventStore.FetchAsync(id, options, cancellationToken);
-    if (stream != null && (!isDeleted.HasValue || isDeleted.Value == stream.IsDeleted))
-    {
-      return LoadAggregate<T>(stream);
-    }
-
-    return null;
+    return stream == null ? null : LoadAggregate<T>(stream);
   }
 
   /// <summary>
