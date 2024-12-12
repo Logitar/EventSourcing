@@ -11,6 +11,7 @@ using Logitar.EventSourcing.EntityFrameworkCore.SqlServer;
 using Logitar.EventSourcing.Kurrent;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Scalar.AspNetCore;
 
 namespace Logitar.EventSourcing.Demo;
 
@@ -97,6 +98,7 @@ internal class Startup : StartupBase
     if (_enableOpenApi)
     {
       application.MapOpenApi();
+      application.MapScalarApiReference();
     }
 
     application.UseHttpsRedirection();
