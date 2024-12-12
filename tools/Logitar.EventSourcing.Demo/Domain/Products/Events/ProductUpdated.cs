@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using System.Text.Json.Serialization;
 
 namespace Logitar.EventSourcing.Demo.Domain.Products.Events;
 

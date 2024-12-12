@@ -6,6 +6,8 @@ namespace Logitar.EventSourcing.Demo.Application.Products;
 
 public interface IProductQuerier
 {
+  Task<ProductId?> FindIdAsync(Sku sku, CancellationToken cancellationToken = default);
+
   Task<ProductModel> ReadAsync(Product product, CancellationToken cancellationToken = default);
   Task<ProductModel?> ReadAsync(ProductId id, CancellationToken cancellationToken = default);
   Task<ProductModel?> ReadAsync(Guid id, CancellationToken cancellationToken = default);

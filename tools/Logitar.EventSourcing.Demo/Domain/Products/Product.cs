@@ -75,6 +75,10 @@ public class Product : AggregateRoot
     }
   }
 
+  public Product() : base(ProductId.NewId().StreamId)
+  {
+  }
+
   public Product(Sku sku, ActorId? actorId = null, ProductId? id = null) : base((id ?? ProductId.NewId()).StreamId)
   {
     Raise(new ProductCreated(sku), actorId);

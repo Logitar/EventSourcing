@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Logitar.EventSourcing.Demo.Domain.Products;
+﻿namespace Logitar.EventSourcing.Demo.Domain.Products;
 
 public readonly struct ProductId
 {

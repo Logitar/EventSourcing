@@ -3,6 +3,7 @@ using Logitar.EventSourcing.Demo.Application.Products.Models;
 using Logitar.EventSourcing.Demo.Application.Products.Validators;
 using Logitar.EventSourcing.Demo.Domain;
 using Logitar.EventSourcing.Demo.Domain.Products;
+using Logitar.EventSourcing.Demo.Domain.Products.Events;
 using MediatR;
 
 namespace Logitar.EventSourcing.Demo.Application.Products.Commands;
@@ -83,7 +84,15 @@ internal class CreateOrReplaceProductCommandHandler : IRequestHandler<CreateOrRe
 
     product.Update(actorId);
 
-    // TODO(fpion): enforce SKU unicity
+    if (product.Changes.Any(change => change is ProductCreated || change is ProductUpdated updated && updated.Sku != null))
+    {
+      ProductId? otherId = await _productQuerier.FindIdAsync(product.Sku, cancellationToken);
+      if (otherId.HasValue && !otherId.Value.Equals(product.Id))
+      {
+        throw new SkuAlreadyUsedException(product, otherId.Value, nameof(payload.Sku));
+      }
+    }
+
     await _productRepository.SaveAsync(product, cancellationToken);
 
     ProductModel model = await _productQuerier.ReadAsync(product, cancellationToken);
