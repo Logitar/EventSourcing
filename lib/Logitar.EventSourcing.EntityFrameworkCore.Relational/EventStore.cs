@@ -35,9 +35,113 @@ public class EventStore : Infrastructure.EventStore
   /// <param name="options">The fetch options.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The retrieved streams, or an empty collection if none was found.</returns>
-  public override Task<IReadOnlyCollection<Stream>> FetchAsync(FetchManyOptions? options, CancellationToken cancellationToken)
+  public override async Task<IReadOnlyCollection<Stream>> FetchAsync(FetchManyOptions? options, CancellationToken cancellationToken)
   {
-    throw new NotImplementedException(); // TODO(fpion): implement
+    IQueryable<EventEntity> query = Context.Events.AsNoTracking().Include(x => x.Stream);
+
+    options ??= new FetchManyOptions();
+
+    if (options.StreamTypes.Count > 0)
+    {
+      bool isNullTypeAllowed = false;
+      HashSet<string> streamTypes = new(capacity: options.StreamTypes.Count);
+      foreach (Type? type in options.StreamTypes)
+      {
+        if (type == null)
+        {
+          isNullTypeAllowed = true;
+        }
+        else
+        {
+          streamTypes.Add(type.GetNamespaceQualifiedName());
+        }
+      }
+
+      query = isNullTypeAllowed
+        ? query.Where(x => x.Stream!.Type == null || streamTypes.Contains(x.Stream.Type))
+        : query.Where(x => x.Stream!.Type != null && streamTypes.Contains(x.Stream.Type));
+    }
+    if (options.StreamIds.Count > 0)
+    {
+      HashSet<string> streamIds = options.StreamIds.Select(id => id.Value).ToHashSet();
+      query = query.Where(x => streamIds.Contains(x.Stream!.Id));
+    }
+
+    if (options.FromVersion > 0)
+    {
+      query = query.Where(x => x.Version >= options.FromVersion);
+    }
+    if (options.ToVersion > 0)
+    {
+      query = query.Where(x => x.Version <= options.ToVersion);
+    }
+    if (options.Actor != null)
+    {
+      string? actorId = options.Actor.ActorId?.Value;
+      query = query.Where(x => x.ActorId == actorId);
+    }
+    if (options.OccurredFrom.HasValue)
+    {
+      DateTime occurredFrom = options.OccurredFrom.Value.AsUniversalTime();
+      query = query.Where(x => x.OccurredOn >= occurredFrom);
+    }
+    if (options.OccurredTo.HasValue)
+    {
+      DateTime occurredTo = options.OccurredTo.Value.AsUniversalTime();
+      query = query.Where(x => x.OccurredOn <= occurredTo);
+    }
+    if (options.IsDeleted.HasValue)
+    {
+      query = query.Where(x => x.Stream!.IsDeleted == options.IsDeleted.Value);
+    }
+
+    EventEntity[] entities = await query.OrderBy(x => x.Version).ToArrayAsync(cancellationToken);
+
+    Dictionary<StreamId, List<Event>> events = [];
+    Dictionary<StreamId, HashSet<Type>> types = [];
+    foreach (EventEntity entity in entities)
+    {
+      if (entity.Stream == null)
+      {
+        throw new InvalidOperationException("The event stream entity is required.");
+      }
+
+      StreamId streamId = new(entity.Stream.Id);
+      Event @event = Converter.ToEvent(entity);
+
+      if (!events.TryGetValue(streamId, out List<Event>? streamEvents))
+      {
+        streamEvents = [];
+        events[streamId] = streamEvents;
+      }
+      streamEvents.Add(@event);
+
+      Type? type = entity.Stream.GetStreamType();
+      if (type != null)
+      {
+        if (!types.TryGetValue(streamId, out HashSet<Type>? streamTypes))
+        {
+          streamTypes = [];
+          types[streamId] = streamTypes;
+        }
+        streamTypes.Add(type);
+      }
+    }
+
+    List<Stream> streams = new(capacity: events.Count);
+    foreach (KeyValuePair<StreamId, List<Event>> streamEvents in events)
+    {
+      Type? type = null;
+      if (types.TryGetValue(streamEvents.Key, out HashSet<Type>? streamTypes) && streamTypes.Count == 1)
+      {
+        type = streamTypes.Single();
+      }
+
+      Stream stream = new(streamEvents.Key, type, streamEvents.Value);
+      streams.Add(stream);
+    }
+
+    return streams.AsReadOnly();
   }
   /// <summary>
   /// Fetches an event stream from the store.

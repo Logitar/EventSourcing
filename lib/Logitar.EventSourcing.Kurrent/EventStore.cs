@@ -60,7 +60,7 @@ public class EventStore : Infrastructure.EventStore
     DateTime? occurredTo = options.OccurredTo?.AsUniversalTime();
 
     Dictionary<StreamId, List<Event>> events = [];
-    Dictionary<StreamId, List<Type>> types = [];
+    Dictionary<StreamId, HashSet<Type>> types = [];
 
     EventStoreClient.ReadAllStreamResult result = Client.ReadAllAsync(Direction.Forwards, Position.Start, cancellationToken: cancellationToken);
     await foreach (ResolvedEvent resolvedEvent in result)
@@ -104,7 +104,7 @@ public class EventStore : Infrastructure.EventStore
       Type? type = Converter.GetStreamType(record);
       if (type != null)
       {
-        if (!types.TryGetValue(streamId, out List<Type>? streamTypes))
+        if (!types.TryGetValue(streamId, out HashSet<Type>? streamTypes))
         {
           streamTypes = [];
           types[streamId] = streamTypes;
@@ -117,7 +117,7 @@ public class EventStore : Infrastructure.EventStore
     foreach (KeyValuePair<StreamId, List<Event>> streamEvents in events)
     {
       Type? type = null;
-      if (types.TryGetValue(streamEvents.Key, out List<Type>? streamTypes) && streamTypes.Count == 1)
+      if (types.TryGetValue(streamEvents.Key, out HashSet<Type>? streamTypes) && streamTypes.Count == 1)
       {
         type = streamTypes.Single();
       }
@@ -166,7 +166,7 @@ public class EventStore : Infrastructure.EventStore
     DateTime? occurredTo = options.OccurredTo?.AsUniversalTime();
 
     List<Event> events = [];
-    List<Type> types = [];
+    HashSet<Type> types = [];
     await foreach (ResolvedEvent resolvedEvent in result)
     {
       EventRecord record = resolvedEvent.Event;
