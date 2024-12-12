@@ -23,8 +23,4 @@
     <Using Include="System.Reflection" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Configurations\" />
-  </ItemGroup>
-
 </Project>
