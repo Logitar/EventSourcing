@@ -161,10 +161,11 @@ public class RepositoryTests
   {
     User user = new(_faker.Person.UserName);
     user.SignIn();
+    IEvent[] changes = [.. user.Changes];
 
     await _repository.SaveAsync(user, _cancellationToken);
 
-    _eventStore.Verify(x => x.Append(user.Id, typeof(User), StreamExpectation.ShouldBeAtVersion(user.Version), user.Changes), Times.Once);
+    _eventStore.Verify(x => x.Append(user.Id, typeof(User), StreamExpectation.ShouldBeAtVersion(user.Version), It.Is<IEnumerable<IEvent>>(y => y.SequenceEqual(changes))), Times.Once);
 
     Assert.False(user.HasChanges);
     Assert.Empty(user.Changes);
@@ -177,16 +178,20 @@ public class RepositoryTests
   {
     User user = new(_faker.Person.UserName);
     user.SignIn();
+    IEvent[] userChanges = [.. user.Changes];
 
     Token token = Token.Generate();
+    IEvent[] token1Changes = [.. token.Changes];
+
     Token tokenWithoutChanges = Token.Generate();
     tokenWithoutChanges.ClearChanges();
+    IEvent[] token2Changes = [.. tokenWithoutChanges.Changes];
 
     await _repository.SaveAsync([user, token], _cancellationToken);
 
-    _eventStore.Verify(x => x.Append(user.Id, typeof(User), StreamExpectation.ShouldBeAtVersion(user.Version), user.Changes), Times.Once);
-    _eventStore.Verify(x => x.Append(token.Id, typeof(Token), StreamExpectation.None, token.Changes), Times.Once);
-    _eventStore.Verify(x => x.Append(tokenWithoutChanges.Id, typeof(Token), StreamExpectation.None, tokenWithoutChanges.Changes), Times.Never);
+    _eventStore.Verify(x => x.Append(user.Id, typeof(User), StreamExpectation.ShouldBeAtVersion(user.Version), It.Is<IEnumerable<IEvent>>(y => y.SequenceEqual(userChanges))), Times.Once);
+    _eventStore.Verify(x => x.Append(token.Id, typeof(Token), StreamExpectation.None, It.Is<IEnumerable<IEvent>>(y => y.SequenceEqual(token1Changes))), Times.Once);
+    _eventStore.Verify(x => x.Append(tokenWithoutChanges.Id, typeof(Token), StreamExpectation.None, It.Is<IEnumerable<IEvent>>(y => y.SequenceEqual(token2Changes))), Times.Never);
 
     Assert.False(user.HasChanges);
     Assert.Empty(user.Changes);
