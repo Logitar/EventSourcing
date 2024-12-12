@@ -18,8 +18,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\demo\Logitar.EventSourcing.Demo.Infrastructure.PostgreSQL\Logitar.EventSourcing.Demo.Infrastructure.PostgreSQL.csproj" />
-    <ProjectReference Include="..\..\demo\Logitar.EventSourcing.Demo.Infrastructure.SqlServer\Logitar.EventSourcing.Demo.Infrastructure.SqlServer.csproj" />
+    <ProjectReference Include="..\Logitar.EventSourcing.Demo.Infrastructure.PostgreSQL\Logitar.EventSourcing.Demo.Infrastructure.PostgreSQL.csproj" />
+    <ProjectReference Include="..\Logitar.EventSourcing.Demo.Infrastructure.SqlServer\Logitar.EventSourcing.Demo.Infrastructure.SqlServer.csproj" />
     <ProjectReference Include="..\..\lib\Logitar.EventSourcing.Kurrent\Logitar.EventSourcing.Kurrent.csproj" />
   </ItemGroup>
 
