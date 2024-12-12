@@ -1,7 +1,7 @@
 ﻿using Logitar.Data;
 using Logitar.Data.PostgreSQL;
 
-namespace Logitar.EventSourcing.Demo.Infrastructure;
+namespace Logitar.EventSourcing.Demo.Infrastructure.PostgreSQL;
 
 internal class PostgresHelper : SqlHelper
 {

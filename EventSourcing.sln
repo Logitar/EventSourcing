@@ -55,6 +55,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Demo.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Demo.Infrastructure", "demo\Logitar.EventSourcing.Demo.Infrastructure\Logitar.EventSourcing.Demo.Infrastructure.csproj", "{E34EBCD6-26A3-4CF2-BBE5-A2A4C17A7CE0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Demo.Infrastructure.PostgreSQL", "demo\Logitar.EventSourcing.Demo.Infrastructure.PostgreSQL\Logitar.EventSourcing.Demo.Infrastructure.PostgreSQL.csproj", "{88CAE94D-66A6-4EE4-A250-6564578332F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Demo.Infrastructure.SqlServer", "demo\Logitar.EventSourcing.Demo.Infrastructure.SqlServer\Logitar.EventSourcing.Demo.Infrastructure.SqlServer.csproj", "{B1E77A10-6554-427F-BFA3-1B60660995E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +133,14 @@ Global
 		{E34EBCD6-26A3-4CF2-BBE5-A2A4C17A7CE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E34EBCD6-26A3-4CF2-BBE5-A2A4C17A7CE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E34EBCD6-26A3-4CF2-BBE5-A2A4C17A7CE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88CAE94D-66A6-4EE4-A250-6564578332F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88CAE94D-66A6-4EE4-A250-6564578332F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88CAE94D-66A6-4EE4-A250-6564578332F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88CAE94D-66A6-4EE4-A250-6564578332F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1E77A10-6554-427F-BFA3-1B60660995E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1E77A10-6554-427F-BFA3-1B60660995E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1E77A10-6554-427F-BFA3-1B60660995E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1E77A10-6554-427F-BFA3-1B60660995E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -144,6 +156,8 @@ Global
 		{11BEDF1F-033D-4151-BFE7-661BF79EC65E} = {9D4448F8-D144-437A-86A5-F8AA36D92F6C}
 		{69D73C7B-45A2-451F-9E6D-FE76F3C97878} = {9D4448F8-D144-437A-86A5-F8AA36D92F6C}
 		{E34EBCD6-26A3-4CF2-BBE5-A2A4C17A7CE0} = {9D4448F8-D144-437A-86A5-F8AA36D92F6C}
+		{88CAE94D-66A6-4EE4-A250-6564578332F6} = {9D4448F8-D144-437A-86A5-F8AA36D92F6C}
+		{B1E77A10-6554-427F-BFA3-1B60660995E7} = {9D4448F8-D144-437A-86A5-F8AA36D92F6C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B0AA9E53-02AD-4000-8ED5-53AFF5D1B32D}

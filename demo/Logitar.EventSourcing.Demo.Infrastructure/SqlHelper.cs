@@ -3,7 +3,7 @@ using Logitar.EventSourcing.Demo.Application.Search;
 
 namespace Logitar.EventSourcing.Demo.Infrastructure;
 
-internal abstract class SqlHelper : ISqlHelper
+public abstract class SqlHelper : ISqlHelper
 {
   public void ApplyTextSearch(IQueryBuilder query, TextSearch search, params ColumnId[] columns)
   {

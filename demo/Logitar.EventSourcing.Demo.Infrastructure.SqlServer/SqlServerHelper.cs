@@ -1,7 +1,7 @@
 ﻿using Logitar.Data;
 using Logitar.Data.SqlServer;
 
-namespace Logitar.EventSourcing.Demo.Infrastructure;
+namespace Logitar.EventSourcing.Demo.Infrastructure.SqlServer;
 
 internal class SqlServerHelper : SqlHelper
 {

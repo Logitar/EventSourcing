@@ -15,11 +15,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Logitar.EventSourcing.Demo.Domain\Logitar.EventSourcing.Demo.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="MediatR" Version="12.4.1" />
+    <ProjectReference Include="..\..\lib\Logitar.EventSourcing.EntityFrameworkCore.SqlServer\Logitar.EventSourcing.EntityFrameworkCore.SqlServer.csproj" />
+    <ProjectReference Include="..\Logitar.EventSourcing.Demo.Infrastructure\Logitar.EventSourcing.Demo.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
