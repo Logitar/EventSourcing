@@ -35,7 +35,7 @@ public class EventStore : Infrastructure.EventStore
   /// <param name="options">The fetch options.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The retrieved streams, or an empty collection if none was found.</returns>
-  public override async Task<IReadOnlyCollection<Stream>> FetchAsync(FetchStreamsOptions? options, CancellationToken cancellationToken)
+  public override async Task<IReadOnlyCollection<Stream>> FetchAsync(FetchManyOptions? options, CancellationToken cancellationToken)
   {
     Dictionary<StreamId, List<Event>> events = [];
     Dictionary<StreamId, List<Type>> types = [];

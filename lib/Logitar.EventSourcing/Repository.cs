@@ -98,7 +98,7 @@ public class Repository : IRepository
   /// <returns>The list of loaded aggregates.</returns>
   public virtual async Task<IReadOnlyCollection<T>> LoadAsync<T>(bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate, new()
   {
-    IReadOnlyCollection<Stream> streams = await EventStore.FetchAsync(new FetchStreamsOptions(), cancellationToken);
+    IReadOnlyCollection<Stream> streams = await EventStore.FetchAsync(new FetchManyOptions(), cancellationToken);
     List<T> aggregates = new(capacity: streams.Count);
     foreach (Stream stream in streams)
     {

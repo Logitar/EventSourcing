@@ -30,7 +30,7 @@ public interface IEventStore
   /// <param name="options">The fetch options.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The retrieved streams, or an empty collection if none was found.</returns>
-  Task<IReadOnlyCollection<Stream>> FetchAsync(FetchStreamsOptions? options = null, CancellationToken cancellationToken = default);
+  Task<IReadOnlyCollection<Stream>> FetchAsync(FetchManyOptions? options = null, CancellationToken cancellationToken = default);
   /// <summary>
   /// Fetches an event stream from the store.
   /// </summary>

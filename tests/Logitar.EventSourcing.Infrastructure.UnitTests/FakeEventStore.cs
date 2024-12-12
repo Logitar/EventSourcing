@@ -7,7 +7,7 @@ internal class FakeEventStore : EventStore
   {
   }
 
-  public override Task<IReadOnlyCollection<Stream>> FetchAsync(FetchStreamsOptions? options, CancellationToken cancellationToken)
+  public override Task<IReadOnlyCollection<Stream>> FetchAsync(FetchManyOptions? options, CancellationToken cancellationToken)
   {
     throw new NotImplementedException();
   }
