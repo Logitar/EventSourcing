@@ -53,6 +53,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Demo.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Demo.Application", "demo\Logitar.EventSourcing.Demo.Application\Logitar.EventSourcing.Demo.Application.csproj", "{69D73C7B-45A2-451F-9E6D-FE76F3C97878}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logitar.EventSourcing.Demo.Infrastructure", "demo\Logitar.EventSourcing.Demo.Infrastructure\Logitar.EventSourcing.Demo.Infrastructure.csproj", "{E34EBCD6-26A3-4CF2-BBE5-A2A4C17A7CE0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +125,10 @@ Global
 		{69D73C7B-45A2-451F-9E6D-FE76F3C97878}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69D73C7B-45A2-451F-9E6D-FE76F3C97878}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69D73C7B-45A2-451F-9E6D-FE76F3C97878}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E34EBCD6-26A3-4CF2-BBE5-A2A4C17A7CE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E34EBCD6-26A3-4CF2-BBE5-A2A4C17A7CE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E34EBCD6-26A3-4CF2-BBE5-A2A4C17A7CE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E34EBCD6-26A3-4CF2-BBE5-A2A4C17A7CE0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,6 +143,7 @@ Global
 		{8B6269CD-6723-4EBA-B75E-6248AFC6AB73} = {EA3FAAAD-FCF6-49E7-AE0D-F0C87F482490}
 		{11BEDF1F-033D-4151-BFE7-661BF79EC65E} = {9D4448F8-D144-437A-86A5-F8AA36D92F6C}
 		{69D73C7B-45A2-451F-9E6D-FE76F3C97878} = {9D4448F8-D144-437A-86A5-F8AA36D92F6C}
+		{E34EBCD6-26A3-4CF2-BBE5-A2A4C17A7CE0} = {9D4448F8-D144-437A-86A5-F8AA36D92F6C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B0AA9E53-02AD-4000-8ED5-53AFF5D1B32D}

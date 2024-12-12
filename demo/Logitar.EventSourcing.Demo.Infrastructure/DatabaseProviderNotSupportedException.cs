@@ -4,7 +4,7 @@ public class DatabaseProviderNotSupportedException : NotSupportedException
 {
   public DatabaseProvider DatabaseProvider
   {
-    get => (DatabaseProvider?)Data[nameof(DatabaseProvider)];
+    get => (DatabaseProvider)Data[nameof(DatabaseProvider)]!;
     private set => Data[nameof(DatabaseProvider)] = value;
   }
 
