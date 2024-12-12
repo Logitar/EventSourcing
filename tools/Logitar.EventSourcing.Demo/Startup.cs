@@ -2,6 +2,7 @@
 using Logitar.EventSourcing.Demo.Application.Products;
 using Logitar.EventSourcing.Demo.Authentication;
 using Logitar.EventSourcing.Demo.Constants;
+using Logitar.EventSourcing.Demo.Filters;
 using Logitar.EventSourcing.Demo.Infrastructure.Queriers;
 using Logitar.EventSourcing.Demo.Infrastructure.Repositories;
 using Logitar.EventSourcing.Demo.Settings;
@@ -25,7 +26,7 @@ internal class Startup : StartupBase
   {
     base.ConfigureServices(services);
 
-    services.AddControllers();
+    services.AddControllers(options => options.Filters.Add<ExceptionHandling>());
 
     AuthenticationBuilder authenticationBuilder = services.AddAuthentication()
       .AddScheme<BasicAuthenticationOptions, BasicAuthenticationHandler>(Schemes.Basic, options => { });
