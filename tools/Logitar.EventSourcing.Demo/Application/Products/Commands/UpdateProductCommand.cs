@@ -11,11 +11,13 @@ public record UpdateProductCommand(Guid Id, UpdateProductPayload Payload) : IReq
 
 internal class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, ProductModel?>
 {
+  private readonly IApplicationContext _applicationContext;
   private readonly IProductQuerier _productQuerier;
   private readonly IProductRepository _productRepository;
 
-  public UpdateProductCommandHandler(IProductQuerier productQuerier, IProductRepository productRepository)
+  public UpdateProductCommandHandler(IApplicationContext applicationContext, IProductQuerier productQuerier, IProductRepository productRepository)
   {
+    _applicationContext = applicationContext;
     _productQuerier = productQuerier;
     _productRepository = productRepository;
   }
@@ -54,7 +56,7 @@ internal class UpdateProductCommandHandler : IRequestHandler<UpdateProductComman
       product.PictureUrl = Url.TryCreate(payload.PictureUrl.Value);
     }
 
-    product.Update(actorId: null); // TODO(fpion): provide actor ID
+    product.Update(_applicationContext.ActorId);
 
     // TODO(fpion): enforce SKU unicity
     await _productRepository.SaveAsync(product, cancellationToken);

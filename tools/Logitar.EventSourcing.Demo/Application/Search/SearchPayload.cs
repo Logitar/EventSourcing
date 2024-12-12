@@ -2,9 +2,11 @@
 
 public record SearchPayload
 {
-  // TODO(fpion): filters
+  public List<Guid> Ids { get; set; } = [];
+  public TextSearch Search { get; set; } = new();
 
-  // TODO(fpion): sorting
+  public List<SortOption> Sort { get; set; } = [];
 
-  // TODO(fpion): paging
+  public int Skip { get; set; }
+  public int Limit { get; set; }
 }

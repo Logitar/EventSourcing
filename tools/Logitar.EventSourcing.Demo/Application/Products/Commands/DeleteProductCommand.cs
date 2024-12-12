@@ -8,11 +8,13 @@ public record DeleteProductCommand(Guid Id) : IRequest<ProductModel?>;
 
 internal class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, ProductModel?>
 {
+  private readonly IApplicationContext _applicationContext;
   private readonly IProductQuerier _productQuerier;
   private readonly IProductRepository _productRepository;
 
-  public DeleteProductCommandHandler(IProductQuerier productQuerier, IProductRepository productRepository)
+  public DeleteProductCommandHandler(IApplicationContext applicationContext, IProductQuerier productQuerier, IProductRepository productRepository)
   {
+    _applicationContext = applicationContext;
     _productQuerier = productQuerier;
     _productRepository = productRepository;
   }
@@ -27,7 +29,7 @@ internal class DeleteProductCommandHandler : IRequestHandler<DeleteProductComman
     }
     ProductModel model = await _productQuerier.ReadAsync(product, cancellationToken);
 
-    product.Delete(actorId: null); // TODO(fpion): provide actor ID
+    product.Delete(_applicationContext.ActorId);
 
     // TODO(fpion): ensure no cart references this product
     await _productRepository.SaveAsync(product, cancellationToken);

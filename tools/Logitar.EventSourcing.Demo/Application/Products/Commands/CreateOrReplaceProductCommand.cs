@@ -13,11 +13,13 @@ public record CreateOrReplaceProductCommand(Guid? Id, ProductPayload Payload, lo
 
 internal class CreateOrReplaceProductCommandHandler : IRequestHandler<CreateOrReplaceProductCommand, CreateOrReplaceProductResult>
 {
+  private readonly IApplicationContext _applicationContext;
   private readonly IProductQuerier _productQuerier;
   private readonly IProductRepository _productRepository;
 
-  public CreateOrReplaceProductCommandHandler(IProductQuerier productQuerier, IProductRepository productRepository)
+  public CreateOrReplaceProductCommandHandler(IApplicationContext applicationContext, IProductQuerier productQuerier, IProductRepository productRepository)
   {
+    _applicationContext = applicationContext;
     _productQuerier = productQuerier;
     _productRepository = productRepository;
   }
@@ -37,6 +39,7 @@ internal class CreateOrReplaceProductCommandHandler : IRequestHandler<CreateOrRe
     }
 
     Sku sku = new(payload.Sku);
+    ActorId? actorId = _applicationContext.ActorId;
     if (product == null)
     {
       if (command.Version.HasValue)
@@ -44,7 +47,7 @@ internal class CreateOrReplaceProductCommandHandler : IRequestHandler<CreateOrRe
         return new CreateOrReplaceProductResult();
       }
 
-      product = new(sku, actorId: null, id); // TODO(fpion): provide actor ID
+      product = new(sku, actorId, id);
       created = true;
     }
 
@@ -78,7 +81,7 @@ internal class CreateOrReplaceProductCommandHandler : IRequestHandler<CreateOrRe
       product.PictureUrl = pictureUrl;
     }
 
-    product.Update(actorId: null); // TODO(fpion): provide actor ID
+    product.Update(actorId);
 
     // TODO(fpion): enforce SKU unicity
     await _productRepository.SaveAsync(product, cancellationToken);

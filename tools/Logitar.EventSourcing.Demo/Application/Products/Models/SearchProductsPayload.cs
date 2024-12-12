@@ -4,7 +4,8 @@ namespace Logitar.EventSourcing.Demo.Application.Products.Models;
 
 public record SearchProductsPayload : SearchPayload
 {
-  // TODO(fpion): filters
+  public decimal PriceFrom { get; set; }
+  public decimal PriceUnder { get; set; }
 
-  // TODO(fpion): sorting
+  public new List<ProductSortOption> Sort { get; set; } = [];
 }

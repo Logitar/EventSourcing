@@ -3,11 +3,13 @@ using Logitar.EventSourcing.Demo.Application.Products.Models;
 using Logitar.EventSourcing.Demo.Application.Products.Queries;
 using Logitar.EventSourcing.Demo.Application.Search;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Logitar.EventSourcing.Demo.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("products")]
 public class ProductController : ControllerBase
 {
