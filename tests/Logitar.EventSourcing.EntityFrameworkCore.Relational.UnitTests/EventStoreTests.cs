@@ -30,10 +30,65 @@ public class EventStoreTests
     _store = new EventStore([_bus.Object], _context, _converter);
   }
 
-  [Theory(DisplayName = "FetchAsync: it should apply the specified actor filter.")]
+  [Theory(DisplayName = "FetchAsync: it should apply the specified actor filter (many streams).")]
   [InlineData(false)]
   [InlineData(true)]
-  public async Task Given_ActorFilter_When_FetchAsync_Then_FilterApplied(bool isNull)
+  public async Task Given_ActorFilter_When_FetchManyAsync_Then_FilterApplied(bool isNull)
+  {
+    UserCreated userCreated = new(_faker.Person.UserName)
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1
+    };
+
+    ActorId actorId = new(userCreated.Id.Value);
+    UserSignedIn signedIn = new()
+    {
+      StreamId = userCreated.StreamId,
+      Version = 2,
+      ActorId = actorId
+    };
+
+    SessionCreated sessionCreated = new(userCreated.StreamId)
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1,
+      ActorId = actorId
+    };
+
+    StreamEntity stream1 = new(userCreated.StreamId, typeof(User));
+    stream1.Append(_converter.ToEventEntity(userCreated, stream1));
+    stream1.Append(_converter.ToEventEntity(signedIn, stream1));
+
+    StreamEntity stream2 = new(sessionCreated.StreamId, typeof(Session));
+    stream2.Append(_converter.ToEventEntity(sessionCreated, stream2));
+
+    _context.Streams.AddRange(stream1, stream2);
+    _context.SaveChanges();
+
+    IReadOnlyCollection<Stream> streams = await _store.FetchAsync(new FetchManyOptions
+    {
+      Actor = new ActorFilter(isNull ? null : actorId)
+    }, _cancellationToken);
+
+    if (isNull)
+    {
+      Stream stream = Assert.Single(streams);
+      Assert.Equal(userCreated.StreamId, stream.Id);
+      Assert.Equal(1, stream.Version);
+    }
+    else
+    {
+      Assert.Equal(2, streams.Count);
+      Assert.Contains(streams, s => s.Id == userCreated.StreamId && s.CreatedOn == null && s.Events.Single().Data.Equals(signedIn));
+      Assert.Contains(streams, s => s.Id == sessionCreated.StreamId);
+    }
+  }
+
+  [Theory(DisplayName = "FetchAsync: it should apply the specified actor filter (single stream).")]
+  [InlineData(false)]
+  [InlineData(true)]
+  public async Task Given_ActorFilter_When_FetchSingleAsync_Then_FilterApplied(bool isNull)
   {
     UserCreated created = new(_faker.Person.UserName)
     {
@@ -110,8 +165,58 @@ public class EventStoreTests
     }
   }
 
-  [Fact(DisplayName = "FetchAsync: it should apply the specified date and time filters.")]
-  public async Task Given_DateTimeFilters_When_FetchAsync_Then_FiltersApplied()
+  [Fact(DisplayName = "FetchAsync: it should apply the specified date and time filters (many streams).")]
+  public async Task Given_DateTimeFilters_When_FetchManyAsync_Then_FiltersApplied()
+  {
+    UserCreated created1 = new(_faker.Person.UserName)
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1,
+      OccurredOn = DateTime.Now.AddYears(-1)
+    };
+    UserCreated created2 = new(_faker.Internet.UserName())
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1,
+      OccurredOn = DateTime.Now.AddDays(-1)
+    };
+    UserCreated created3 = new(_faker.Internet.UserName())
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1,
+      OccurredOn = DateTime.Now.AddHours(-1)
+    };
+    UserSignedIn signedIn = new()
+    {
+      StreamId = created3.StreamId,
+      Version = 2
+    };
+
+    StreamEntity stream1 = new(created1.StreamId, typeof(User));
+    stream1.Append(_converter.ToEventEntity(created1, stream1));
+
+    StreamEntity stream2 = new(created2.StreamId, typeof(User));
+    stream2.Append(_converter.ToEventEntity(created2, stream2));
+
+    StreamEntity stream3 = new(created3.StreamId, typeof(User));
+    stream3.Append(_converter.ToEventEntity(created3, stream3));
+
+    _context.Streams.AddRange(stream1, stream2, stream3);
+    _context.SaveChanges();
+
+    IReadOnlyCollection<Stream> streams = await _store.FetchAsync(new FetchManyOptions
+    {
+      OccurredFrom = DateTime.Now.AddMonths(-1),
+      OccurredTo = DateTime.Now.AddMinutes(-1)
+    }, _cancellationToken);
+
+    Assert.Equal(2, streams.Count);
+    Assert.Contains(streams, s => s.Id == created2.StreamId && s.Version == 1);
+    Assert.Contains(streams, s => s.Id == created3.StreamId && s.Version == 1);
+  }
+
+  [Fact(DisplayName = "FetchAsync: it should apply the specified date and time filters (single stream).")]
+  public async Task Given_DateTimeFilters_When_FetchSingleAsync_Then_FiltersApplied()
   {
     UserCreated created = new(_faker.Person.UserName)
     {
@@ -170,8 +275,140 @@ public class EventStoreTests
       && e.OccurredOn == signedIn.OccurredOn.AsUniversalTime() && e.IsDeleted == signedIn.IsDeleted == e.Data.Equals(signedIn));
   }
 
-  [Fact(DisplayName = "FetchAsync: it should apply the specified version filters.")]
-  public async Task Given_VersionFilters_When_FetchAsync_Then_FiltersApplied()
+  [Fact(DisplayName = "FetchAsync: it should apply the specified stream identifier filter.")]
+  public async Task Given_StreamIdentifierFilter_When_FetchAsync_Then_FilterApplied()
+  {
+    User user1 = new(_faker.Person.UserName);
+    User user2 = new(_faker.Internet.UserName());
+    Session session = new(user1);
+
+    StreamEntity stream1 = new(user1.Id);
+    foreach (IEvent change in user1.Changes)
+    {
+      stream1.Append(_converter.ToEventEntity(change, stream1));
+    }
+
+    StreamEntity stream2 = new(user2.Id);
+    foreach (IEvent change in user2.Changes)
+    {
+      stream2.Append(_converter.ToEventEntity(change, stream2));
+    }
+
+    StreamEntity stream3 = new(session.Id);
+    foreach (IEvent change in session.Changes)
+    {
+      stream3.Append(_converter.ToEventEntity(change, stream3));
+    }
+
+    _context.Streams.AddRange(stream1, stream2, stream3);
+    _context.SaveChanges();
+
+    IReadOnlyCollection<Stream> streams = await _store.FetchAsync(new FetchManyOptions
+    {
+      StreamIds = [user1.Id, session.Id, StreamId.NewId(), new StreamId()]
+    }, _cancellationToken);
+
+    Assert.Equal(2, streams.Count);
+    Assert.Contains(streams, s => s.Id == user1.Id);
+    Assert.Contains(streams, s => s.Id == session.Id);
+  }
+
+  [Theory(DisplayName = "FetchAsync: it should apply the specified stream type filter.")]
+  [InlineData(false)]
+  [InlineData(true)]
+  public async Task Given_StreamTypeFilter_When_FetchAsync_Then_FilterApplied(bool isNullTypeAllowed)
+  {
+    UserCreated userCreated = new(_faker.Person.UserName)
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1
+    };
+    SessionCreated sessionCreated = new(userCreated.StreamId)
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1
+    };
+    SystemStarted systemStarted = new();
+
+    StreamEntity stream1 = new(userCreated.StreamId, typeof(User));
+    stream1.Append(_converter.ToEventEntity(userCreated, stream1));
+
+    StreamEntity stream2 = new(sessionCreated.StreamId, typeof(Session));
+    stream2.Append(_converter.ToEventEntity(sessionCreated, stream2));
+
+    StreamId systemId = new(Guid.Empty);
+    StreamEntity stream3 = new(systemId, type: null);
+    stream3.Append(_converter.ToEventEntity(systemStarted, stream3));
+
+    _context.Streams.AddRange(stream1, stream2, stream3);
+    _context.SaveChanges();
+
+    IReadOnlyCollection<Stream> streams = await _store.FetchAsync(new FetchManyOptions
+    {
+      StreamTypes = [typeof(User), isNullTypeAllowed ? null : typeof(Session)]
+    }, _cancellationToken);
+
+    Assert.Equal(2, streams.Count);
+    Assert.Contains(streams, s => s.Id == userCreated.StreamId);
+
+    if (isNullTypeAllowed)
+    {
+      Assert.Contains(streams, s => s.Id == systemId);
+    }
+    else
+    {
+      Assert.Contains(streams, s => s.Id == sessionCreated.StreamId);
+    }
+  }
+
+  [Fact(DisplayName = "FetchAsync: it should apply the specified version filters (many streams).")]
+  public async Task Given_VersionFilters_When_FetchManyAsync_Then_FiltersApplied()
+  {
+    UserCreated created1 = new(_faker.Person.UserName)
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1
+    };
+    UserCreated created2 = new(_faker.Internet.UserName())
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1
+    };
+    UserSignedIn signedIn = new()
+    {
+      StreamId = created2.StreamId,
+      Version = 2
+    };
+    UserDeleted deleted = new()
+    {
+      StreamId = created2.StreamId,
+      Version = 3
+    };
+
+    StreamEntity stream1 = new(created1.StreamId, typeof(User));
+    stream1.Append(_converter.ToEventEntity(created1, stream1));
+
+    StreamEntity stream2 = new(created2.StreamId, typeof(User));
+    stream2.Append(_converter.ToEventEntity(created2, stream2));
+    stream2.Append(_converter.ToEventEntity(signedIn, stream2));
+    stream2.Append(_converter.ToEventEntity(deleted, stream2));
+
+    _context.Streams.AddRange(stream1, stream2);
+    _context.SaveChanges();
+
+    IReadOnlyCollection<Stream> streams = await _store.FetchAsync(new FetchManyOptions
+    {
+      FromVersion = 1,
+      ToVersion = 2
+    }, _cancellationToken);
+
+    Assert.Equal(2, streams.Count);
+    Assert.Contains(streams, s => s.Id == created1.StreamId && s.Version == 1);
+    Assert.Contains(streams, s => s.Id == created2.StreamId && s.Version == 2);
+  }
+
+  [Fact(DisplayName = "FetchAsync: it should apply the specified version filters (single stream).")]
+  public async Task Given_VersionFilters_When_FetchSingleAsync_Then_FiltersApplied()
   {
     UserCreated created = new(_faker.Person.UserName)
     {
@@ -266,6 +503,77 @@ public class EventStoreTests
       && e.OccurredOn == created.OccurredOn.AsUniversalTime() && e.IsDeleted == created.IsDeleted && e.Data.Equals(created));
     Assert.Contains(stream.Events, e => e.Id == deleted.Id && e.Version == deleted.Version && e.ActorId == deleted.ActorId
       && e.OccurredOn == deleted.OccurredOn.AsUniversalTime() && e.IsDeleted == true && e.Data.Equals(deleted));
+  }
+
+  [Fact(DisplayName = "FetchAsync: it should return empty when no stream was found.")]
+  public async Task Given_NoStream_When_FetchAsync_Then_Empty()
+  {
+    IReadOnlyCollection<Stream> streams = await _store.FetchAsync(new FetchManyOptions(), _cancellationToken);
+    Assert.Empty(streams);
+  }
+
+  [Theory(DisplayName = "FetchAsync: it should return matching streams with a deletion status filter.")]
+  [InlineData(null)]
+  [InlineData(false)]
+  [InlineData(true)]
+  public async Task Given_ManyStreams_When_FetchAsync_Then_StreamsMatchingDeletionStatusReturned(bool? isDeleted)
+  {
+    User user1 = new(_faker.Person.UserName);
+
+    User user2 = new(_faker.Internet.UserName());
+    user2.Delete();
+
+    User user3 = new(_faker.Internet.UserName());
+    if (isDeleted == true)
+    {
+      user3.Delete();
+    }
+
+    StreamEntity stream1 = new(user1.Id, typeof(User));
+    foreach (IEvent change in user1.Changes)
+    {
+      stream1.Append(_converter.ToEventEntity(change, stream1));
+    }
+
+    StreamEntity stream2 = new(user2.Id, typeof(User));
+    foreach (IEvent change in user2.Changes)
+    {
+      stream2.Append(_converter.ToEventEntity(change, stream2));
+    }
+
+    StreamEntity stream3 = new(user3.Id, typeof(User));
+    foreach (IEvent change in user3.Changes)
+    {
+      stream3.Append(_converter.ToEventEntity(change, stream3));
+    }
+
+    _context.Streams.AddRange(stream1, stream2, stream3);
+    _context.SaveChanges();
+
+    IReadOnlyCollection<Stream> streams = await _store.FetchAsync(new FetchManyOptions
+    {
+      IsDeleted = isDeleted
+    }, _cancellationToken);
+
+    switch (isDeleted)
+    {
+      case false:
+        Assert.Equal(2, streams.Count);
+        Assert.Contains(streams, s => s.Id == user1.Id);
+        Assert.Contains(streams, s => s.Id == user3.Id);
+        break;
+      case true:
+        Assert.Equal(2, streams.Count);
+        Assert.Contains(streams, s => s.Id == user2.Id);
+        Assert.Contains(streams, s => s.Id == user3.Id);
+        break;
+      default:
+        Assert.Equal(3, streams.Count);
+        Assert.Contains(streams, s => s.Id == user1.Id);
+        Assert.Contains(streams, s => s.Id == user2.Id);
+        Assert.Contains(streams, s => s.Id == user3.Id);
+        break;
+    }
   }
 
   [Theory(DisplayName = "FetchAsync: it should return null when no stream was found.")]
