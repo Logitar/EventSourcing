@@ -54,7 +54,7 @@ internal class UpdateProductCommandHandler : IRequestHandler<UpdateProductComman
       product.PictureUrl = Url.TryCreate(payload.PictureUrl.Value);
     }
 
-    product.Update(actorId: null);
+    product.Update(actorId: null); // TODO(fpion): provide actor ID
 
     // TODO(fpion): enforce SKU unicity
     await _productRepository.SaveAsync(product, cancellationToken);

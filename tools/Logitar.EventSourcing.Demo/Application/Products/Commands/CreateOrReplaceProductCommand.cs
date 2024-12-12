@@ -44,7 +44,7 @@ internal class CreateOrReplaceProductCommandHandler : IRequestHandler<CreateOrRe
         return new CreateOrReplaceProductResult();
       }
 
-      product = new(sku, id: id);
+      product = new(sku, actorId: null, id); // TODO(fpion): provide actor ID
       created = true;
     }
 
@@ -78,7 +78,7 @@ internal class CreateOrReplaceProductCommandHandler : IRequestHandler<CreateOrRe
       product.PictureUrl = pictureUrl;
     }
 
-    product.Update(actorId: null);
+    product.Update(actorId: null); // TODO(fpion): provide actor ID
 
     // TODO(fpion): enforce SKU unicity
     await _productRepository.SaveAsync(product, cancellationToken);

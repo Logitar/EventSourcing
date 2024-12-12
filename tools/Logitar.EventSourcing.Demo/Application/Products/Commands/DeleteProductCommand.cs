@@ -27,7 +27,7 @@ internal class DeleteProductCommandHandler : IRequestHandler<DeleteProductComman
     }
     ProductModel model = await _productQuerier.ReadAsync(product, cancellationToken);
 
-    product.Delete(actorId: null);
+    product.Delete(actorId: null); // TODO(fpion): provide actor ID
 
     // TODO(fpion): ensure no cart references this product
     await _productRepository.SaveAsync(product, cancellationToken);
