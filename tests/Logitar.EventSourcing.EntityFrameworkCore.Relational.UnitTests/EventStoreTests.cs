@@ -69,7 +69,7 @@ public class EventStoreTests
     _context.Streams.Add(entity);
     _context.SaveChanges();
 
-    Stream? stream = await _store.FetchAsync(created.StreamId, new FetchOptions
+    Stream? stream = await _store.FetchAsync(created.StreamId, new FetchStreamOptions
     {
       Actor = new ActorFilter(isNull ? null : password.ActorId)
     }, _cancellationToken);
@@ -147,7 +147,7 @@ public class EventStoreTests
     _context.Streams.Add(entity);
     _context.SaveChanges();
 
-    Stream? stream = await _store.FetchAsync(created.StreamId, new FetchOptions
+    Stream? stream = await _store.FetchAsync(created.StreamId, new FetchStreamOptions
     {
       OccurredFrom = DateTime.Now.AddDays(-7),
       OccurredTo = DateTime.Now.AddMinutes(-15)
@@ -204,7 +204,7 @@ public class EventStoreTests
     _context.Streams.Add(entity);
     _context.SaveChanges();
 
-    Stream? stream = await _store.FetchAsync(created.StreamId, new FetchOptions
+    Stream? stream = await _store.FetchAsync(created.StreamId, new FetchStreamOptions
     {
       FromVersion = 2,
       ToVersion = 3
@@ -246,7 +246,7 @@ public class EventStoreTests
     _context.Streams.Add(entity);
     _context.SaveChanges();
 
-    Stream? stream = await _store.FetchAsync(user.Id, new FetchOptions
+    Stream? stream = await _store.FetchAsync(user.Id, new FetchStreamOptions
     {
       IsDeleted = true
     }, _cancellationToken);
@@ -287,7 +287,7 @@ public class EventStoreTests
       _context.SaveChanges();
     }
 
-    Stream? stream = await _store.FetchAsync(StreamId.NewId(), new FetchOptions
+    Stream? stream = await _store.FetchAsync(StreamId.NewId(), new FetchStreamOptions
     {
       IsDeleted = isDeleted ? false : null
     }, _cancellationToken);

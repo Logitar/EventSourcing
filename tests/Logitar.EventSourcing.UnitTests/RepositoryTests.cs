@@ -27,10 +27,10 @@ public class RepositoryTests
     deleted.Delete();
 
     Stream userStream = new(user.Id, typeof(User), user.Changes.Select(ToEvent));
-    _eventStore.Setup(x => x.FetchAsync(user.Id, It.IsAny<FetchOptions>(), _cancellationToken)).ReturnsAsync(userStream);
+    _eventStore.Setup(x => x.FetchAsync(user.Id, It.IsAny<FetchStreamOptions>(), _cancellationToken)).ReturnsAsync(userStream);
 
     Stream deletedStream = new(deleted.Id, typeof(User), deleted.Changes.Select(ToEvent));
-    _eventStore.Setup(x => x.FetchAsync(deleted.Id, It.IsAny<FetchOptions>(), _cancellationToken)).ReturnsAsync(deletedStream);
+    _eventStore.Setup(x => x.FetchAsync(deleted.Id, It.IsAny<FetchStreamOptions>(), _cancellationToken)).ReturnsAsync(deletedStream);
 
     IReadOnlyCollection<User> users = await _repository.LoadAsync<User>([user.Id, deleted.Id, StreamId.NewId()], isDeleted: false, _cancellationToken);
     Assert.Equal(user, Assert.Single(users));
@@ -60,7 +60,7 @@ public class RepositoryTests
       new Event(EventId.NewId(), version: 2, occurredOn: DateTime.Now, new UserSignedIn(), actorId: null, !isDeleted)
     ];
     Stream stream = new(StreamId.NewId(), typeof(User), events);
-    _eventStore.Setup(x => x.FetchAsync(stream.Id, It.IsAny<FetchOptions>(), _cancellationToken)).ReturnsAsync(stream);
+    _eventStore.Setup(x => x.FetchAsync(stream.Id, It.IsAny<FetchStreamOptions>(), _cancellationToken)).ReturnsAsync(stream);
 
     Assert.Null(await _repository.LoadAsync<User>(stream.Id, isDeleted, _cancellationToken));
   }
@@ -77,7 +77,7 @@ public class RepositoryTests
       Version = 1
     };
     Stream stream = new(userId, typeof(User), [new Event(created.Id, created.Version, created.OccurredOn, created, created.ActorId, created.IsDeleted)]);
-    _eventStore.Setup(x => x.FetchAsync(stream.Id, It.Is<FetchOptions>(y => y.ToVersion == version), _cancellationToken)).ReturnsAsync(stream);
+    _eventStore.Setup(x => x.FetchAsync(stream.Id, It.Is<FetchStreamOptions>(y => y.ToVersion == version), _cancellationToken)).ReturnsAsync(stream);
 
     User? user = await _repository.LoadAsync<User>(stream.Id, version, _cancellationToken);
     Assert.NotNull(user);
@@ -95,7 +95,7 @@ public class RepositoryTests
       Version = 1
     };
     Stream stream = new(userId, typeof(User), [new Event(created.Id, created.Version, created.OccurredOn, created, created.ActorId, created.IsDeleted)]);
-    _eventStore.Setup(x => x.FetchAsync(stream.Id, It.IsAny<FetchOptions>(), _cancellationToken)).ReturnsAsync(stream);
+    _eventStore.Setup(x => x.FetchAsync(stream.Id, It.IsAny<FetchStreamOptions>(), _cancellationToken)).ReturnsAsync(stream);
 
     User? user = await _repository.LoadAsync<User>(stream.Id, _cancellationToken);
     Assert.NotNull(user);
@@ -114,7 +114,7 @@ public class RepositoryTests
       Version = 1
     };
     Stream stream = new(userId, typeof(User), [new Event(created.Id, created.Version, created.OccurredOn, created, created.ActorId, isDeleted)]);
-    _eventStore.Setup(x => x.FetchAsync(stream.Id, It.IsAny<FetchOptions>(), _cancellationToken)).ReturnsAsync(stream);
+    _eventStore.Setup(x => x.FetchAsync(stream.Id, It.IsAny<FetchStreamOptions>(), _cancellationToken)).ReturnsAsync(stream);
 
     User? user = await _repository.LoadAsync<User>(stream.Id, _cancellationToken);
     Assert.NotNull(user);

@@ -26,7 +26,7 @@ public class EventStoreTests : EntityFrameworkCoreIntegrationTests
     EventContext.Streams.Add(entity);
     await EventContext.SaveChangesAsync(CancellationToken);
 
-    Stream? stream = await _store.FetchAsync(user.Id, new FetchOptions
+    Stream? stream = await _store.FetchAsync(user.Id, new FetchStreamOptions
     {
       FromVersion = user.Version + 1
     }, CancellationToken);
@@ -55,7 +55,7 @@ public class EventStoreTests : EntityFrameworkCoreIntegrationTests
     EventContext.Streams.Add(entity);
     await EventContext.SaveChangesAsync(CancellationToken);
 
-    Stream? stream = await _store.FetchAsync(user.Id, new FetchOptions
+    Stream? stream = await _store.FetchAsync(user.Id, new FetchStreamOptions
     {
       FromVersion = 2,
       ToVersion = 3

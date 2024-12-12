@@ -36,9 +36,9 @@ public class EventStore : Infrastructure.EventStore
   /// <param name="options">The fetch options.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The retrieved stream, or null if it was not found.</returns>
-  public override async Task<Stream?> FetchAsync(StreamId streamId, FetchOptions? options, CancellationToken cancellationToken)
+  public override async Task<Stream?> FetchAsync(StreamId streamId, FetchStreamOptions? options, CancellationToken cancellationToken)
   {
-    options ??= new FetchOptions();
+    options ??= new FetchStreamOptions();
 
     StreamPosition revision = options.FromVersion > 0 ? StreamPosition.FromInt64(options.FromVersion - 1) : StreamPosition.Start;
 

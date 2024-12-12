@@ -36,13 +36,13 @@ public class EventStore : Infrastructure.EventStore
   /// <param name="options">The fetch options.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The retrieved stream, or null if it was not found.</returns>
-  public override async Task<Stream?> FetchAsync(StreamId streamId, FetchOptions? options, CancellationToken cancellationToken)
+  public override async Task<Stream?> FetchAsync(StreamId streamId, FetchStreamOptions? options, CancellationToken cancellationToken)
   {
     IQueryable<EventEntity> query = Context.Events.AsNoTracking()
       .Include(x => x.Stream)
       .Where(x => x.Stream!.Id == streamId.Value);
 
-    options ??= new FetchOptions();
+    options ??= new FetchStreamOptions();
     if (options.FromVersion > 0)
     {
       query = query.Where(x => x.Version >= options.FromVersion);

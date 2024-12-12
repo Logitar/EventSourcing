@@ -31,7 +31,7 @@ public interface IEventStore
   /// <param name="options">The fetch options.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The retrieved stream, or null if it was not found.</returns>
-  Task<Stream?> FetchAsync(StreamId streamId, FetchOptions? options = null, CancellationToken cancellationToken = default);
+  Task<Stream?> FetchAsync(StreamId streamId, FetchStreamOptions? options = null, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Saves the unsaved changes in the event store.
