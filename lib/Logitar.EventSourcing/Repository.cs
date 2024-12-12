@@ -127,9 +127,22 @@ public class Repository : IRepository
   /// <param name="isDeleted">A value indicating whether or not deleted aggregates will be returned.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The list of loaded aggregates.</returns>
-  public virtual Task<IReadOnlyCollection<T>> LoadAsync<T>(IEnumerable<StreamId> ids, bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate, new()
+  public virtual async Task<IReadOnlyCollection<T>> LoadAsync<T>(IEnumerable<StreamId> ids, bool? isDeleted, CancellationToken cancellationToken) where T : class, IAggregate, new()
   {
-    throw new NotImplementedException(); // TODO(fpion): implement
+    if (!ids.Any())
+    {
+      return [];
+    }
+
+    FetchManyOptions options = new()
+    {
+      IsDeleted = isDeleted
+    };
+    options.StreamTypes.Add(typeof(T));
+    options.StreamIds.AddRange(ids);
+
+    IReadOnlyCollection<Stream> streams = await EventStore.FetchAsync(options, cancellationToken);
+    return streams.Select(LoadAggregate<T>).ToList().AsReadOnly();
   }
 
   /// <summary>
