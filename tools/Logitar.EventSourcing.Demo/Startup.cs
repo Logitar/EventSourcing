@@ -1,6 +1,8 @@
-﻿using Logitar.EventSourcing.Demo.Application.Products;
+﻿using Logitar.EventSourcing.Demo.Application;
+using Logitar.EventSourcing.Demo.Application.Products;
 using Logitar.EventSourcing.Demo.Authentication;
 using Logitar.EventSourcing.Demo.Constants;
+using Logitar.EventSourcing.Demo.Infrastructure.Queriers;
 using Logitar.EventSourcing.Demo.Infrastructure.Repositories;
 using Logitar.EventSourcing.Demo.Settings;
 using Microsoft.AspNetCore.Authentication;
@@ -39,7 +41,9 @@ internal class Startup : StartupBase
     services.AddSingleton(_basicAuthenticationSettings);
 
     services.AddMediatR(config => config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+    services.AddSingleton<IApplicationContext, HttpApplicationContext>();
     services.AddScoped<IProductRepository, ProductRepository>();
+    services.AddScoped<IProductQuerier, ProductQuerier>();
   }
 
   public override void Configure(IApplicationBuilder builder)

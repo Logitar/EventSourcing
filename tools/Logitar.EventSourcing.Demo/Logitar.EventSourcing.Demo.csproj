@@ -42,8 +42,4 @@
     <Using Include="System.Text.Json.Serialization" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Infrastructure\Queriers\" />
-  </ItemGroup>
-
 </Project>

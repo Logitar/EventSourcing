@@ -2,6 +2,7 @@
 using Logitar.EventSourcing.Demo.Application.Products.Models;
 using Logitar.EventSourcing.Demo.Application.Products.Queries;
 using Logitar.EventSourcing.Demo.Application.Search;
+using Logitar.EventSourcing.Demo.Models.Product;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -56,9 +57,9 @@ public class ProductController : ControllerBase
   }
 
   [HttpGet]
-  public async Task<ActionResult<SearchResults<ProductModel>>> SearchAsync(CancellationToken cancellationToken) // TODO(fpion): input parameters
+  public async Task<ActionResult<SearchResults<ProductModel>>> SearchAsync([FromQuery] SearchProductsParameters parameters, CancellationToken cancellationToken)
   {
-    SearchResults<ProductModel> products = await _mediator.Send(new SearchProductsQuery(new SearchProductsPayload()), cancellationToken);
+    SearchResults<ProductModel> products = await _mediator.Send(new SearchProductsQuery(parameters.ToPayload()), cancellationToken);
     return Ok(products);
   }
 
