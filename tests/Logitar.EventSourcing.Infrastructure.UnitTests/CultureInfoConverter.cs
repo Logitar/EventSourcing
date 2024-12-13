@@ -1,16 +1,15 @@
 ﻿namespace Logitar.EventSourcing.Infrastructure;
 
-internal class CultureInfoConverter : JsonConverter<CultureInfo?>
+public class CultureInfoConverter : JsonConverter<CultureInfo>
 {
   public override CultureInfo? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
   {
-    string? name = reader.GetString();
-
-    return name == null ? null : CultureInfo.GetCultureInfo(name);
+    string? value = reader.GetString();
+    return value == null ? null : CultureInfo.GetCultureInfo(value);
   }
 
-  public override void Write(Utf8JsonWriter writer, CultureInfo? value, JsonSerializerOptions options)
+  public override void Write(Utf8JsonWriter writer, CultureInfo culture, JsonSerializerOptions options)
   {
-    writer.WriteStringValue(value?.Name);
+    writer.WriteStringValue(culture.Name);
   }
 }

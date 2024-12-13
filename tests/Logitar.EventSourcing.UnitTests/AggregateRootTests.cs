@@ -7,222 +7,178 @@ public class AggregateRootTests
 {
   private readonly Faker _faker = new();
 
-  private readonly PersonAggregate _person;
-
-  public AggregateRootTests()
+  [Fact(DisplayName = "Apply: it should throw StreamMismatchException when applying an event from another stream.")]
+  public void Given_EventFromAnotherStream_When_Apply_Then_StreamMismatchException()
   {
-    _person = new(_faker.Person.FullName);
+    User user = new();
+
+    UserCreated created = new(_faker.Person.UserName)
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1
+    };
+
+    var exception = Assert.Throws<StreamMismatchException>(() => user.LoadFromChanges(user.Id, [created]));
+    Assert.Equal(user.Id.Value, exception.AggregateStreamId);
+    Assert.Equal(created.StreamId.Value, exception.EventStreamId);
+    Assert.Equal(created.Id.Value, exception.EventId);
   }
 
-  [Fact(DisplayName = "ClearChanges: it should clear uncommitted changes correctly.")]
-  public void ClearChanges_it_should_clear_uncommitted_changes_correctly()
+  [Fact(DisplayName = "Apply: it should throw UnexpectedEventVersionException when the event version was not expected.")]
+  public void Given_UnexpectedEventVersion_When_Apply_Then_UnexpectedEventVersionException()
   {
-    PersonAggregate person = new();
-    person.ClearChanges();
+    User user = new(_faker.Person.UserName);
 
-    person.Delete();
-    Assert.NotEmpty(person.Changes);
+    UserCreated? @event = Assert.Single(user.Changes) as UserCreated;
+    Assert.NotNull(@event);
 
-    person.ClearChanges();
-    Assert.Empty(person.Changes);
+    var exception = Assert.Throws<UnexpectedEventVersionException>(() => user.LoadFromChanges(user.Id, [@event]));
+    Assert.Equal(user.Id.Value, exception.AggregateId);
+    Assert.Equal(user.Version, exception.AggregateVersion);
+    Assert.Equal(@event.Id.Value, exception.EventId);
+    Assert.Equal(@event.Version, exception.EventVersion);
   }
 
-  [Fact(DisplayName = "Ctor: it is constructed correctly.")]
-  public void Ctor_it_is_constructed_correctly()
+  [Fact(DisplayName = "ClearChanges: it should clear the changes.")]
+  public void Given_Changes_When_ClearChanges_Then_ChangesAreCleared()
   {
-    AggregateId id = AggregateId.NewId();
-    PersonAggregate aggregate = new(id);
-    Assert.Equal(id, aggregate.Id);
+    User user = new(_faker.Person.UserName);
+    user.SignIn();
+    user.Disable();
+    user.Delete();
+
+    Assert.True(user.HasChanges);
+    Assert.NotEmpty(user.Changes);
+
+    user.ClearChanges();
+    Assert.False(user.HasChanges);
+    Assert.Empty(user.Changes);
+
+    user.ClearChanges();
   }
 
-  [Fact(DisplayName = "Ctor: it throws ArgumentException when identifier value is missing.")]
-  public void Ctor_it_throws_ArgumentException_when_identifier_value_is_missing()
+  [Theory(DisplayName = "ctor: it should assign the correct stream identifier.")]
+  [InlineData(null)]
+  [InlineData("test")]
+  public void Given_StreamId_When_ctor_Then_CorrectStreamId(string? idValue)
   {
-    AggregateId id = new();
-    var exception = Assert.Throws<ArgumentException>(() => new PersonAggregate(id));
+    if (idValue == null)
+    {
+      User user = new(id: null);
+      Assert.False(string.IsNullOrWhiteSpace(user.Id.Value));
+    }
+    else
+    {
+      StreamId id = new(idValue);
+      User user = new(id);
+      Assert.Equal(id, user.Id);
+    }
+  }
+
+  [Fact(DisplayName = "ctor: it should constuct an aggregate root without arguments.")]
+  public void Given_NoArgument_When_ctor_Then_DefaultAggregate()
+  {
+    User user = new();
+    Assert.False(string.IsNullOrWhiteSpace(user.Id.Value));
+  }
+
+  [Fact(DisplayName = "ctor: it should throw ArgumentException when the stream identifier is empty.")]
+  public void Given_EmptyStreamId_When_ctor_Then_ArgumentException()
+  {
+    var exception = Assert.Throws<ArgumentException>(() => new User(new StreamId()));
+    Assert.StartsWith("The identifier value is required.", exception.Message);
     Assert.Equal("id", exception.ParamName);
   }
 
-  [Fact(DisplayName = "Dispatch: it can be overriden to enhance performance.")]
-  public void Dispatch_it_can_be_overriden_to_enhance_performance()
+  [Fact(DisplayName = "Equals: it should return false when the aggregates have different identifiers.")]
+  public void Given_DifferentAggregateIds_When_Equals_Then_False()
   {
-    PersonAggregate person = new(_faker.Person.FullName);
-    ContactAggregate contact = new(person, ContactType.Email, _faker.Person.Email);
-    Assert.Equal(person.Id, contact.PersonId);
-    Assert.Equal(ContactType.Email, contact.Type);
-    Assert.Equal(_faker.Person.Email, contact.Value);
+    User user1 = new();
+    User user2 = new();
+    Assert.False(user1.Equals(user2));
   }
 
-  [Fact(DisplayName = "Equals: it is equal to the same type and identifier.")]
-  public void Equals_it_is_not_equal_to_the_same_type_and_identifier()
+  [Fact(DisplayName = "Equals: it should return true when the aggregates are the same.")]
+  public void Given_SameAggregates_When_Equals_Then_True()
   {
-    PersonAggregate other = new(_person.Id);
-    Assert.True(_person.Equals(other));
+    User user1 = new();
+    User user2 = new(user1.Id);
+    Assert.True(user1.Equals(user1));
+    Assert.True(user1.Equals(user2));
   }
 
-  [Fact(DisplayName = "Equals: it is not equal to different identifier.")]
-  public void Equals_it_is_not_equal_to_different_identifier()
+  [Fact(DisplayName = "Equals: it should return true when the aggregates have different types but the same identifier.")]
+  public void Given_DifferentAggregateTypes_When_Equals_Then_False()
   {
-    PersonAggregate other = new(new AggregateId(_person.Id.Value[1..]));
-    Assert.False(_person.Equals(other));
+    User user = new();
+    Session session = new(user.Id);
+    Assert.True(user.Equals(session));
   }
 
-  [Fact(DisplayName = "Equals: it is not equal to not another aggregate type.")]
-  public void Equals_it_is_not_equal_to_not_another_aggregate_type()
+  [Fact(DisplayName = "GetHashCode: it should return the correct hash code.")]
+  public void Given_Aggregate_When_GetHashCode_Then_CorrectHashCode()
   {
-    CarAggregate other = new();
-    Assert.False(_person.Equals(other));
+    User user = new();
+    Assert.Equal(user.Id.GetHashCode(), user.GetHashCode());
   }
 
-  [Fact(DisplayName = "Equals: it is not equal to not an aggregate.")]
-  public void Equals_it_is_not_equal_to_not_an_aggregate()
+  [Fact(DisplayName = "LoadFromChanges: it should assign the stream identifier and apply the changes.")]
+  public void Given_IdAndChanges_When_LoadFromChanges_Then_AggregateLoaded()
   {
-    Assert.False(_person.Equals(_person.Id));
-  }
+    StreamId id = StreamId.NewId();
 
-  [Fact(DisplayName = "Equals: it is not equal to null.")]
-  public void Equals_it_is_not_equal_to_null()
-  {
-    Assert.False(_person.Equals(null));
-  }
-
-  [Fact(DisplayName = "GetHashCode: it returns the correct hash code.")]
-  public void GetHashCode_it_returns_the_correct_hash_code()
-  {
-    int hashCode = HashCode.Combine(_person.GetType(), _person.Id);
-    Assert.Equal(hashCode, _person.GetHashCode());
-  }
-
-  [Fact(DisplayName = "Handle: it deletes the aggregate.")]
-  public void Handle_it_deletes_the_aggregate()
-  {
-    Assert.False(_person.IsDeleted);
-
-    _person.Delete();
-    Assert.True(_person.IsDeleted);
-  }
-
-  [Fact(DisplayName = "Handle: it throws CannotApplyPastEventException when event version is in the past.")]
-  public void Handle_it_throws_CannotApplyPastEventException_when_event_version_is_in_the_past()
-  {
-    PersonCreatedEvent e = new(_person.FullName)
+    UserCreated created = new(_faker.Person.UserName)
     {
-      AggregateId = _person.Id,
-      Version = 0
+      StreamId = id,
+      Version = 1
+    };
+    UserDeleted deleted = new()
+    {
+      StreamId = id,
+      Version = 2
     };
 
-    var exception = Assert.Throws<CannotApplyPastEventException>(() => _person.Handle(e));
-    Assert.Equal(_person.GetType().GetNamespaceQualifiedName(), exception.AggregateType);
-    Assert.Equal(_person.Id.ToString(), exception.AggregateId);
-    Assert.Equal(_person.Version, exception.AggregateVersion);
-    Assert.Equal(e.GetType().GetNamespaceQualifiedName(), exception.EventType);
-    Assert.Equal(e.Id.ToString(), exception.EventId);
-    Assert.Equal(e.Version, exception.EventVersion);
+    User user = new();
+    user.LoadFromChanges(id, [created, deleted]);
+
+    Assert.Equal(id, user.Id);
+    Assert.Equal(2, user.Version);
+
+    Assert.False(user.HasChanges);
+    Assert.Empty(user.Changes);
   }
 
-  [Fact(DisplayName = "Handle: it throws EventAggregateMismatchException when event does not belong to the aggregate.")]
-  public void Handle_it_throws_EventAggregateMismatchException_when_event_does_not_belong_to_the_aggregate()
+  [Fact(DisplayName = "Raise: it should apply a new change to the aggregate.")]
+  public void Given_NewChange_When_Raise_Then_ChangeApplied()
   {
-    PersonCreatedEvent e = new(_person.FullName)
-    {
-      AggregateId = new AggregateId(_person.Id.Value[1..])
-    };
+    User user = new(_faker.Person.UserName);
 
-    var exception = Assert.Throws<EventAggregateMismatchException>(() => _person.Handle(e));
-    Assert.Equal(_person.GetType().GetNamespaceQualifiedName(), exception.AggregateType);
-    Assert.Equal(_person.Id.ToString(), exception.AggregateId);
-    Assert.Equal(e.GetType().GetNamespaceQualifiedName(), exception.EventType);
-    Assert.Equal(e.Id.ToString(), exception.EventId);
-    Assert.Equal(e.AggregateId.ToString(), exception.EventAggregateId);
+    ActorId actorId = new(user.Id.Value);
+    user.SignIn(actorId);
+
+    user.Delete(actorId);
+    user.Disable(actorId);
+
+    Assert.Equal(4, user.Version);
+    Assert.Null(user.CreatedBy);
+    Assert.Equal(actorId, user.UpdatedBy);
+    Assert.True(user.IsDeleted);
+
+    Assert.True(user.HasChanges);
+    Assert.Equal(4, user.Changes.Count);
+    Assert.Contains(user.Changes, e => e is UserCreated created && created.UniqueName == _faker.Person.UserName && created.StreamId == user.Id && created.Version == 1);
+    Assert.Contains(user.Changes, e => e is UserSignedIn signedIn && signedIn.StreamId == user.Id && signedIn.Version == 2 && signedIn.ActorId == actorId);
+    Assert.Contains(user.Changes, e => e is UserDeleted deleted && deleted.StreamId == user.Id && deleted.Version == 3 && deleted.ActorId == actorId);
+    Assert.Contains(user.Changes, e => e is UserDisabled disabled && disabled.StreamId == user.Id && disabled.Version == 4 && disabled.ActorId == actorId);
+
+    Assert.Equal(((DomainEvent)user.Changes.First()).OccurredOn, user.CreatedOn);
+    Assert.Equal(((UserDisabled)user.Changes.Last()).OccurredOn, user.UpdatedOn);
   }
 
-  [Fact(DisplayName = "Handle: it undeletes the aggregate.")]
-  public void Handle_it_undeletes_the_aggregate()
+  [Fact(DisplayName = "ToString: it should return the correct string representation.")]
+  public void Given_Aggregate_When_ToString_Then_CorrectStringRepresentation()
   {
-    _person.Delete();
-    Assert.True(_person.IsDeleted);
-
-    _person.Undelete();
-    Assert.False(_person.IsDeleted);
-  }
-
-  [Fact(DisplayName = "Handle: it updates metadata correctly.")]
-  public void Handle_it_updates_metadata_correctly()
-  {
-    Assert.Equal("SYSTEM", _person.CreatedBy.Value);
-    Assert.Equal("SYSTEM", _person.UpdatedBy.Value);
-    Assert.True((DateTime.Now - _person.CreatedOn) < TimeSpan.FromSeconds(1));
-    Assert.True((DateTime.Now - _person.UpdatedOn) < TimeSpan.FromSeconds(1));
-    Assert.Equal(_person.CreatedOn, _person.UpdatedOn);
-    Assert.Equal(1, _person.Version);
-
-    DateTime createdOn = _person.CreatedOn;
-
-    PersonCreatedEvent renamed = new(new Faker().Person.FullName)
-    {
-      AggregateId = _person.Id,
-      Version = _person.Version + 1,
-      ActorId = ActorId.NewId(),
-      OccurredOn = DateTime.Now
-    };
-    _person.Handle(renamed);
-
-    Assert.Equal("SYSTEM", _person.CreatedBy.Value);
-    Assert.Equal(createdOn, _person.CreatedOn);
-    Assert.Equal(renamed.ActorId, _person.UpdatedBy);
-    Assert.Equal(renamed.OccurredOn, _person.UpdatedOn);
-    Assert.True(_person.CreatedOn < _person.UpdatedOn);
-    Assert.Equal(2, _person.Version);
-  }
-
-  [Fact(DisplayName = "Handle: method Apply is missing does nothing.")]
-  public void Handle_method_Apply_is_missing_does_nothing()
-  {
-    _person.Delete();
-  }
-
-  [Fact(DisplayName = "It should track changes correctly.")]
-  public void It_should_track_changes_correctly()
-  {
-    PersonAggregate person = new();
-    Assert.False(person.HasChanges);
-    Assert.Empty(person.Changes);
-
-    person.Delete();
-    Assert.True(person.HasChanges);
-    Assert.NotEmpty(person.Changes);
-  }
-
-  [Fact(DisplayName = "Raise: it applies the change correctly.")]
-  public void Raise_it_applies_the_change_correctly()
-  {
-    string name = _faker.Person.FullName;
-    ActorId actorId = ActorId.NewId();
-    DateTime occurredOn = DateTime.Now.AddYears(-20);
-
-    PersonAggregate person = new(name, actorId, occurredOn);
-    Assert.Equal(1, person.Version);
-    Assert.False(person.IsDeleted);
-    Assert.Equal(name, person.FullName);
-
-    List<DomainEvent>? changes = (List<DomainEvent>?)typeof(AggregateRoot)
-      .GetField("_changes", BindingFlags.Instance | BindingFlags.NonPublic)
-      ?.GetValue(person);
-    Assert.NotNull(changes);
-
-    DomainEvent e = changes.Single();
-    Assert.NotEqual(string.Empty, e.Id.Value);
-    Assert.Equal(person.Id, e.AggregateId);
-    Assert.Equal(person.Version, e.Version);
-    Assert.Equal(actorId, e.ActorId);
-    Assert.Equal(occurredOn, e.OccurredOn);
-    Assert.Null(e.IsDeleted);
-  }
-
-  [Fact(DisplayName = "ToString: it returns the correct string representation.")]
-  public void ToString_it_returns_the_correct_string_representation()
-  {
-    string s = string.Concat(_person.GetType(), " (Id=", _person.Id, ')');
-    Assert.Equal(s, _person.ToString());
+    User user = new();
+    Assert.Equal(string.Format("Logitar.EventSourcing.User (Id={0})", user.Id), user.ToString());
   }
 }

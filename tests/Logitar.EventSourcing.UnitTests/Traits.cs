@@ -2,5 +2,5 @@
 
 public static class Traits
 {
-  public const string Category = nameof(Category);
+  public const string Category = "Category";
 }

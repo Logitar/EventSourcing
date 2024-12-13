@@ -1,126 +1,89 @@
-﻿namespace Logitar.EventSourcing.Infrastructure;
+﻿using Bogus;
+
+namespace Logitar.EventSourcing.Infrastructure;
 
 [Trait(Traits.Category, Categories.Unit)]
 public class EventSerializerTests
 {
-  private readonly EventSerializer _serializer = new(new[] { new CultureInfoConverter() });
+  private readonly Faker _faker = new();
 
-  [Fact(DisplayName = "Ctor: it should construct the correct EventSerializer.")]
-  public void Ctor_it_should_construct_the_correct_EventSerializer()
+  private readonly EventSerializer _serializer = new();
+
+  [Fact(DisplayName = "ctor: it should register all converters when passing SerializerOptions.")]
+  public void Given_SerializerOptions_When_ctor_Then_AllConvertersRegistered()
   {
-    EventSerializer serializer = new();
+    JsonSerializerOptions serializerOptions = new();
+    serializerOptions.Converters.Add(new CultureInfoConverter());
+    EventSerializer serializer = new(serializerOptions);
 
-    FieldInfo? optionsField = typeof(EventSerializer).GetField("_options", BindingFlags.Instance | BindingFlags.NonPublic);
-    Assert.NotNull(optionsField);
+    UserLocaleChanged change = new(CultureInfo.GetCultureInfo("fr-CA"));
+    string json = serializer.Serialize(change);
+    Assert.Equal($@"{{""Locale"":""{change.Locale}""}}", json);
 
-    JsonSerializerOptions? options = (JsonSerializerOptions?)optionsField.GetValue(serializer);
-    Assert.NotNull(options);
-
-    Assert.Contains(options.Converters, converter => converter is ActorIdConverter);
-    Assert.Contains(options.Converters, converter => converter is AggregateIdConverter);
-    Assert.Contains(options.Converters, converter => converter is JsonStringEnumConverter);
+    UserLocaleChanged? deserialized = serializer.Deserialize(typeof(UserLocaleChanged), json) as UserLocaleChanged;
+    Assert.NotNull(deserialized);
+    Assert.Equal(change.Locale, deserialized.Locale);
   }
 
-  [Fact(DisplayName = "Ctor: it should construct the correct EventSerializer from a list of converters.")]
-  public void Ctor_it_should_construct_the_correct_EventSerializer_from_a_list_of_converters()
+  [Fact(DisplayName = "Deserialize: it should deserialize an event correctly.")]
+  public void Given_TypeAndJson_When_Deserialize_Then_DeserializedCorrectly()
   {
-    EventSerializer serializer = new(new[] { new CultureInfoConverter() });
+    Gender gender = _faker.PickRandom(Enum.GetValues<Gender>());
+    EventId id = EventId.NewId();
+    StreamId streamId = StreamId.NewId();
+    long version = 2;
+    ActorId actorId = ActorId.NewId();
+    DateTime occurredOn = DateTime.UtcNow;
+    string json = $"{{{string.Join(',',
+      $@"""Gender"":""{gender}""",
+      $@"""Id"":""{id}""",
+      $@"""StreamId"":""{streamId}""",
+      $@"""Version"":{version}",
+      $@"""ActorId"":""{actorId}""",
+      $@"""OccurredOn"":""{occurredOn.ToISOString()}""",
+      $@"""IsDeleted"":null")}}}";
 
-    FieldInfo? optionsField = typeof(EventSerializer).GetField("_options", BindingFlags.Instance | BindingFlags.NonPublic);
-    Assert.NotNull(optionsField);
-
-    JsonSerializerOptions? options = (JsonSerializerOptions?)optionsField.GetValue(serializer);
-    Assert.NotNull(options);
-
-    Assert.Contains(options.Converters, converter => converter is ActorIdConverter);
-    Assert.Contains(options.Converters, converter => converter is AggregateIdConverter);
-    Assert.Contains(options.Converters, converter => converter is EventIdConverter);
-    Assert.Contains(options.Converters, converter => converter is JsonStringEnumConverter);
-    Assert.Contains(options.Converters, converter => converter is CultureInfoConverter);
+    UserGenderChanged? change = _serializer.Deserialize(typeof(UserGenderChanged), json) as UserGenderChanged;
+    Assert.NotNull(change);
+    Assert.Equal(gender, change.Gender);
+    Assert.Equal(id, change.Id);
+    Assert.Equal(streamId, change.StreamId);
+    Assert.Equal(version, change.Version);
+    Assert.Equal(actorId, change.ActorId);
+    Assert.Equal(occurredOn, change.OccurredOn);
+    Assert.Null(change.IsDeleted);
   }
 
-  [Fact(DisplayName = "Deserialize: it should deserialize the correct domain event.")]
-  public void Deserialize_it_should_deserialize_the_correct_domain_event()
+  [Fact(DisplayName = "Deserialize: it should throw EventDeserializationFailedException when deserialization returned null.")]
+  public void Given_Null_When_Deserialize_Then_EventDeserializationFailedException()
   {
-    DefaultLanguageChangedEvent expected = new(CultureInfo.GetCultureInfo("en-CA"))
+    Type type = typeof(UserGenderChanged);
+    string json = "null";
+    var exception = Assert.Throws<EventDeserializationFailedException>(() => _serializer.Deserialize(type, json));
+    Assert.Equal(type.GetNamespaceQualifiedName(), exception.Type);
+    Assert.Equal(json, exception.Value);
+  }
+
+  [Fact(DisplayName = "Serialize: it should serialize an event correctly.")]
+  public void Given_Event_When_Serialize_Then_SerializedCorrectly()
+  {
+    Gender gender = _faker.PickRandom(Enum.GetValues<Gender>());
+    UserGenderChanged change = new(gender)
     {
-      Id = EventId.NewId(),
-      AggregateId = AggregateId.NewId(),
-      Version = 5,
-      ActorId = new ActorId("fpion"),
-      OccurredOn = DateTime.Now
-    };
-    EventEntityMock entity = new()
-    {
-      Id = expected.Id.Value,
-      EventType = expected.GetType().GetNamespaceQualifiedName(),
-      EventData = _serializer.Serialize(expected)
-    };
-
-    DomainEvent actual = _serializer.Deserialize(entity);
-    Assert.Equal(expected, actual);
-  }
-
-  [Fact(DisplayName = "Deserialize: it should throw EventDataDeserializationFailedException when deserialized failed.")]
-  public void Deserialize_it_should_throw_EventDataDeserializationFailedException_when_deserialized_failed()
-  {
-    EventEntityMock entity = new()
-    {
-      Id = EventId.NewId().Value,
-      EventType = typeof(DefaultLanguageChangedEvent).GetNamespaceQualifiedName(),
-      EventData = "null"
-    };
-    var exception = Assert.Throws<EventDataDeserializationFailedException>(() => _serializer.Deserialize(entity));
-    Assert.Equal(entity.Id, exception.EventId);
-    Assert.Equal(entity.EventType, exception.EventType);
-    Assert.Equal(entity.EventData, exception.EventData);
-  }
-
-  [Fact(DisplayName = "Deserialize: it should throw EventTypeNotFoundException when event type was not found.")]
-  public void Deserialize_it_should_throw_EventTypeNotFoundException_when_event_type_was_not_found()
-  {
-    EventEntityMock entity = new()
-    {
-      Id = EventId.NewId().Value,
-      EventType = "Test"
-    };
-    var exception = Assert.Throws<EventTypeNotFoundException>(() => _serializer.Deserialize(entity));
-    Assert.Equal(entity.Id, exception.EventId);
-    Assert.Equal(entity.EventType, exception.TypeName);
-  }
-
-  [Fact(DisplayName = "RegisterConverter: it should register the specified converter.")]
-  public void RegisterConverter_it_should_register_the_specified_converter()
-  {
-    EventSerializer serializer = new();
-
-    FieldInfo? optionsField = typeof(EventSerializer).GetField("_options", BindingFlags.Instance | BindingFlags.NonPublic);
-    Assert.NotNull(optionsField);
-
-    JsonSerializerOptions? options = (JsonSerializerOptions?)optionsField.GetValue(serializer);
-    Assert.NotNull(options);
-
-    Assert.DoesNotContain(options.Converters, converter => converter is CultureInfoConverter);
-
-    serializer.RegisterConverter(new CultureInfoConverter());
-    Assert.Contains(options.Converters, converter => converter is CultureInfoConverter);
-  }
-
-  [Fact(DisplayName = "Serialize: it should serialize events correctly.")]
-  public void Serialize_it_should_serialize_events_correctly()
-  {
-    DefaultLanguageChangedEvent e = new(CultureInfo.GetCultureInfo("en-CA"))
-    {
-      Id = EventId.NewId(),
-      AggregateId = AggregateId.NewId(),
-      Version = 5,
-      ActorId = new ActorId("fpion"),
-      OccurredOn = DateTime.Now
+      StreamId = StreamId.NewId(),
+      Version = 2,
+      ActorId = ActorId.NewId(),
+      OccurredOn = DateTime.UtcNow
     };
 
-    string expected = $@"{{""Culture"":""en-CA"",""Id"":""{e.Id}"",""AggregateId"":""{e.AggregateId}"",""Version"":5,""ActorId"":""fpion"",""OccurredOn"":{JsonSerializer.Serialize(e.OccurredOn)},""IsDeleted"":null}}";
-    string actual = _serializer.Serialize(e);
-
-    Assert.Equal(expected, actual);
+    string json = _serializer.Serialize(change);
+    Assert.Equal($"{{{string.Join(',',
+      $@"""Gender"":""{gender}""",
+      $@"""Id"":""{change.Id}""",
+      $@"""StreamId"":""{change.StreamId}""",
+      $@"""Version"":2",
+      $@"""ActorId"":""{change.ActorId}""",
+      $@"""OccurredOn"":""{change.OccurredOn.ToISOString()}""",
+      $@"""IsDeleted"":null")}}}", json);
   }
 }
