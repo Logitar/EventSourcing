@@ -14,8 +14,27 @@ public class EventStoreTests : EntityFrameworkCoreIntegrationTests
     _store = ServiceProvider.GetRequiredService<IEventStore>();
   }
 
-  [Fact(DisplayName = "FetchAsync: it should return null when no event was found.")]
-  public async Task Given_NoStream_When_FetchAsync_Then_NullReturned()
+  [Fact(DisplayName = "FetchAsync: it should return empty when no event was found (many).")]
+  public async Task Given_NoStream_When_FetchManyAsync_Then_EmptyReturned()
+  {
+    User user = new(Faker.Person.UserName);
+    StreamEntity entity = new(user.Id, user.GetType());
+    foreach (IEvent change in user.Changes)
+    {
+      entity.Append(EventConverter.ToEventEntity(change, entity));
+    }
+    EventContext.Streams.Add(entity);
+    await EventContext.SaveChangesAsync(CancellationToken);
+
+    IReadOnlyCollection<Stream> streams = await _store.FetchAsync(new FetchManyOptions
+    {
+      StreamTypes = [typeof(Session)]
+    }, CancellationToken);
+    Assert.Empty(streams);
+  }
+
+  [Fact(DisplayName = "FetchAsync: it should return null when no event was found (single).")]
+  public async Task Given_NoStream_When_FetchSingleAsync_Then_NullReturned()
   {
     User user = new(Faker.Person.UserName);
     StreamEntity entity = new(user.Id, user.GetType());
@@ -33,8 +52,8 @@ public class EventStoreTests : EntityFrameworkCoreIntegrationTests
     Assert.Null(stream);
   }
 
-  [Fact(DisplayName = "FetchAsync: it should return the correct stream when events were found.")]
-  public async Task Given_StreamsAndEvents_When_FetchAsync_Then_CorrectStreamReturned()
+  [Fact(DisplayName = "FetchAsync: it should return the correct stream when events were found (single).")]
+  public async Task Given_StreamsAndEvents_When_FetchSingleAsync_Then_CorrectStreamReturned()
   {
     User user = new(Faker.Person.UserName);
 
@@ -77,6 +96,132 @@ public class EventStoreTests : EntityFrameworkCoreIntegrationTests
       && (signedIn.OccurredOn - e.OccurredOn.AsUniversalTime() < TimeSpan.FromSeconds(1)) && e.IsDeleted == signedIn.IsDeleted && e.Data.Equals(signedIn));
     Assert.Contains(stream.Events, e => e.Id == disabled.Id && e.Version == disabled.Version && e.ActorId == disabled.ActorId
       && (disabled.OccurredOn - e.OccurredOn.AsUniversalTime() < TimeSpan.FromSeconds(1)) && e.IsDeleted == null && e.Data.Equals(disabled));
+  }
+
+  [Fact(DisplayName = "FetchAsync: it should return the correct streams when events were found (many).")]
+  public async Task Given_StreamsAndEvents_When_FetchManyAsync_Then_CorrectStreamReturned()
+  {
+    UserCreated userCreated = new(Faker.Person.UserName)
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1,
+      OccurredOn = DateTime.Now.AddDays(-1)
+    };
+    ActorId actorId = new(userCreated.StreamId.Value);
+    userCreated.ActorId = actorId;
+    UserSignedIn userSignedIn = new()
+    {
+      StreamId = StreamId.NewId(),
+      Version = 2,
+      OccurredOn = DateTime.Now.AddHours(-1),
+      ActorId = actorId
+    };
+    StreamEntity userStream = new(userCreated.StreamId, typeof(User));
+    userStream.Append(EventConverter.ToEventEntity(userCreated, userStream));
+    userStream.Append(EventConverter.ToEventEntity(userSignedIn, userStream));
+
+    SessionCreated sessionCreated = new(userCreated.StreamId)
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1,
+      OccurredOn = DateTime.Now.AddHours(-1),
+      ActorId = actorId
+    };
+    StreamEntity sessionStream = new(sessionCreated.StreamId, typeof(Session));
+    sessionStream.Append(EventConverter.ToEventEntity(sessionCreated, sessionStream));
+
+    UserDeleted userDeleted = new()
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1,
+      OccurredOn = DateTime.Now.AddDays(-10),
+      ActorId = actorId,
+      IsDeleted = true
+    };
+    StreamEntity deletedUserStream = new(userDeleted.StreamId, typeof(User));
+    deletedUserStream.Append(EventConverter.ToEventEntity(userDeleted, deletedUserStream));
+
+    RoleCreated roleCreated = new("admin")
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1,
+      OccurredOn = DateTime.Now.AddDays(-20),
+      ActorId = actorId
+    };
+    StreamEntity roleStream = new(roleCreated.StreamId, typeof(Role));
+    roleStream.Append(EventConverter.ToEventEntity(roleCreated, roleStream));
+
+    UserCreated oldUserCreated = new(Faker.Internet.UserName())
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1,
+      OccurredOn = DateTime.Now.AddYears(-1),
+      ActorId = actorId
+    };
+    StreamEntity oldUserStream = new(oldUserCreated.StreamId, typeof(User));
+    oldUserStream.Append(EventConverter.ToEventEntity(oldUserCreated, oldUserStream));
+
+    UserCreated newUserCreated = new(Faker.Internet.UserName())
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1,
+      OccurredOn = DateTime.Now,
+      ActorId = actorId
+    };
+    StreamEntity newUserStream = new(newUserCreated.StreamId, typeof(User));
+    newUserStream.Append(EventConverter.ToEventEntity(newUserCreated, newUserStream));
+
+    SessionCreated systemSession = new(userCreated.StreamId)
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1,
+      OccurredOn = DateTime.Now.AddDays(-3)
+    };
+    StreamEntity systemSessionStream = new(systemSession.StreamId, typeof(Session));
+    systemSessionStream.Append(EventConverter.ToEventEntity(systemSession, systemSessionStream));
+
+    UserCreated unwantedUserCreated = new(Faker.Internet.UserName())
+    {
+      StreamId = StreamId.NewId(),
+      Version = 1,
+      OccurredOn = DateTime.Now.AddMinutes(-10),
+      ActorId = actorId
+    };
+    StreamEntity unwantedUserStream = new(unwantedUserCreated.StreamId, typeof(User));
+    unwantedUserStream.Append(EventConverter.ToEventEntity(unwantedUserCreated, unwantedUserStream));
+
+    EventContext.Streams.AddRange(userStream, sessionStream, deletedUserStream, roleStream, oldUserStream, newUserStream, systemSessionStream, unwantedUserStream);
+    await EventContext.SaveChangesAsync(CancellationToken);
+
+    FetchManyOptions options = new()
+    {
+      StreamTypes = [typeof(User), typeof(Session)],
+      StreamIds =
+      [
+        userCreated.StreamId,
+        sessionCreated.StreamId,
+        userDeleted.StreamId,
+        roleCreated.StreamId,
+        oldUserCreated.StreamId,
+        newUserCreated.StreamId,
+        systemSession.StreamId,
+        StreamId.NewId(),
+        new StreamId()
+      ],
+      FromVersion = 1,
+      ToVersion = 1,
+      OccurredFrom = DateTime.Now.AddMonths(-1),
+      OccurredTo = DateTime.Now.AddMinutes(-1),
+      Actor = new ActorFilter(actorId),
+      IsDeleted = false
+    };
+    IReadOnlyCollection<Stream> streams = await _store.FetchAsync(options, CancellationToken);
+
+    Assert.Equal(2, streams.Count);
+    Assert.Contains(streams, s => s.Id == userCreated.StreamId && typeof(User).Equals(s.Type) && s.Version == 1 && s.CreatedBy == actorId && s.CreatedOn.HasValue
+      && s.UpdatedBy == s.CreatedBy && s.UpdatedOn == s.CreatedOn && !s.IsDeleted && Assert.Single(s.Events).Id == userCreated.Id);
+    Assert.Contains(streams, s => s.Id == sessionCreated.StreamId && typeof(Session).Equals(s.Type) && s.Version == 1 && s.CreatedBy == actorId
+      && s.CreatedOn.HasValue && s.UpdatedBy == s.CreatedBy && s.UpdatedOn == s.CreatedOn && Assert.Single(s.Events).Id == sessionCreated.Id);
   }
 
   [Fact(DisplayName = "SaveChangesAsync: it should commit the changes to streams and events to the database.")]
