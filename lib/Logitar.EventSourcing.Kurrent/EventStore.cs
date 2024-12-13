@@ -151,6 +151,11 @@ public class EventStore : Infrastructure.EventStore
   /// <returns>The retrieved stream, or null if it was not found.</returns>
   public override async Task<Stream?> FetchAsync(StreamId streamId, FetchOptions? options, CancellationToken cancellationToken)
   {
+    if (string.IsNullOrWhiteSpace(streamId.Value))
+    {
+      return null;
+    }
+
     options ??= new FetchOptions();
 
     StreamPosition revision = options.FromVersion > 0 ? StreamPosition.FromInt64(options.FromVersion - 1) : StreamPosition.Start;
