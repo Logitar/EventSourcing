@@ -1,4 +1,5 @@
-﻿using EventStore.Client;
+﻿using Bogus;
+using EventStore.Client;
 using Logitar.EventSourcing.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +8,9 @@ namespace Logitar.EventSourcing.Kurrent;
 
 public abstract class KurrentIntegrationTests
 {
+  protected CancellationToken CancellationToken { get; } = default;
+  protected Faker Faker { get; } = new();
+
   protected IConfiguration Configuration { get; }
   protected IServiceProvider ServiceProvider { get; }
 
