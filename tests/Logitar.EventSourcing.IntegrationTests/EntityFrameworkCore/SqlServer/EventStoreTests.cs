@@ -111,7 +111,7 @@ public class EventStoreTests : EntityFrameworkCoreIntegrationTests
     userCreated.ActorId = actorId;
     UserSignedIn userSignedIn = new()
     {
-      StreamId = StreamId.NewId(),
+      StreamId = userCreated.StreamId,
       Version = 2,
       OccurredOn = DateTime.Now.AddHours(-1),
       ActorId = actorId
