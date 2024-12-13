@@ -18,10 +18,14 @@ public class ActorIdConverterTests
     Assert.Equal(value, actorId.Value);
   }
 
-  [Fact(DisplayName = "Read: it should read the default instance from a null string value.")]
-  public void Given_NullValue_When_Read_Then_DefaultActorId()
+  [Theory(DisplayName = "Read: it should read the default instance from a null or empty string value.")]
+  [InlineData(null)]
+  [InlineData("")]
+  [InlineData("  ")]
+  public void Given_NullValue_When_Read_Then_DefaultActorId(string? value)
   {
-    ActorId actorId = JsonSerializer.Deserialize<ActorId>("null", _serializerOptions);
+    value = value == null ? "null" : string.Concat('"', value, '"');
+    ActorId actorId = JsonSerializer.Deserialize<ActorId>(value, _serializerOptions);
     Assert.True(string.IsNullOrEmpty(actorId.Value));
   }
 

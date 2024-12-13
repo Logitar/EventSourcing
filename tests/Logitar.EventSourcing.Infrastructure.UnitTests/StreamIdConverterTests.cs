@@ -18,11 +18,15 @@ public class StreamIdConverterTests
     Assert.Equal(value, streamId.Value);
   }
 
-  [Fact(DisplayName = "Read: it should read the default instance from a null string value.")]
-  public void Given_NullValue_When_Read_Then_DefaultStreamId()
+  [Theory(DisplayName = "Read: it should read the default instance from a null or empty string value.")]
+  [InlineData(null)]
+  [InlineData("")]
+  [InlineData("  ")]
+  public void Given_NullValue_When_Read_Then_DefaultStreamId(string? value)
   {
-    StreamId streamId = JsonSerializer.Deserialize<StreamId>("null", _serializerOptions);
-    Assert.True(string.IsNullOrEmpty(streamId.Value));
+    value = value == null ? "null" : string.Concat('"', value, '"');
+    StreamId actorId = JsonSerializer.Deserialize<StreamId>(value, _serializerOptions);
+    Assert.True(string.IsNullOrEmpty(actorId.Value));
   }
 
   [Fact(DisplayName = "Write: it should write the corerct string representation.")]

@@ -15,8 +15,7 @@ public class ActorIdConverter : JsonConverter<ActorId>
   public override ActorId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
   {
     string? value = reader.GetString();
-
-    return value == null ? default : new ActorId(value);
+    return string.IsNullOrWhiteSpace(value) ? new ActorId() : new(value);
   }
 
   /// <summary>

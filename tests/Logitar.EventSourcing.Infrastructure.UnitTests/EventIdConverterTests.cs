@@ -18,11 +18,15 @@ public class EventIdConverterTests
     Assert.Equal(value, eventId.Value);
   }
 
-  [Fact(DisplayName = "Read: it should read the default instance from a null string value.")]
-  public void Given_NullValue_When_Read_Then_DefaultEventId()
+  [Theory(DisplayName = "Read: it should read the default instance from a null or empty string value.")]
+  [InlineData(null)]
+  [InlineData("")]
+  [InlineData("  ")]
+  public void Given_NullValue_When_Read_Then_DefaultEventId(string? value)
   {
-    EventId eventId = JsonSerializer.Deserialize<EventId>("null", _serializerOptions);
-    Assert.True(string.IsNullOrEmpty(eventId.Value));
+    value = value == null ? "null" : string.Concat('"', value, '"');
+    EventId actorId = JsonSerializer.Deserialize<EventId>(value, _serializerOptions);
+    Assert.True(string.IsNullOrEmpty(actorId.Value));
   }
 
   [Fact(DisplayName = "Write: it should write the corerct string representation.")]

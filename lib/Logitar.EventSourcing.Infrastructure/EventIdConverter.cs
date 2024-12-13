@@ -15,8 +15,7 @@ public class EventIdConverter : JsonConverter<EventId>
   public override EventId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
   {
     string? value = reader.GetString();
-
-    return value == null ? default : new EventId(value);
+    return string.IsNullOrWhiteSpace(value) ? new EventId() : new(value);
   }
 
   /// <summary>

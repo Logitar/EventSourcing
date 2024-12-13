@@ -15,8 +15,7 @@ public class StreamIdConverter : JsonConverter<StreamId>
   public override StreamId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
   {
     string? value = reader.GetString();
-
-    return value == null ? default : new StreamId(value);
+    return string.IsNullOrWhiteSpace(value) ? new StreamId() : new(value);
   }
 
   /// <summary>
