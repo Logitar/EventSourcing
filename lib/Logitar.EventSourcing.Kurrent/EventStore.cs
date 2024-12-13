@@ -66,6 +66,11 @@ public class EventStore : Infrastructure.EventStore
     await foreach (ResolvedEvent resolvedEvent in result)
     {
       EventRecord record = resolvedEvent.Event;
+      if (record.EventStreamId.StartsWith('$') || record.EventType.StartsWith('$'))
+      {
+        continue;
+      }
+
       Event @event = Converter.ToEvent(record);
 
       if (options.FromVersion > 0 && options.FromVersion > @event.Version)
@@ -195,8 +200,12 @@ public class EventStore : Infrastructure.EventStore
         types.Add(type);
       }
     }
-    Type? streamType = types.Count == 1 ? types.Single() : null;
+    if (events.Count < 1)
+    {
+      return null;
+    }
 
+    Type? streamType = types.Count == 1 ? types.Single() : null;
     Stream stream = new(streamId, streamType, events);
     return (options.IsDeleted.HasValue && options.IsDeleted.Value != stream.IsDeleted) ? null : stream;
   }
