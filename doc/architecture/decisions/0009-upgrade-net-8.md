@@ -1,4 +1,4 @@
-# 2. Upgrade to .NET 8
+# 9. Upgrade to .NET 8
 
 Date: 2023-12-30
 
