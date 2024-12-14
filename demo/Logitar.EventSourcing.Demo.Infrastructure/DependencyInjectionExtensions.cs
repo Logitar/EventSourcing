@@ -1,4 +1,5 @@
 ﻿using Logitar.EventSourcing.Demo.Application;
+using Logitar.EventSourcing.Demo.Application.Carts;
 using Logitar.EventSourcing.Demo.Application.Products;
 using Logitar.EventSourcing.Demo.Infrastructure.Queriers;
 using Logitar.EventSourcing.Demo.Infrastructure.Repositories;
@@ -14,8 +15,23 @@ public static class DependencyInjectionExtensions
     return services
       .AddLogitarEventSourcingDemoApplication()
       .AddMediatR(config => config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()))
+      .AddSingleton<IEventSerializer, DemoEventSerializer>()
       .AddScoped<IEventBus, EventBus>()
-      .AddScoped<IProductQuerier, ProductQuerier>()
+      .AddQueriers()
+      .AddRepositories();
+  }
+
+  private static IServiceCollection AddQueriers(this IServiceCollection services)
+  {
+    return services
+      .AddScoped<ICartQuerier, CartQuerier>()
+      .AddScoped<IProductQuerier, ProductQuerier>();
+  }
+
+  private static IServiceCollection AddRepositories(this IServiceCollection services)
+  {
+    return services
+      .AddScoped<ICartRepository, CartRepository>()
       .AddScoped<IProductRepository, ProductRepository>();
   }
 }

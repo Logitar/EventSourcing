@@ -21,6 +21,77 @@ namespace Logitar.EventSourcing.Demo.Infrastructure.PostgreSQL.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Logitar.EventSourcing.Demo.Infrastructure.Entities.CartEntity", b =>
+                {
+                    b.Property<int>("CartId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartId"));
+
+                    b.Property<string>("AggregateId")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<DateTime>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("Version")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("CartId");
+
+                    b.HasIndex("AggregateId")
+                        .IsUnique();
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("CreatedOn");
+
+                    b.HasIndex("UpdatedBy");
+
+                    b.HasIndex("UpdatedOn");
+
+                    b.HasIndex("Version");
+
+                    b.ToTable("Carts", (string)null);
+                });
+
+            modelBuilder.Entity("Logitar.EventSourcing.Demo.Infrastructure.Entities.CartItemEntity", b =>
+                {
+                    b.Property<int>("CartId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CartId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("Quantity");
+
+                    b.ToTable("CartItems", (string)null);
+                });
+
             modelBuilder.Entity("Logitar.EventSourcing.Demo.Infrastructure.Entities.ProductEntity", b =>
                 {
                     b.Property<int>("ProductId")
@@ -107,6 +178,35 @@ namespace Logitar.EventSourcing.Demo.Infrastructure.PostgreSQL.Migrations
                     b.HasIndex("Version");
 
                     b.ToTable("Products", (string)null);
+                });
+
+            modelBuilder.Entity("Logitar.EventSourcing.Demo.Infrastructure.Entities.CartItemEntity", b =>
+                {
+                    b.HasOne("Logitar.EventSourcing.Demo.Infrastructure.Entities.CartEntity", "Cart")
+                        .WithMany("Items")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Logitar.EventSourcing.Demo.Infrastructure.Entities.ProductEntity", "Product")
+                        .WithMany("CartItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Logitar.EventSourcing.Demo.Infrastructure.Entities.CartEntity", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Logitar.EventSourcing.Demo.Infrastructure.Entities.ProductEntity", b =>
+                {
+                    b.Navigation("CartItems");
                 });
 #pragma warning restore 612, 618
         }

@@ -13,6 +13,10 @@ internal class ExceptionHandling : ExceptionFilterAttribute
     {
       base.OnException(context); // TODO(fpion): 400 BadRequest
     }
+    else if (context.Exception is ProductNotFoundException productNotFound)
+    {
+      base.OnException(context); // TODO(fpion): 404 NotFound
+    }
     else if (context.Exception is SkuAlreadyUsedException skuAlreadyUsed)
     {
       base.OnException(context); // TODO(fpion): 409 Conflict

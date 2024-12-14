@@ -45,7 +45,7 @@ internal class ProductQuerier : IProductQuerier
     ProductEntity? product = await _products.AsNoTracking()
       .SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
 
-    return product == null ? null : ToProductModel(product);
+    return product == null ? null : Mapper.ToProductModel(product);
   }
   public async Task<ProductModel?> ReadAsync(string sku, CancellationToken cancellationToken)
   {
@@ -54,7 +54,7 @@ internal class ProductQuerier : IProductQuerier
     ProductEntity? product = await _products.AsNoTracking()
       .SingleOrDefaultAsync(x => x.SkuNormalized == skuNormalized, cancellationToken);
 
-    return product == null ? null : ToProductModel(product);
+    return product == null ? null : Mapper.ToProductModel(product);
   }
 
   public async Task<SearchResults<ProductModel>> SearchAsync(SearchProductsPayload payload, CancellationToken cancellationToken)
@@ -117,21 +117,8 @@ internal class ProductQuerier : IProductQuerier
     query = query.ApplyPaging(payload);
 
     ProductEntity[] products = await query.ToArrayAsync(cancellationToken);
-    IEnumerable<ProductModel> items = products.Select(ToProductModel);
+    IEnumerable<ProductModel> items = products.Select(Mapper.ToProductModel);
 
     return new SearchResults<ProductModel>(items, total);
   }
-
-  private static ProductModel ToProductModel(ProductEntity product) => new()
-  {
-    Id = product.Id,
-    Version = product.Version,
-    CreatedOn = product.CreatedOn.AsUniversalTime(),
-    UpdatedOn = product.UpdatedOn.AsUniversalTime(),
-    Sku = product.Sku,
-    DisplayName = product.DisplayName,
-    Description = product.Description,
-    Price = product.Price,
-    PictureUrl = product.PictureUrl
-  };
 }
