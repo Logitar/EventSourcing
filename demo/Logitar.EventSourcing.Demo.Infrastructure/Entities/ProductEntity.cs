@@ -19,11 +19,13 @@ internal class ProductEntity : AggregateEntity
   public decimal? Price { get; private set; }
   public string? PictureUrl { get; private set; }
 
-  public ProductEntity(ProductCreated e) : base(e)
-  {
-    Id = e.StreamId.ToGuid();
+  public List<CartItemEntity> CartItems { get; private set; } = [];
 
-    Sku = e.Sku.Value;
+  public ProductEntity(ProductCreated @event) : base(@event)
+  {
+    Id = @event.StreamId.ToGuid();
+
+    Sku = @event.Sku.Value;
   }
 
   private ProductEntity() : base()

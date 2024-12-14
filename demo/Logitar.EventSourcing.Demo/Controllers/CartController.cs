@@ -39,7 +39,7 @@ public class CartController : ControllerBase
       return cart == null ? NotFound() : Ok(cart);
     }
 
-    throw new NotImplementedException(); // TODO(fpion): implement
+    throw new NotImplementedException(); // TODO(fpion): 400 BadRequest
   }
 
   [HttpGet("{id}")]
