@@ -1,6 +1,8 @@
-﻿namespace Logitar.EventSourcing.Demo.Application;
+﻿using Logitar.EventSourcing.Demo.Domain.Errors;
 
-public class TooManyResultsException : Exception
+namespace Logitar.EventSourcing.Demo.Application;
+
+public class TooManyResultsException : BadRequestException
 {
   private const string ErrorMessage = "There are too many results.";
 
@@ -18,6 +20,17 @@ public class TooManyResultsException : Exception
   {
     get => (int)Data[nameof(ActualCount)]!;
     private set => Data[nameof(ActualCount)] = value;
+  }
+
+  public override Error Error
+  {
+    get
+    {
+      Error error = new(this.GetErrorCode(), ErrorMessage);
+      error.AddData(nameof(ExpectedCount), ExpectedCount);
+      error.AddData(nameof(ActualCount), ActualCount);
+      return error;
+    }
   }
 
   public TooManyResultsException(Type type, int expectedCount, int actualCount) : base(BuildMessage(type, expectedCount, actualCount))

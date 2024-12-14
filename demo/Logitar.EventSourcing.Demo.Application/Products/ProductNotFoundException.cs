@@ -1,8 +1,9 @@
-﻿using Logitar.EventSourcing.Demo.Domain.Products;
+﻿using Logitar.EventSourcing.Demo.Domain.Errors;
+using Logitar.EventSourcing.Demo.Domain.Products;
 
 namespace Logitar.EventSourcing.Demo.Application.Products;
 
-public class ProductNotFoundException : Exception
+public class ProductNotFoundException : NotFoundException
 {
   private const string ErrorMessage = "The specified product could not be found.";
 
@@ -15,6 +16,17 @@ public class ProductNotFoundException : Exception
   {
     get => (string)Data[nameof(PropertyName)]!;
     private set => Data[nameof(PropertyName)] = value;
+  }
+
+  public override Error Error
+  {
+    get
+    {
+      Error error = new(this.GetErrorCode(), ErrorMessage);
+      error.AddData(nameof(ProductId), ProductId);
+      error.AddData(nameof(PropertyName), PropertyName);
+      return error;
+    }
   }
 
   public ProductNotFoundException(ProductId productId, string propertyName) : base(BuildMessage(productId, propertyName))
