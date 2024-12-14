@@ -34,7 +34,8 @@ internal class Startup : StartupBase
   {
     base.ConfigureServices(services);
 
-    services.AddControllers(options => options.Filters.Add<ExceptionHandling>());
+    services.AddControllers(options => options.Filters.Add<ExceptionHandling>())
+      .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
     services.AddProblemDetails();
 
     AuthenticationBuilder authenticationBuilder = services.AddAuthentication()
