@@ -1,6 +1,7 @@
 ﻿using Logitar.EventSourcing.Demo.Application.Carts;
 using Logitar.EventSourcing.Demo.Application.Carts.Models;
 using Logitar.EventSourcing.Demo.Domain.Carts;
+using Logitar.EventSourcing.Demo.Domain.Products;
 using Logitar.EventSourcing.Demo.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,17 @@ internal class CartQuerier : ICartQuerier
   public CartQuerier(DemoContext context)
   {
     _carts = context.Carts;
+  }
+
+  public async Task<IReadOnlyCollection<CartId>> FindIdsAsync(ProductId productId, CancellationToken cancellationToken)
+  {
+    string[] aggregateIds = await _carts.AsNoTracking()
+      .Include(x => x.Items).ThenInclude(x => x.Product)
+      .Where(x => x.Items.Any(item => item.Product!.Id == productId.ToGuid()))
+      .Select(x => x.AggregateId)
+      .ToArrayAsync(cancellationToken);
+
+    return aggregateIds.Select(value => new CartId(value)).ToArray();
   }
 
   public async Task<CartModel> ReadAsync(Cart cart, CancellationToken cancellationToken)

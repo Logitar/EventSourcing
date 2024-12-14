@@ -14,6 +14,11 @@ internal class CartRepository : Repository, ICartRepository
     return await LoadAsync<Cart>(id.StreamId, cancellationToken);
   }
 
+  public async Task<IReadOnlyCollection<Cart>> LoadAsync(IEnumerable<CartId> ids, CancellationToken cancellationToken)
+  {
+    return await LoadAsync<Cart>(ids.Select(id => id.StreamId), cancellationToken);
+  }
+
   public async Task SaveAsync(Cart cart, CancellationToken cancellationToken)
   {
     await base.SaveAsync(cart, cancellationToken);
