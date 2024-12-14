@@ -26,6 +26,7 @@ internal static class Mapper
     }
 
     MapAggregate(source, destination);
+    destination.Id = source.Id;
 
     return destination;
   }
@@ -34,7 +35,6 @@ internal static class Mapper
   {
     ProductModel destination = new()
     {
-      Id = source.Id,
       Sku = source.Sku,
       DisplayName = source.DisplayName,
       Description = source.Description,
@@ -43,6 +43,7 @@ internal static class Mapper
     };
 
     MapAggregate(source, destination);
+    destination.Id = source.Id;
 
     return destination;
   }

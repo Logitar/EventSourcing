@@ -53,6 +53,13 @@ internal class Startup : StartupBase
     services.AddSingleton<IApplicationContext, HttpApplicationContext>();
 
     string connectionString;
+    if (_useKurrentEventStore)
+    {
+      connectionString = _configuration.GetValue<string>("ESDBCONNSTR_Demo")
+        ?? throw new InvalidOperationException("The configuration key 'ESDBCONNSTR_Demo' is required.");
+      services.AddLogitarEventSourcingWithKurrent(connectionString);
+    }
+
     DatabaseProvider databaseProvider = _configuration.GetValue<DatabaseProvider?>("DatabaseProvider")
       ?? throw new InvalidOperationException("The configuration key 'DatabaseProvider' is required.");
     switch (databaseProvider)
@@ -60,29 +67,23 @@ internal class Startup : StartupBase
       case DatabaseProvider.PostgreSQL:
         connectionString = _configuration.GetValue<string>("POSTGRESQLCONNSTR_Demo")
           ?? throw new InvalidOperationException("The configuration key 'POSTGRESQLCONNSTR_Demo' is required.");
-        services.AddLogitarEventSourcingDemoInfrastructureWithPostgreSQL(connectionString);
         if (!_useKurrentEventStore)
         {
           services.AddLogitarEventSourcingWithEntityFrameworkCorePostgreSQL(connectionString);
         }
+        services.AddLogitarEventSourcingDemoInfrastructureWithPostgreSQL(connectionString);
         break;
       case DatabaseProvider.SqlServer:
         connectionString = _configuration.GetValue<string>("SQLCONNSTR_Demo")
           ?? throw new InvalidOperationException("The configuration key 'SQLCONNSTR_Demo' is required.");
-        services.AddLogitarEventSourcingDemoInfrastructureWithSqlServer(connectionString);
         if (!_useKurrentEventStore)
         {
           services.AddLogitarEventSourcingWithEntityFrameworkCoreSqlServer(connectionString);
         }
+        services.AddLogitarEventSourcingDemoInfrastructureWithSqlServer(connectionString);
         break;
       default:
         throw new DatabaseProviderNotSupportedException(databaseProvider);
-    }
-    if (_useKurrentEventStore)
-    {
-      connectionString = _configuration.GetValue<string>("ESDBCONNSTR_Demo")
-        ?? throw new InvalidOperationException("The configuration key 'ESDBCONNSTR_Demo' is required.");
-      services.AddLogitarEventSourcingWithKurrent(connectionString);
     }
   }
 

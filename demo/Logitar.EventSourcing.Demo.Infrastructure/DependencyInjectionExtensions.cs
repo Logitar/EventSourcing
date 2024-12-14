@@ -15,6 +15,7 @@ public static class DependencyInjectionExtensions
     return services
       .AddLogitarEventSourcingDemoApplication()
       .AddMediatR(config => config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()))
+      .AddSingleton<IEventSerializer, DemoEventSerializer>()
       .AddScoped<IEventBus, EventBus>()
       .AddQueriers()
       .AddRepositories();
