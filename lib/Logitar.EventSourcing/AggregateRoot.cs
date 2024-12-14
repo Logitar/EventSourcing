@@ -8,34 +8,34 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
   /// <summary>
   /// Gets or sets the identifier of the aggregate.
   /// </summary>
-  public StreamId Id { get; protected set; }
+  public StreamId Id { get; private set; }
   /// <summary>
   /// Gets or sets the version of the aggregate.
   /// </summary>
-  public long Version { get; protected set; }
+  public long Version { get; private set; }
 
   /// <summary>
   /// Gets or sets the identifier of the actor who created the aggregate.
   /// </summary>
-  public ActorId? CreatedBy { get; protected set; }
+  public ActorId? CreatedBy { get; private set; }
   /// <summary>
   /// Gets or sets the date and time when the aggregate was created.
   /// </summary>
-  public DateTime CreatedOn { get; protected set; }
+  public DateTime CreatedOn { get; private set; }
 
   /// <summary>
   /// Gets or sets the identifier of the actor who updated the aggregate lastly.
   /// </summary>
-  public ActorId? UpdatedBy { get; protected set; }
+  public ActorId? UpdatedBy { get; private set; }
   /// <summary>
   /// Gets or sets the date and time when the aggregate was updated lastly.
   /// </summary>
-  public DateTime UpdatedOn { get; protected set; }
+  public DateTime UpdatedOn { get; private set; }
 
   /// <summary>
   /// Gets or sets a value indicating whether or not the aggregate is deleted.
   /// </summary>
-  public bool IsDeleted { get; protected set; }
+  public bool IsDeleted { get; private set; }
 
   /// <summary>
   /// The uncommitted changes of the aggregate.
@@ -86,11 +86,54 @@ public abstract class AggregateRoot : IDeletableAggregate, IVersionedAggregate
   /// <param name="changes">The changes of the aggregate.</param>
   public virtual void LoadFromChanges(StreamId id, IEnumerable<IEvent> changes)
   {
+    if (Version > 0)
+    {
+      throw new InvalidOperationException("The aggregate cannot be loaded once changes have been applied to it.");
+    }
+
     Id = id;
 
     foreach (IEvent change in changes)
     {
       Apply(change);
+    }
+  }
+
+  /// <summary>
+  /// Loads an aggregate from a snapshot, and optionally its changes, assigning its identifier.
+  /// </summary>
+  /// <param name="id">The identifier of the aggregate.</param>
+  /// <param name="snapshot">The snapshot of the aggregate.</param>
+  /// <param name="changes">The changes of the aggregate.</param>
+  public virtual void LoadFromSnapshot(StreamId id, AggregateSnapshot snapshot, IEnumerable<IEvent>? changes = null)
+  {
+    if (Version > 0)
+    {
+      throw new InvalidOperationException("The aggregate cannot be loaded once changes have been applied to it.");
+    }
+    else if (snapshot.Version <= 0)
+    {
+      throw new ArgumentOutOfRangeException(nameof(snapshot), "The version must be greater than 0.");
+    }
+
+    Id = id;
+
+    Version = snapshot.Version;
+
+    CreatedBy = snapshot.CreatedBy;
+    CreatedOn = snapshot.CreatedOn;
+
+    UpdatedBy = snapshot.UpdatedBy;
+    UpdatedOn = snapshot.UpdatedOn;
+
+    IsDeleted = snapshot.IsDeleted;
+
+    if (changes != null)
+    {
+      foreach (IEvent change in changes)
+      {
+        Apply(change);
+      }
     }
   }
 
