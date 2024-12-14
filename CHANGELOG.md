@@ -7,15 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [7.0.0] - 2024-12-14
+
+There are so many changes in this version that I may have missed some.
+
 ### Added
 
-- Documented upgrade to .NET 8.
+- Documented upgrade to .NET 8, .NET 9 and rewriting of the framework.
+- A lot of interfaces, such as `IAggregate` and `IEvent`, allowing to use your own implementation of those concepts.
+- The `IEventStore` interface and its `EventStore` implementations.
+- Integration of [EventStoreDB/Kurrent](https://www.eventstore.com/).
+- Loading an aggregate from a snapshot.
 
 ### Changed
 
 - Migrated to .NET9.
 - Upgraded NuGet packages.
 - Refactored domain exceptions.
+- Rewrote the framework while focusing on event streams as well as aggregates. Previous versions database entities are not compatible with v7+.
+- Aggregate `Apply` methods must be renamed to `Handle`, in accordance to C# event terminology.
+- The `AggregateId` is now the `StreamId`.
+- The `IAggregateRepository` and `AggregateRepository` have been renamed to `IRepository` and `Repository`.
+- The `DomainEvent` is back to a _record_.
+- Refactored exceptions.
+- The `EventSerializer` can now be overloaded to register custom converters.
+- Aggregate `LoadFromChanges` method is back to an instance method (not static anymore).
+- The `IRepository` now allows loading deleted, undeleted and any aggregates (`includedDeleted` is now `isDeleted`, a nullable boolean).
+- Rewrote unit and integration tests according to the framework changes.
+
+### Fixed
+
+- A bug when deserializing empty `ActorId`, `AggregateId/StreamId` and `EventId`.
+
+### Removed
+
+- Integration of in-memory, MongoDB, and relational event stores without EntityFrameworkCore.
+- Actor identifier default value `SYSTEM`.
 
 ## [6.0.1] - 2024-11-28
 
@@ -117,7 +146,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Marked old TypeExtensions as obsolete.
 - Refactored AggregateRoot.
 
-[unreleased]: https://github.com/Logitar/EventSourcing/compare/v6.0.1...HEAD
+[unreleased]: https://github.com/Logitar/EventSourcing/compare/v7.0.0...HEAD
+[7.0.0]: https://github.com/Logitar/EventSourcing/compare/v6.0.1...v7.0.0
 [6.0.1]: https://github.com/Logitar/EventSourcing/compare/v6.0.0...v6.0.1
 [6.0.0]: https://github.com/Logitar/EventSourcing/compare/v5.2.0...v6.0.0
 [5.2.0]: https://github.com/Logitar/EventSourcing/compare/v5.1.1...v5.2.0
