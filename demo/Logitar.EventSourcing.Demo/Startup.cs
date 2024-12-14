@@ -35,6 +35,7 @@ internal class Startup : StartupBase
     base.ConfigureServices(services);
 
     services.AddControllers(options => options.Filters.Add<ExceptionHandling>());
+    services.AddProblemDetails();
 
     AuthenticationBuilder authenticationBuilder = services.AddAuthentication()
       .AddScheme<BasicAuthenticationOptions, BasicAuthenticationHandler>(Schemes.Basic, options => { });
