@@ -57,6 +57,13 @@ public class Cart : AggregateRoot
   }
   protected virtual void Handle(CartItemUpdated @event)
   {
-    _items[@event.ProductId] = @event.Quantity;
+    if (@event.Quantity < 1)
+    {
+      _items.Remove(@event.ProductId);
+    }
+    else
+    {
+      _items[@event.ProductId] = @event.Quantity;
+    }
   }
 }

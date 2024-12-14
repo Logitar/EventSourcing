@@ -59,12 +59,19 @@ internal class CartEntity : AggregateEntity
     CartItemEntity? item = Items.SingleOrDefault(i => i.ProductId == product.ProductId);
     if (item == null)
     {
-      item = new(this, product, @event);
-      Items.Add(item);
+      if (@event.Quantity > 0)
+      {
+        item = new(this, product, @event);
+        Items.Add(item);
+      }
+    }
+    else if (@event.Quantity > 0)
+    {
+      item.Update(@event.Quantity);
     }
     else
     {
-      item.Update(@event.Quantity);
+      Items.Remove(item);
     }
   }
 }
