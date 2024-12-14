@@ -1,15 +1,21 @@
-﻿using Logitar.EventSourcing.Demo.Domain.Products;
+﻿using Logitar.EventSourcing.Demo.Domain.Errors;
+using Logitar.EventSourcing.Demo.Domain.Products;
 
 namespace Logitar.EventSourcing.Demo.Application.Products;
 
-public class SkuAlreadyUsedException : Exception
+public class SkuAlreadyUsedException : ConflictException
 {
   private const string ErrorMessage = "The specified SKU is already used.";
 
-  public IEnumerable<Guid> ProductIds
+  public Guid ProductId
   {
-    get => (IEnumerable<Guid>)Data[nameof(ProductIds)]!;
-    private set => Data[nameof(ProductIds)] = value;
+    get => (Guid)Data[nameof(ProductId)]!;
+    private set => Data[nameof(ProductId)] = value;
+  }
+  public Guid ConflictId
+  {
+    get => (Guid)Data[nameof(ConflictId)]!;
+    private set => Data[nameof(ConflictId)] = value;
   }
   public string Sku
   {
@@ -22,15 +28,29 @@ public class SkuAlreadyUsedException : Exception
     private set => Data[nameof(PropertyName)] = value;
   }
 
+  public override Error Error
+  {
+    get
+    {
+      Error error = new(this.GetErrorCode(), ErrorMessage);
+      error.AddData(nameof(ConflictId), ConflictId);
+      error.AddData(nameof(Sku), Sku);
+      error.AddData(nameof(PropertyName), PropertyName);
+      return error;
+    }
+  }
+
   public SkuAlreadyUsedException(Product product, ProductId conflictId, string propertyName) : base(BuildMessage(product, conflictId, propertyName))
   {
-    ProductIds = [product.Id.ToGuid(), conflictId.ToGuid()];
+    ProductId = product.Id.ToGuid();
+    ConflictId = conflictId.ToGuid();
     Sku = product.Sku.Value;
     PropertyName = propertyName;
   }
 
   private static string BuildMessage(Product product, ProductId conflictId, string propertyName) => new ErrorMessageBuilder(ErrorMessage)
-    .AddData(nameof(ProductIds), string.Join(", ", [product.Id.ToGuid(), conflictId.ToGuid()]))
+    .AddData(nameof(ProductId), product.Id.ToGuid())
+    .AddData(nameof(ConflictId), conflictId.ToGuid())
     .AddData(nameof(Sku), product.Sku)
     .AddData(nameof(PropertyName), propertyName)
     .Build();

@@ -1,8 +1,11 @@
-﻿using Logitar.EventSourcing.Demo.Application.Carts.Commands;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Logitar.EventSourcing.Demo.Application.Carts.Commands;
 using Logitar.EventSourcing.Demo.Application.Carts.Models;
 using Logitar.EventSourcing.Demo.Application.Carts.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Logitar.EventSourcing.Demo.Controllers;
 
@@ -11,10 +14,12 @@ namespace Logitar.EventSourcing.Demo.Controllers;
 public class CartController : ControllerBase
 {
   private readonly IMediator _mediator;
+  private readonly ProblemDetailsFactory _problemDetailsFactory;
 
-  public CartController(IMediator mediator)
+  public CartController(IMediator mediator, ProblemDetailsFactory problemDetailFactory)
   {
     _mediator = mediator;
+    _problemDetailsFactory = problemDetailFactory;
   }
 
   [HttpPost("new/items/{productId}")]
@@ -39,7 +44,11 @@ public class CartController : ControllerBase
       return cart == null ? NotFound() : Ok(cart);
     }
 
-    throw new NotImplementedException(); // TODO(fpion): 400 BadRequest
+    ValidationFailure failure = new(nameof(payload.Quantity), "The value cannot be 0.", payload.Quantity)
+    {
+      ErrorCode = "InvalidQuantity"
+    };
+    throw new ValidationException([failure]);
   }
 
   [HttpGet("{id}")]
