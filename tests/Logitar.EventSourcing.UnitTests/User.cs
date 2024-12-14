@@ -1,4 +1,5 @@
-﻿namespace Logitar.EventSourcing;
+﻿
+namespace Logitar.EventSourcing;
 
 public class User : AggregateRoot
 {
@@ -25,6 +26,17 @@ public class User : AggregateRoot
     UniqueName = @event.UniqueName;
   }
 
+  public virtual void LoadFromSnapshot(StreamId id, UserSnapshot snapshot, IEnumerable<IEvent>? changes = null)
+  {
+    UniqueName = snapshot.UniqueName;
+
+    IsDisabled = snapshot.IsDisabled;
+
+    SignedInOn = snapshot.SignedInOn;
+
+    base.LoadFromSnapshot(id, snapshot, changes);
+  }
+
   public void Delete(ActorId? actorId = null)
   {
     if (!IsDeleted)
@@ -40,6 +52,10 @@ public class User : AggregateRoot
       Raise(new UserDisabled(Id, Version + 1, actorId: actorId));
     }
   }
+  protected virtual void Handle(UserDisabled _)
+  {
+    IsDisabled = true;
+  }
 
   public void SignIn(ActorId? actorId = null)
   {
@@ -49,6 +65,15 @@ public class User : AggregateRoot
   {
     SignedInOn = @event.OccurredOn;
   }
+}
+
+public class UserSnapshot : AggregateSnapshot
+{
+  public string? UniqueName { get; set; }
+
+  public bool IsDisabled { get; set; }
+
+  public DateTime? SignedInOn { get; set; }
 }
 
 public record UserCreated(string UniqueName) : DomainEvent;

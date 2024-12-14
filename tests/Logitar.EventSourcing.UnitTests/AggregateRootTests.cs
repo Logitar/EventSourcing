@@ -27,16 +27,29 @@ public class AggregateRootTests
   [Fact(DisplayName = "Apply: it should throw UnexpectedEventVersionException when the event version was not expected.")]
   public void Given_UnexpectedEventVersion_When_Apply_Then_UnexpectedEventVersionException()
   {
-    User user = new(_faker.Person.UserName);
+    User user = new();
 
-    UserCreated? @event = Assert.Single(user.Changes) as UserCreated;
-    Assert.NotNull(@event);
+    UserCreated created = new(_faker.Person.UserName)
+    {
+      StreamId = user.Id,
+      Version = 1
+    };
+    UserPasswordCreated password = new(Convert.ToBase64String(Encoding.UTF8.GetBytes("P@s$W0rD")))
+    {
+      StreamId = user.Id,
+      Version = 2
+    };
+    UserSignedIn signedIn = new()
+    {
+      StreamId = user.Id,
+      Version = 3
+    };
 
-    var exception = Assert.Throws<UnexpectedEventVersionException>(() => user.LoadFromChanges(user.Id, [@event]));
+    var exception = Assert.Throws<UnexpectedEventVersionException>(() => user.LoadFromChanges(user.Id, [created, signedIn, password]));
     Assert.Equal(user.Id.Value, exception.AggregateId);
     Assert.Equal(user.Version, exception.AggregateVersion);
-    Assert.Equal(@event.Id.Value, exception.EventId);
-    Assert.Equal(@event.Version, exception.EventVersion);
+    Assert.Equal(signedIn.Id.Value, exception.EventId);
+    Assert.Equal(signedIn.Version, exception.EventVersion);
   }
 
   [Fact(DisplayName = "ClearChanges: it should clear the changes.")]
@@ -146,6 +159,146 @@ public class AggregateRootTests
 
     Assert.False(user.HasChanges);
     Assert.Empty(user.Changes);
+  }
+
+  [Fact(DisplayName = "LoadFromChanges: it should assign the stream identifier.")]
+  public void Given_IdWithoutChanges_When_LoadFromChanges_Then_AggregateLoaded()
+  {
+    StreamId id = StreamId.NewId();
+
+    User user = new();
+    user.LoadFromChanges(id, []);
+
+    Assert.Equal(id, user.Id);
+    Assert.Equal(0, user.Version);
+    Assert.Null(user.CreatedBy);
+    Assert.Equal(default, user.CreatedOn);
+    Assert.Null(user.UpdatedBy);
+    Assert.Equal(default, user.UpdatedOn);
+    Assert.False(user.IsDeleted);
+
+    Assert.False(user.HasChanges);
+    Assert.Empty(user.Changes);
+  }
+
+  [Fact(DisplayName = "LoadFromChanges: it should throw InvalidOperationException when the aggregate version is greater than 0.")]
+  public void Given_VersionGreaterThan0_When_LoadFromChanges_Then_InvalidOperationException()
+  {
+    User user = new(_faker.Person.UserName);
+
+    UserCreated? @event = Assert.Single(user.Changes) as UserCreated;
+    Assert.NotNull(@event);
+
+    var exception = Assert.Throws<InvalidOperationException>(() => user.LoadFromChanges(user.Id, [@event]));
+    Assert.Equal("The aggregate cannot be loaded once changes have been applied to it.", exception.Message);
+  }
+
+  [Fact(DisplayName = "LoadFromSnapshot: it should assign the stream identifier and metadata, then apply the changes.")]
+  public void Given_SnapshotAndChanges_When_LoadFromSnapshot_Then_AggregateLoaded()
+  {
+    User user = new();
+
+    UserSnapshot snapshot = new()
+    {
+      UniqueName = _faker.Person.UserName,
+      SignedInOn = DateTime.Now.AddMinutes(-1),
+      Version = 3,
+      CreatedOn = DateTime.Now.AddHours(-1),
+      UpdatedBy = new ActorId(user.Id.Value),
+      UpdatedOn = DateTime.Now.AddMinutes(-1),
+      IsDeleted = true
+    };
+
+    UserDisabled disabled = new(user.Id, version: 4, actorId: snapshot.UpdatedBy);
+
+    user.LoadFromSnapshot(user.Id, snapshot, [disabled]);
+
+    Assert.Equal(disabled.StreamId, user.Id);
+    Assert.Equal(disabled.Version, user.Version);
+    Assert.Equal(snapshot.CreatedBy, user.CreatedBy);
+    Assert.Equal(snapshot.CreatedOn, user.CreatedOn);
+    Assert.Equal(disabled.ActorId, user.UpdatedBy);
+    Assert.Equal(disabled.OccurredOn, user.UpdatedOn);
+    Assert.Equal(snapshot.IsDeleted, user.IsDeleted);
+
+    Assert.Equal(snapshot.UniqueName, user.UniqueName);
+    Assert.True(user.IsDisabled);
+    Assert.Equal(snapshot.SignedInOn, user.SignedInOn);
+
+    Assert.False(user.HasChanges);
+    Assert.Empty(user.Changes);
+  }
+
+  [Fact(DisplayName = "LoadFromSnapshot: it should assign the stream identifier and metadata.")]
+  public void Given_SnapshotWithoutChanges_When_LoadFromSnapshot_Then_AggregateLoaded()
+  {
+    User user = new();
+    StreamId userId = StreamId.NewId();
+
+    UserSnapshot snapshot = new()
+    {
+      UniqueName = _faker.Person.UserName,
+      SignedInOn = DateTime.Now.AddMinutes(-1),
+      Version = 3,
+      CreatedOn = DateTime.Now.AddHours(-1),
+      UpdatedBy = new ActorId(user.Id.Value),
+      UpdatedOn = DateTime.Now.AddMinutes(-1),
+      IsDeleted = true
+    };
+
+    user.LoadFromSnapshot(userId, snapshot);
+
+    Assert.Equal(userId, user.Id);
+    Assert.Equal(snapshot.Version, user.Version);
+    Assert.Equal(snapshot.CreatedBy, user.CreatedBy);
+    Assert.Equal(snapshot.CreatedOn, user.CreatedOn);
+    Assert.Equal(snapshot.UpdatedBy, user.UpdatedBy);
+    Assert.Equal(snapshot.UpdatedOn, user.UpdatedOn);
+    Assert.Equal(snapshot.IsDeleted, user.IsDeleted);
+
+    Assert.Equal(snapshot.UniqueName, user.UniqueName);
+    Assert.Equal(snapshot.IsDisabled, user.IsDisabled);
+    Assert.Equal(snapshot.SignedInOn, user.SignedInOn);
+
+    Assert.False(user.HasChanges);
+    Assert.Empty(user.Changes);
+  }
+
+  [Theory(DisplayName = "LoadFromSnapshot: it should throw ArgumentOutOfRangeException when the snapshot version is not greater than 0.")]
+  [InlineData(0)]
+  [InlineData(-1)]
+  public void Given_SnapshotVersionNotGreaterThan0_When_LoadFromSnapshot_Then_ArgumentOutOfRangeException(long version)
+  {
+    User user = new();
+
+    AggregateSnapshot snapshot = new()
+    {
+      Version = version
+    };
+    var exception = Assert.Throws<ArgumentOutOfRangeException>(() => user.LoadFromSnapshot(user.Id, snapshot));
+    Assert.StartsWith("The version must be greater than 0.", exception.Message);
+    Assert.Equal("snapshot", exception.ParamName);
+  }
+
+  [Fact(DisplayName = "LoadFromSnapshot: it should throw InvalidOperationException when the aggregate version is greater than 0.")]
+  public void Given_VersionGreaterThan0_When_LoadFromSnapshot_Then_InvalidOperationException()
+  {
+    User user = new(_faker.Person.UserName);
+
+    UserCreated? @event = Assert.Single(user.Changes) as UserCreated;
+    Assert.NotNull(@event);
+
+    AggregateSnapshot snapshot = new()
+    {
+      Version = user.Version,
+      CreatedBy = user.CreatedBy,
+      CreatedOn = user.CreatedOn,
+      UpdatedBy = user.UpdatedBy,
+      UpdatedOn = user.UpdatedOn,
+      IsDeleted = false
+    };
+    var exception = Assert.Throws<InvalidOperationException>(() => user.LoadFromSnapshot(user.Id, snapshot));
+    Assert.Equal("The aggregate cannot be loaded once changes have been applied to it.", exception.Message);
   }
 
   [Fact(DisplayName = "Raise: it should apply a new change to the aggregate.")]
