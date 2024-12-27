@@ -1,5 +1,4 @@
-﻿using Logitar.EventSourcing.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Logitar.EventSourcing.EntityFrameworkCore.Relational;
 
@@ -16,7 +15,6 @@ public static class DependencyInjectionExtensions
   public static IServiceCollection AddLogitarEventSourcingWithEntityFrameworkCoreRelational(this IServiceCollection services)
   {
     return services
-      .AddLogitarEventSourcingInfrastructure()
       .AddSingleton<IEventConverter, EventConverter>()
       .AddScoped<IEventStore, EventStore>();
   }

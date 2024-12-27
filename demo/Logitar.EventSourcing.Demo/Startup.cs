@@ -7,7 +7,9 @@ using Logitar.EventSourcing.Demo.Infrastructure.PostgreSQL;
 using Logitar.EventSourcing.Demo.Infrastructure.SqlServer;
 using Logitar.EventSourcing.Demo.Settings;
 using Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL;
+using Logitar.EventSourcing.EntityFrameworkCore.Relational;
 using Logitar.EventSourcing.EntityFrameworkCore.SqlServer;
+using Logitar.EventSourcing.Infrastructure;
 using Logitar.EventSourcing.Kurrent;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -54,6 +56,12 @@ internal class Startup : StartupBase
     services.AddHttpContextAccessor();
     services.AddSingleton<IApplicationContext, HttpApplicationContext>();
 
+    services.AddLogitarEventSourcing();
+    services.AddLogitarEventSourcingInfrastructure();
+
+    services.AddLogitarEventSourcingDemoApplication();
+    services.AddLogitarEventSourcingDemoInfrastructure();
+
     string connectionString;
     if (_useKurrentEventStore)
     {
@@ -71,6 +79,7 @@ internal class Startup : StartupBase
           ?? throw new InvalidOperationException("The configuration key 'POSTGRESQLCONNSTR_Demo' is required.");
         if (!_useKurrentEventStore)
         {
+          services.AddLogitarEventSourcingWithEntityFrameworkCoreRelational();
           services.AddLogitarEventSourcingWithEntityFrameworkCorePostgreSQL(connectionString);
         }
         services.AddLogitarEventSourcingDemoInfrastructureWithPostgreSQL(connectionString);
@@ -80,6 +89,7 @@ internal class Startup : StartupBase
           ?? throw new InvalidOperationException("The configuration key 'SQLCONNSTR_Demo' is required.");
         if (!_useKurrentEventStore)
         {
+          services.AddLogitarEventSourcingWithEntityFrameworkCoreRelational();
           services.AddLogitarEventSourcingWithEntityFrameworkCoreSqlServer(connectionString);
         }
         services.AddLogitarEventSourcingDemoInfrastructureWithSqlServer(connectionString);

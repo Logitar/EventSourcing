@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Nuget publishing conflicts.
+- Dependency Injection (services registered multiple times).
 
 ## [7.0.0] - 2024-12-14
 

@@ -38,6 +38,10 @@ public abstract class EntityFrameworkCoreIntegrationTests : IAsyncLifetime
     services.AddSingleton(Configuration);
     services.AddSingleton<IEventBus>(EventBus);
 
+    services.AddLogitarEventSourcing();
+    services.AddLogitarEventSourcingInfrastructure();
+    services.AddLogitarEventSourcingWithEntityFrameworkCoreRelational();
+
     string connectionString = Configuration.GetConnectionString(databaseProvider.ToString())
       ?.Replace("{Database}", GetType().Name)
       ?? throw new InvalidOperationException($"The connection string '{databaseProvider}' is required.");

@@ -20,7 +20,6 @@ public static class DependencyInjectionExtensions
     return services
       .AddDbContext<EventContext>(options => options.UseSqlServer(connectionString,
         options => options.MigrationsAssembly("Logitar.EventSourcing.EntityFrameworkCore.SqlServer")
-      ))
-      .AddLogitarEventSourcingWithEntityFrameworkCoreRelational();
+      ));
   }
 }
