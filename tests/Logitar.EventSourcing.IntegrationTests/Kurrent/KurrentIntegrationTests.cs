@@ -30,6 +30,8 @@ public abstract class KurrentIntegrationTests
 
     string connectionString = Configuration.GetConnectionString("EventStoreDB")
       ?? throw new InvalidOperationException("The connection string 'EventStoreDB' is required.");
+    services.AddLogitarEventSourcing();
+    services.AddLogitarEventSourcingInfrastructure();
     services.AddLogitarEventSourcingWithKurrent(connectionString);
 
     ServiceProvider = services.BuildServiceProvider();
