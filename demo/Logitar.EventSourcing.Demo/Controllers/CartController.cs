@@ -5,7 +5,6 @@ using Logitar.EventSourcing.Demo.Application.Carts.Models;
 using Logitar.EventSourcing.Demo.Application.Carts.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Logitar.EventSourcing.Demo.Controllers;
 
@@ -14,12 +13,10 @@ namespace Logitar.EventSourcing.Demo.Controllers;
 public class CartController : ControllerBase
 {
   private readonly IMediator _mediator;
-  private readonly ProblemDetailsFactory _problemDetailsFactory;
 
-  public CartController(IMediator mediator, ProblemDetailsFactory problemDetailFactory)
+  public CartController(IMediator mediator)
   {
     _mediator = mediator;
-    _problemDetailsFactory = problemDetailFactory;
   }
 
   [HttpPost("new/items/{productId}")]
