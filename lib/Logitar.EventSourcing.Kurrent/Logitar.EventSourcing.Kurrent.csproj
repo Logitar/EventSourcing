@@ -14,14 +14,14 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Logitar/EventSourcing</RepositoryUrl>
-    <AssemblyVersion>7.0.1.0</AssemblyVersion>
+    <AssemblyVersion>7.0.2.0</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <Version>7.0.1</Version>
+    <Version>7.0.2</Version>
     <NeutralLanguage>en-CA</NeutralLanguage>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <PackageReleaseNotes>Fixed dependency injection.</PackageReleaseNotes>
+    <PackageReleaseNotes>NuGet upgrade.</PackageReleaseNotes>
     <PackageTags>logitar net framework event sourcing eventstoredb kurrent</PackageTags>
     <PackageProjectUrl>https://github.com/Logitar/EventSourcing/tree/main/lib/Logitar.EventSourcing.Kurrent</PackageProjectUrl>
   </PropertyGroup>
@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EventStore.Client.Grpc.Streams" Version="23.3.7" />
+    <PackageReference Include="EventStore.Client.Grpc.Streams" Version="23.3.8" />
   </ItemGroup>
 
   <ItemGroup>

@@ -14,14 +14,14 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Logitar/EventSourcing</RepositoryUrl>
-    <AssemblyVersion>7.0.1</AssemblyVersion>
+    <AssemblyVersion>7.0.2</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <Version>7.0.1</Version>
+    <Version>7.0.2</Version>
     <NeutralLanguage>en-CA</NeutralLanguage>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <PackageReleaseNotes>Fixed dependency injection.</PackageReleaseNotes>
+    <PackageReleaseNotes>NuGet upgrade.</PackageReleaseNotes>
     <PackageTags>logitar net framework event sourcing entityframeworkcore sqlserver</PackageTags>
     <PackageProjectUrl>https://github.com/Logitar/EventSourcing/tree/main/lib/Logitar.EventSourcing.EntityFrameworkCore.SqlServer</PackageProjectUrl>
   </PropertyGroup>
@@ -39,8 +39,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Logitar.Data.SqlServer" Version="7.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+    <PackageReference Include="Logitar.Data.SqlServer" Version="7.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.4" />
   </ItemGroup>
 
   <ItemGroup>
