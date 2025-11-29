@@ -11,7 +11,7 @@ public class EventBus : IEventBus
   /// <summary>
   /// Gets the service provider.
   /// </summary>
-  protected IServiceProvider ServiceProvider { get; }
+  protected virtual IServiceProvider ServiceProvider { get; }
 
   /// <summary>
   /// Initializes a new instance of the <see cref="EventBus"/> class.
