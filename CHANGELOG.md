@@ -7,7 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+
+- `EventBus.GetHandlersAsync` method.
+- `EventBus` unit tests.
+
+### Changed
+
+- Improved `EventBus` implementation.
+
+### Fixed
+
+- GitHub Actions.
+- LICENSE Year.
+- NuGet upgrades.
 
 ## [10.0.0] - 2025-11-29
 
