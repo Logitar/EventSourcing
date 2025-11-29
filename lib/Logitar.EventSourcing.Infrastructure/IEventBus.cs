@@ -11,6 +11,5 @@ public interface IEventBus
   /// <param name="event">The event to publish.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The asynchronous operation.</returns>
-
   Task PublishAsync(IEvent @event, CancellationToken cancellationToken = default);
 }

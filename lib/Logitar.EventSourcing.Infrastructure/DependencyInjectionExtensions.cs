@@ -14,6 +14,8 @@ public static class DependencyInjectionExtensions
   /// <returns>The dependency container.</returns>
   public static IServiceCollection AddLogitarEventSourcingInfrastructure(this IServiceCollection services)
   {
-    return services.AddSingleton<IEventSerializer, EventSerializer>();
+    return services
+      .AddSingleton<IEventSerializer, EventSerializer>()
+      .AddScoped<IEventBus, EventBus>();
   }
 }
