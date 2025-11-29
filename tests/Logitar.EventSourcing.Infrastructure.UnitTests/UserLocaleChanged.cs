@@ -1,3 +1,3 @@
 ﻿namespace Logitar.EventSourcing.Infrastructure;
 
-internal record UserLocaleChanged(CultureInfo Locale) : IEvent;
+public record UserLocaleChanged(CultureInfo Locale) : IEvent;

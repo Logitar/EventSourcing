@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace Logitar.EventSourcing.Infrastructure;
 
@@ -9,9 +8,14 @@ namespace Logitar.EventSourcing.Infrastructure;
 public class EventBus : IEventBus
 {
   /// <summary>
+  /// The name of the handler method.
+  /// </summary>
+  protected const string HandlerName = nameof(IEventHandler<>.HandleAsync);
+
+  /// <summary>
   /// Gets the service provider.
   /// </summary>
-  protected IServiceProvider ServiceProvider { get; }
+  protected virtual IServiceProvider ServiceProvider { get; }
 
   /// <summary>
   /// Initializes a new instance of the <see cref="EventBus"/> class.
@@ -30,22 +34,40 @@ public class EventBus : IEventBus
   /// <returns>The asynchronous operation.</returns>
   public async Task PublishAsync(IEvent @event, CancellationToken cancellationToken)
   {
-    IEnumerable<object?> handlers = ServiceProvider.GetServices(typeof(IEventHandler<>).MakeGenericType(@event.GetType()));
-    if (handlers.Any())
+    IReadOnlyCollection<object> handlers = await GetHandlersAsync(@event, cancellationToken);
+    if (handlers.Count > 0)
     {
       Type[] parameterTypes = [@event.GetType(), typeof(CancellationToken)];
       object[] parameters = [@event, cancellationToken];
-      foreach (object? handler in handlers)
+      foreach (object handler in handlers)
       {
-        if (handler is not null)
+        Type handlerType = handler.GetType();
+        MethodInfo handle = handler.GetType().GetMethod(HandlerName, parameterTypes)
+          ?? throw new InvalidOperationException($"The handler {handlerType} must define a '{HandlerName}' method.");
+        if (handle.Invoke(handler, parameters) is Task task)
         {
-          MethodInfo? handle = handler.GetType().GetMethod(nameof(IEventHandler<>.HandleAsync), parameterTypes);
-          if (handle is not null)
-          {
-            await (Task)handle.Invoke(handler, parameters)!;
-          }
+          await task;
+        }
+        else
+        {
+          throw new InvalidOperationException($"The handler {handlerType} {HandlerName} method must return a {nameof(Task)}.");
         }
       }
     }
+  }
+
+  /// <summary>
+  /// Finds the handlers of the specified event.
+  /// </summary>
+  /// <param name="event">The event.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The event handlers.</returns>
+  protected virtual async Task<IReadOnlyCollection<object>> GetHandlersAsync(IEvent @event, CancellationToken cancellationToken)
+  {
+    return ServiceProvider.GetServices(typeof(IEventHandler<>).MakeGenericType(@event.GetType()))
+      .Where(handler => handler is not null)
+      .Select(handler => handler!)
+      .ToList()
+      .AsReadOnly();
   }
 }

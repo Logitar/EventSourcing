@@ -9,7 +9,7 @@
     <Authors>Francis Pion</Authors>
     <Product>Logitar.NET</Product>
     <Description>Provides an abstraction of a relational event store to be used with the Event Sourcing architecture pattern and Entity Framework Core.</Description>
-    <Copyright>© 2024 Logitar All Rights Reserved.</Copyright>
+    <Copyright>© 2025 Logitar All Rights Reserved.</Copyright>
     <PackageIcon>logitar.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Logitar.Data" Version="10.0.0" />
+    <PackageReference Include="Logitar.Data" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.0" />
   </ItemGroup>
 

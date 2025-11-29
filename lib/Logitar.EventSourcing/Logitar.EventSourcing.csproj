@@ -9,7 +9,7 @@
     <Authors>Francis Pion</Authors>
     <Product>Logitar.NET</Product>
     <Description>Provides an implementation of the Event Sourcing architecture pattern.</Description>
-    <Copyright>© 2024 Logitar All Rights Reserved.</Copyright>
+    <Copyright>© 2025 Logitar All Rights Reserved.</Copyright>
     <PackageIcon>logitar.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
@@ -35,7 +35,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Logitar" Version="10.0.0" />
+    <PackageReference Include="Logitar" Version="10.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
   </ItemGroup>
 
