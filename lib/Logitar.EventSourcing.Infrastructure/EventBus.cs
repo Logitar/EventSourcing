@@ -29,22 +29,32 @@ public class EventBus : IEventBus
   /// <returns>The asynchronous operation.</returns>
   public async Task PublishAsync(IEvent @event, CancellationToken cancellationToken)
   {
-    IEnumerable<object?> handlers = ServiceProvider.GetServices(typeof(IEventHandler<>).MakeGenericType(@event.GetType()));
-    if (handlers.Any())
+    IReadOnlyCollection<object> handlers = await GetHandlersAsync(@event, cancellationToken);
+    if (handlers.Count > 0)
     {
       Type[] parameterTypes = [@event.GetType(), typeof(CancellationToken)];
       object[] parameters = [@event, cancellationToken];
-      foreach (object? handler in handlers)
+      foreach (object handler in handlers)
       {
-        if (handler is not null)
+        MethodInfo? handle = handler.GetType().GetMethod(nameof(IEventHandler<>.HandleAsync), parameterTypes);
+        if (handle is not null)
         {
-          MethodInfo? handle = handler.GetType().GetMethod(nameof(IEventHandler<>.HandleAsync), parameterTypes);
-          if (handle is not null)
-          {
-            await (Task)handle.Invoke(handler, parameters)!;
-          }
+          await (Task)handle.Invoke(handler, parameters)!;
         }
       }
     }
+  }
+
+  /// <summary>
+  /// Finds the handlers of the specified event.
+  /// </summary>
+  /// <param name="event">The event.</param>
+  /// <param name="cancellationToken">The cancellation token.</param>
+  /// <returns>The event handlers.</returns>
+  protected virtual async Task<IReadOnlyCollection<object>> GetHandlersAsync(IEvent @event, CancellationToken cancellationToken)
+  {
+    return ServiceProvider.GetServices(typeof(IEventHandler<>).MakeGenericType(@event.GetType()))
+      .Where(handler => handler is not null)
+      .Select(handler => handler!).ToList().AsReadOnly();
   }
 }
