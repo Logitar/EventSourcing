@@ -8,6 +8,11 @@ namespace Logitar.EventSourcing.Infrastructure;
 public class EventBus : IEventBus
 {
   /// <summary>
+  /// The name of the handler method.
+  /// </summary>
+  protected const string HandlerName = nameof(IEventHandler<>.HandleAsync);
+
+  /// <summary>
   /// Gets the service provider.
   /// </summary>
   protected virtual IServiceProvider ServiceProvider { get; }
@@ -36,10 +41,16 @@ public class EventBus : IEventBus
       object[] parameters = [@event, cancellationToken];
       foreach (object handler in handlers)
       {
-        MethodInfo? handle = handler.GetType().GetMethod(nameof(IEventHandler<>.HandleAsync), parameterTypes);
-        if (handle is not null)
+        Type handlerType = handler.GetType();
+        MethodInfo handle = handler.GetType().GetMethod(HandlerName, parameterTypes)
+          ?? throw new InvalidOperationException($"The handler {handlerType} must define a '{HandlerName}' method.");
+        if (handle.Invoke(handler, parameters) is Task task)
         {
-          await (Task)handle.Invoke(handler, parameters)!;
+          await task;
+        }
+        else
+        {
+          throw new InvalidOperationException($"The handler {handlerType} {HandlerName} method must return a {nameof(Task)}.");
         }
       }
     }
@@ -55,6 +66,8 @@ public class EventBus : IEventBus
   {
     return ServiceProvider.GetServices(typeof(IEventHandler<>).MakeGenericType(@event.GetType()))
       .Where(handler => handler is not null)
-      .Select(handler => handler!).ToList().AsReadOnly();
+      .Select(handler => handler!)
+      .ToList()
+      .AsReadOnly();
   }
 }

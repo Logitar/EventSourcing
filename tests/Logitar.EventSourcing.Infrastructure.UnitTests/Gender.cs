@@ -1,6 +1,6 @@
 ﻿namespace Logitar.EventSourcing.Infrastructure;
 
-internal enum Gender
+public enum Gender
 {
   Female,
   Male,
