@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Marten" Version="8.16.1" />
+    <PackageReference Include="Marten" Version="8.18.1" />
   </ItemGroup>
 
 </Project>

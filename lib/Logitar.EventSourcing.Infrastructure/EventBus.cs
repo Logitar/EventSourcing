@@ -42,7 +42,7 @@ public class EventBus : IEventBus
       foreach (object handler in handlers)
       {
         Type handlerType = handler.GetType();
-        MethodInfo handle = handler.GetType().GetMethod(HandlerName, parameterTypes)
+        MethodInfo handle = handlerType.GetMethod(HandlerName, parameterTypes)
           ?? throw new InvalidOperationException($"The handler {handlerType} must define a '{HandlerName}' method.");
         if (handle.Invoke(handler, parameters) is Task task)
         {
