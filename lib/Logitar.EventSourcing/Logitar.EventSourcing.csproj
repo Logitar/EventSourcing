@@ -9,19 +9,19 @@
     <Authors>Francis Pion</Authors>
     <Product>Logitar.NET</Product>
     <Description>Provides an implementation of the Event Sourcing architecture pattern.</Description>
-    <Copyright>© 2025 Logitar All Rights Reserved.</Copyright>
+    <Copyright>© 2026 Logitar All Rights Reserved.</Copyright>
     <PackageIcon>logitar.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Logitar/EventSourcing</RepositoryUrl>
-    <AssemblyVersion>10.1.0.0</AssemblyVersion>
+    <AssemblyVersion>10.1.1.0</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <Version>10.1.0</Version>
+    <Version>10.1.1</Version>
     <NeutralLanguage>en-CA</NeutralLanguage>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <PackageReleaseNotes>`EventBus` improvements, fixed GitHub Actions and License Year.</PackageReleaseNotes>
+    <PackageReleaseNotes>NuGet and LICENSE year upgrade.</PackageReleaseNotes>
     <PackageTags>logitar net framework event sourcing</PackageTags>
     <PackageProjectUrl>https://github.com/Logitar/EventSourcing/tree/main/lib/Logitar.EventSourcing</PackageProjectUrl>
   </PropertyGroup>
@@ -35,8 +35,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Logitar" Version="10.0.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+    <PackageReference Include="Logitar" Version="10.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
   </ItemGroup>
 
   <ItemGroup>

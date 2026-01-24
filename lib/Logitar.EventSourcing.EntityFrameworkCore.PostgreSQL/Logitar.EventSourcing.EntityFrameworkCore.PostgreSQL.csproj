@@ -9,19 +9,19 @@
     <Authors>Francis Pion</Authors>
     <Product>Logitar.NET</Product>
     <Description>Provides an implementation of a relational event store to be used with the Event Sourcing architecture pattern, Entity Framework Core and PostgreSQL.</Description>
-    <Copyright>© 2025 Logitar All Rights Reserved.</Copyright>
+    <Copyright>© 2026 Logitar All Rights Reserved.</Copyright>
     <PackageIcon>logitar.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Logitar/EventSourcing</RepositoryUrl>
-    <AssemblyVersion>10.1.0.0</AssemblyVersion>
+    <AssemblyVersion>10.1.1.0</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <Version>10.1.0</Version>
+    <Version>10.1.1</Version>
     <NeutralLanguage>en-CA</NeutralLanguage>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <PackageReleaseNotes>`EventBus` improvements, fixed GitHub Actions and License Year.</PackageReleaseNotes>
+    <PackageReleaseNotes>NuGet and LICENSE year upgrade.</PackageReleaseNotes>
     <PackageTags>logitar net framework event sourcing entityframeworkcore postgres</PackageTags>
     <PackageProjectUrl>https://github.com/Logitar/EventSourcing/tree/main/lib/Logitar.EventSourcing.EntityFrameworkCore.PostgreSQL</PackageProjectUrl>
   </PropertyGroup>
@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Logitar.Data.PostgreSQL" Version="10.0.1" />
+    <PackageReference Include="Logitar.Data.PostgreSQL" Version="10.0.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
   </ItemGroup>
 
