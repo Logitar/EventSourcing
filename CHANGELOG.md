@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing yet.
 
+## [10.1.2] - 2026-02-15
+
+### Fixed
+
+- EventBus HandleAsync method is now public.
+
 ## [10.1.1] - 2026-01-23
 
 ### Fixed
@@ -198,7 +204,8 @@ There are so many changes in this version that I may have missed some.
 - Marked old TypeExtensions as obsolete.
 - Refactored AggregateRoot.
 
-[unreleased]: https://github.com/Logitar/EventSourcing/compare/v10.1.1...HEAD
+[unreleased]: https://github.com/Logitar/EventSourcing/compare/v10.1.2...HEAD
+[10.1.2]: https://github.com/Logitar/EventSourcing/compare/v10.1.1...v10.1.2
 [10.1.1]: https://github.com/Logitar/EventSourcing/compare/v10.1.0...v10.1.1
 [10.1.0]: https://github.com/Logitar/EventSourcing/compare/v10.0.0...v10.1.0
 [10.0.0]: https://github.com/Logitar/EventSourcing/compare/v7.0.2...v10.0.0

@@ -32,7 +32,7 @@ public class EventBus : IEventBus
   /// <param name="event">The event to publish.</param>
   /// <param name="cancellationToken">The cancellation token.</param>
   /// <returns>The asynchronous operation.</returns>
-  public async Task PublishAsync(IEvent @event, CancellationToken cancellationToken)
+  public virtual async Task PublishAsync(IEvent @event, CancellationToken cancellationToken)
   {
     IReadOnlyCollection<object> handlers = await GetHandlersAsync(@event, cancellationToken);
     if (handlers.Count > 0)
